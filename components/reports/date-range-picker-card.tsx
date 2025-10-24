@@ -2,8 +2,9 @@
 
 import * as React from "react"
 import { type DateRange } from "react-day-picker"
-import { enUS } from "react-day-picker/locale"
+import { sv } from "date-fns/locale"
 
+import { useMobile } from "@/hooks/use-mobile"
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent } from "@/components/ui/card"
 
@@ -18,16 +19,18 @@ export function DateRangePickerCard({
   onDateRangeChange,
   className,
 }: DateRangePickerCardProps) {
+  const isMobile = useMobile()
+
   return (
     <Card className={className}>
-      <CardContent className="p-0">
+      <CardContent className="flex justify-center p-0">
         <Calendar
           mode="range"
           selected={dateRange}
           onSelect={onDateRangeChange}
           defaultMonth={dateRange?.from}
-          numberOfMonths={2}
-          locale={enUS}
+          numberOfMonths={isMobile ? 1 : 2}
+          locale={sv}
           className="bg-transparent p-3"
         />
       </CardContent>

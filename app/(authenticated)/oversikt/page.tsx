@@ -1,20 +1,20 @@
 import { Suspense } from 'react';
-import { KPICards } from '@/components/overview/KPICards';
-import { CategoryBreakdown } from '@/components/overview/CategoryBreakdown';
-import { TechnicianPerformance } from '@/components/overview/TechnicianPerformance';
-import { MonthlyTrends } from '@/components/overview/MonthlyTrends';
-import { TopIssues } from '@/components/overview/TopIssues';
+import { NyckeltalKort } from '@/components/overview/NyckeltalKort';
+import { KategoriFördelning } from '@/components/overview/KategoriFördelning';
+import { TeknikerPrestation } from '@/components/overview/TeknikerPrestation';
+import { MånadsTrender } from '@/components/overview/MånadsTrender';
+import { ToppProblem } from '@/components/overview/ToppProblem';
 import {
-  getDashboardKPIs,
-  getCategoryBreakdown,
-  getTechnicianPerformance,
-  getMonthlyTrends,
-  getTopRegistrations,
+  hämtaInstrumentpanelNyckeltal,
+  hämtaKategoriFördelning,
+  hämtaTeknikerPrestation,
+  hämtaMånadstrender,
+  hämtaToppRegistreringar,
 } from './actions';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
-function KPICardsSkeleton() {
+function NyckeltalKortSkelett() {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       {[...Array(4)].map((_, i) => (
@@ -30,7 +30,7 @@ function KPICardsSkeleton() {
   );
 }
 
-function ChartSkeleton() {
+function DiagramSkelett() {
   return (
     <Card>
       <CardContent className="p-6">
@@ -40,14 +40,14 @@ function ChartSkeleton() {
   );
 }
 
-export default async function OversiktPage() {
+export default async function ÖversiktSida() {
   // Fetch all dashboard data in parallel
   const [kpis, categories, technicians, trends, topIssues] = await Promise.all([
-    getDashboardKPIs(),
-    getCategoryBreakdown(),
-    getTechnicianPerformance(),
-    getMonthlyTrends(),
-    getTopRegistrations(),
+    hämtaInstrumentpanelNyckeltal(),
+    hämtaKategoriFördelning(),
+    hämtaTeknikerPrestation(),
+    hämtaMånadstrender(),
+    hämtaToppRegistreringar(),
   ]);
 
   return (
@@ -56,7 +56,7 @@ export default async function OversiktPage() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Översikt</h1>
         <p className="text-muted-foreground">
-          Dashboard with reports overview and statistics
+          Instrumentpanel med rapportöversikt och statistik
         </p>
       </div>
 
@@ -65,17 +65,17 @@ export default async function OversiktPage() {
         <div className="flex items-center gap-3">
           <div className="h-px flex-1 bg-linear-to-r from-border to-transparent" />
           <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-            Overview
+            Översikt
           </h2>
           <div className="h-px flex-1 bg-linear-to-l from-border to-transparent" />
         </div>
 
-        <Suspense fallback={<KPICardsSkeleton />}>
-          <KPICards
-            totalReports={kpis.totalReports}
-            avgDays={kpis.avgDays}
-            maxDays={kpis.maxDays}
-            activeCategories={kpis.activeCategories}
+        <Suspense fallback={<NyckeltalKortSkelett />}>
+          <NyckeltalKort
+            totaltAntalRapporter={kpis.totaltAntalRapporter}
+            genomsnittDagar={kpis.genomsnittDagar}
+            maxDagar={kpis.maxDagar}
+            aktivaKategorier={kpis.aktivaKategorier}
           />
         </Suspense>
       </section>
@@ -85,13 +85,13 @@ export default async function OversiktPage() {
         <div className="flex items-center gap-3">
           <div className="h-px flex-1 bg-linear-to-r from-border to-transparent" />
           <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-            Trends
+            Trender
           </h2>
           <div className="h-px flex-1 bg-linear-to-l from-border to-transparent" />
         </div>
 
-        <Suspense fallback={<ChartSkeleton />}>
-          <MonthlyTrends data={trends} />
+        <Suspense fallback={<DiagramSkelett />}>
+          <MånadsTrender data={trends} />
         </Suspense>
       </section>
 
@@ -100,18 +100,18 @@ export default async function OversiktPage() {
         <div className="flex items-center gap-3">
           <div className="h-px flex-1 bg-linear-to-r from-border to-transparent" />
           <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-            Breakdown
+            Fördelning
           </h2>
           <div className="h-px flex-1 bg-linear-to-l from-border to-transparent" />
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
-          <Suspense fallback={<ChartSkeleton />}>
-            <CategoryBreakdown data={categories} />
+          <Suspense fallback={<DiagramSkelett />}>
+            <KategoriFördelning data={categories} />
           </Suspense>
 
-          <Suspense fallback={<ChartSkeleton />}>
-            <TechnicianPerformance data={technicians} />
+          <Suspense fallback={<DiagramSkelett />}>
+            <TeknikerPrestation data={technicians} />
           </Suspense>
         </div>
       </section>
@@ -121,13 +121,13 @@ export default async function OversiktPage() {
         <div className="flex items-center gap-3">
           <div className="h-px flex-1 bg-linear-to-r from-border to-transparent" />
           <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-            Details
+            Detaljer
           </h2>
           <div className="h-px flex-1 bg-linear-to-l from-border to-transparent" />
         </div>
 
-        <Suspense fallback={<ChartSkeleton />}>
-          <TopIssues data={topIssues} />
+        <Suspense fallback={<DiagramSkelett />}>
+          <ToppProblem data={topIssues} />
         </Suspense>
       </section>
     </div>

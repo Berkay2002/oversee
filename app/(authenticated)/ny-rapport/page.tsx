@@ -30,7 +30,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { Combobox, type ComboboxOption } from '@/components/ui/combobox';
 import { RegistrationInput } from '@/components/reports/registration-input';
-import { DateRangePickerCard } from '@/components/reports/date-range-picker-card';
+import { Calendar12 } from '@/components/calendar-12';
 
 const CUSTOM_REPORTER_VALUE = '__custom__';
 
@@ -304,7 +304,7 @@ export default function NewReportPage() {
                       <FormLabel>
                         Arbetsperiod <span className="text-destructive">*</span>
                       </FormLabel>
-                      <DateRangePickerCard
+                      <Calendar12
                         dateRange={{ from: form.watch('start_date'), to: form.watch('end_date') }}
                         onDateRangeChange={(range: DateRange | undefined) => {
                           form.setValue('start_date', range?.from ?? undefined);
@@ -333,7 +333,7 @@ export default function NewReportPage() {
                 <div className="flex flex-col gap-10">
                   {/* Vehicle Details Section */}
                   <div className="space-y-6">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1">
                       <div className="flex items-center gap-3">
                         <Car className="h-6 w-6 text-muted-foreground" />
                         <h3 className="text-xl font-semibold">Fordonsinformation</h3>
@@ -354,7 +354,7 @@ export default function NewReportPage() {
                             <RegistrationInput
                               value={field.value}
                               onChange={field.onChange}
-                              placeholder="Skriv en registreringsskylt och tryck på Enter (t.ex. ABC123)"
+                              placeholder="Skriv reg nr och tryck Enter..."
                               className={cn(fieldState.invalid && 'border-destructive focus-within:ring-destructive')}
                             />
                           </FormControl>

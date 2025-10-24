@@ -2,42 +2,42 @@
 
 import { createClient } from '@/lib/supabase/server';
 
-export interface DashboardKPIs {
-  totalReports: number;
-  avgDays: number;
-  maxDays: number;
-  minDays: number;
-  activeCategories: number;
+export interface InstrumentpanelNyckeltal {
+  totaltAntalRapporter: number;
+  genomsnittDagar: number;
+  maxDagar: number;
+  minDagar: number;
+  aktivaKategorier: number;
 }
 
-export interface CategoryData {
-  category_id: string | null;
-  category_name: string;
+export interface KategoriData {
+  kategori_id: string | null;
+  kategori_namn: string;
   color: string;
-  report_count: number;
+  rapport_antal: number;
 }
 
-export interface TechnicianData {
-  technician_name: string;
-  report_count: number;
-  avg_days: number;
+export interface TeknikerData {
+  tekniker_namn: string;
+  rapport_antal: number;
+  genomsnitt_dagar: number;
   color?: string;
 }
 
-export interface MonthlyTrendData {
-  month: string;
-  report_count: number;
-  avg_days: number;
+export interface MånadstrendData {
+  månad: string;
+  rapport_antal: number;
+  genomsnitt_dagar: number;
 }
 
-export interface TopRegistrationData {
-  registration_number: string;
-  count: number;
-  categories: string[];
-  categoryColors: Record<string, string>; // Map of category name to color
+export interface ToppRegistreringData {
+  registreringsnummer: string;
+  antal: number;
+  kategorier: string[];
+  kategoriFärger: Record<string, string>; // Map of category name to color
 }
 
-export async function getDashboardKPIs(): Promise<DashboardKPIs> {
+export async function hämtaInstrumentpanelNyckeltal(): Promise<InstrumentpanelNyckeltal> {
   const supabase = await createClient();
 
   // Get report statistics
@@ -54,31 +54,31 @@ export async function getDashboardKPIs(): Promise<DashboardKPIs> {
 
   if (categoriesError) throw new Error(categoriesError.message);
 
-  const totalReports = reportsData?.length || 0;
-  const avgDays =
-    totalReports > 0
+  const totaltAntalRapporter = reportsData?.length || 0;
+  const genomsnittDagar =
+    totaltAntalRapporter > 0
       ? reportsData.reduce((sum, r) => sum + (r.days_taken || 0), 0) /
-        totalReports
+        totaltAntalRapporter
       : 0;
-  const maxDays =
-    totalReports > 0
+  const maxDagar =
+    totaltAntalRapporter > 0
       ? Math.max(...reportsData.map((r) => r.days_taken || 0))
       : 0;
-  const minDays =
-    totalReports > 0
+  const minDagar =
+    totaltAntalRapporter > 0
       ? Math.min(...reportsData.map((r) => r.days_taken || 0))
       : 0;
 
   return {
-    totalReports,
-    avgDays: Math.round(avgDays * 10) / 10,
-    maxDays,
-    minDays,
-    activeCategories: categoriesCount || 0,
+    totaltAntalRapporter,
+    genomsnittDagar: Math.round(genomsnittDagar * 10) / 10,
+    maxDagar,
+    minDagar,
+    aktivaKategorier: categoriesCount || 0,
   };
 }
 
-export async function getCategoryBreakdown(): Promise<CategoryData[]> {
+export async function hämtaKategoriFördelning(): Promise<KategoriData[]> {
   const supabase = await createClient();
 
   const { data, error } = await supabase.rpc('get_category_breakdown');
@@ -98,42 +98,42 @@ export async function getCategoryBreakdown(): Promise<CategoryData[]> {
     if (reportsError) throw new Error(reportsError.message);
 
     // Count reports per category
-    const categoryMap = new Map<string, CategoryData>();
+    const categoryMap = new Map<string, KategoriData>();
 
     categoriesData.forEach((cat) => {
       categoryMap.set(cat.id, {
-        category_id: cat.id,
-        category_name: cat.name,
+        kategori_id: cat.id,
+        kategori_namn: cat.name,
         color: cat.color || '#8884d8',
-        report_count: 0,
+        rapport_antal: 0,
       });
     });
 
     // Add uncategorized
     categoryMap.set('null', {
-      category_id: null,
-      category_name: 'Uncategorized',
+      kategori_id: null,
+      kategori_namn: 'Okategoriserad',
       color: '#94a3b8',
-      report_count: 0,
+      rapport_antal: 0,
     });
 
     reportsData.forEach((report) => {
       const categoryId = report.category_id || 'null';
       const existing = categoryMap.get(categoryId);
       if (existing) {
-        existing.report_count++;
+        existing.rapport_antal++;
       }
     });
 
     return Array.from(categoryMap.values())
-      .filter((cat) => cat.report_count > 0)
-      .sort((a, b) => b.report_count - a.report_count);
+      .filter((cat) => cat.rapport_antal > 0)
+      .sort((a, b) => b.rapport_antal - a.rapport_antal);
   }
 
   return data || [];
 }
 
-export async function getTechnicianPerformance(): Promise<TechnicianData[]> {
+export async function hämtaTeknikerPrestation(): Promise<TeknikerData[]> {
   const supabase = await createClient();
 
   // Fetch technicians with colors
@@ -174,15 +174,15 @@ export async function getTechnicianPerformance(): Promise<TechnicianData[]> {
 
   return Array.from(techMap.entries())
     .map(([name, stats]) => ({
-      technician_name: name,
-      report_count: stats.count,
-      avg_days: Math.round((stats.totalDays / stats.count) * 10) / 10,
+      tekniker_namn: name,
+      rapport_antal: stats.count,
+      genomsnitt_dagar: Math.round((stats.totalDays / stats.count) * 10) / 10,
       color: techColorMap.get(name) || '#6366f1',
     }))
-    .sort((a, b) => b.report_count - a.report_count);
+    .sort((a, b) => b.rapport_antal - a.rapport_antal);
 }
 
-export async function getMonthlyTrends(): Promise<MonthlyTrendData[]> {
+export async function hämtaMånadstrender(): Promise<MånadstrendData[]> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -221,19 +221,19 @@ export async function getMonthlyTrends(): Promise<MonthlyTrendData[]> {
 
   return Array.from(monthMap.values())
     .map((stats) => ({
-      month: stats.month,
-      report_count: stats.count,
-      avg_days: Math.round((stats.totalDays / stats.count) * 10) / 10,
+      månad: stats.month,
+      rapport_antal: stats.count,
+      genomsnitt_dagar: Math.round((stats.totalDays / stats.count) * 10) / 10,
     }))
     .sort((a, b) => {
       // Sort chronologically
-      const dateA = new Date(a.month);
-      const dateB = new Date(b.month);
+      const dateA = new Date(a.månad);
+      const dateB = new Date(b.månad);
       return dateA.getTime() - dateB.getTime();
     });
 }
 
-export async function getTopRegistrations(): Promise<TopRegistrationData[]> {
+export async function hämtaToppRegistreringar(): Promise<ToppRegistreringData[]> {
   const supabase = await createClient();
 
   // First, fetch all categories with colors
@@ -248,7 +248,7 @@ export async function getTopRegistrations(): Promise<TopRegistrationData[]> {
   categoriesData?.forEach((cat) => {
     categoryColorMap[cat.name] = cat.color || '#8884d8';
   });
-  categoryColorMap['Uncategorized'] = '#94a3b8';
+  categoryColorMap['Okategoriserad'] = '#94a3b8';
 
   const { data, error } = await supabase
     .from('reports')
@@ -262,7 +262,7 @@ export async function getTopRegistrations(): Promise<TopRegistrationData[]> {
   data?.forEach((report) => {
     const regNumbers = report.registration_numbers || [];
     const categoryName =
-      (report.categories as unknown as { name: string } | null)?.name || 'Uncategorized';
+      (report.categories as unknown as { name: string } | null)?.name || 'Okategoriserad';
 
     regNumbers.forEach((regNum: string) => {
       const existing = regMap.get(regNum);
@@ -280,11 +280,11 @@ export async function getTopRegistrations(): Promise<TopRegistrationData[]> {
 
   return Array.from(regMap.entries())
     .map(([regNum, stats]) => ({
-      registration_number: regNum,
-      count: stats.count,
-      categories: Array.from(stats.categories),
-      categoryColors: categoryColorMap,
+      registreringsnummer: regNum,
+      antal: stats.count,
+      kategorier: Array.from(stats.categories),
+      kategoriFärger: categoryColorMap,
     }))
-    .sort((a, b) => b.count - a.count)
+    .sort((a, b) => b.antal - a.antal)
     .slice(0, 10); // Top 10
 }

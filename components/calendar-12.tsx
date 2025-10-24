@@ -2,77 +2,36 @@
 
 import * as React from "react"
 import { type DateRange } from "react-day-picker"
-import { enUS, es } from "react-day-picker/locale"
+import { sv } from "date-fns/locale"
 
+import { useMobile } from "@/hooks/use-mobile"
 import { Calendar } from "@/components/ui/calendar"
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Card, CardContent } from "@/components/ui/card"
 
-const localizedStrings = {
-  en: {
-    title: "Book an appointment",
-    description: "Select the dates for your appointment",
-  },
-  es: {
-    title: "Reserva una cita",
-    description: "Selecciona las fechas para tu cita",
-  },
-} as const
+interface Calendar12Props {
+  dateRange: DateRange | undefined
+  onDateRangeChange: (dateRange: DateRange | undefined) => void
+  className?: string
+}
 
-export function Calendar12() {
-  const [locale, setLocale] =
-    React.useState<keyof typeof localizedStrings>("es")
-  const [dateRange, setDateRange] = React.useState<DateRange | undefined>({
-    from: new Date(2025, 8, 9),
-    to: new Date(2025, 8, 17),
-  })
+export function Calendar12({
+  dateRange,
+  onDateRangeChange,
+  className,
+}: Calendar12Props) {
+  const isMobile = useMobile()
 
   return (
-    <Card>
-      <CardHeader className="border-b">
-        <CardTitle>{localizedStrings[locale].title}</CardTitle>
-        <CardDescription>
-          {localizedStrings[locale].description}
-        </CardDescription>
-        <CardAction>
-          <Select
-            value={locale}
-            onValueChange={(value) =>
-              setLocale(value as keyof typeof localizedStrings)
-            }
-          >
-            <SelectTrigger className="w-[100px]">
-              <SelectValue placeholder="Language" />
-            </SelectTrigger>
-            <SelectContent align="end">
-              <SelectItem value="es">Español</SelectItem>
-              <SelectItem value="en">English</SelectItem>
-            </SelectContent>
-          </Select>
-        </CardAction>
-      </CardHeader>
-      <CardContent>
+    <Card className={className}>
+      <CardContent className="flex justify-center p-0">
         <Calendar
           mode="range"
           selected={dateRange}
-          onSelect={setDateRange}
+          onSelect={onDateRangeChange}
           defaultMonth={dateRange?.from}
-          numberOfMonths={2}
-          locale={locale === "es" ? es : enUS}
-          className="bg-transparent p-0"
+          numberOfMonths={isMobile ? 1 : 2}
+          locale={sv}
+          className="bg-transparent p-3"
           buttonVariant="outline"
         />
       </CardContent>
