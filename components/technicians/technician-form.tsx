@@ -16,30 +16,28 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tables } from "@/types/database";
 
-const categorySchema = z.object({
+const technicianSchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string(),
-  color: z.string(),
 });
 
-interface CategoryFormProps {
-  category?: Tables<'categories'>;
-  onSave: (values: z.infer<typeof categorySchema>) => void;
+interface TechnicianFormProps {
+  technician?: Tables<'technicians'>;
+  onSave: (values: z.infer<typeof technicianSchema>) => void;
   children: React.ReactNode;
 }
 
-export function CategoryForm({ category, onSave, children }: CategoryFormProps) {
+export function TechnicianForm({ technician, onSave, children }: TechnicianFormProps) {
   const form = useForm({
     defaultValues: {
-      name: category?.name ?? "",
-      description: category?.description ?? "",
-      color: category?.color ?? "",
+      name: technician?.name ?? "",
+      description: technician?.description ?? "",
     },
-    onSubmit: async ({ value }: { value: z.infer<typeof categorySchema> }) => {
+    onSubmit: async ({ value }: { value: z.infer<typeof technicianSchema> }) => {
       onSave(value);
     },
     validators: {
-      onChange: categorySchema,
+      onChange: technicianSchema,
     },
   });
 
@@ -48,11 +46,11 @@ export function CategoryForm({ category, onSave, children }: CategoryFormProps) 
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{category ? "Edit Category" : "New Category"}</DialogTitle>
+          <DialogTitle>{technician ? "Edit Technician" : "New Technician"}</DialogTitle>
           <DialogDescription>
-            {category
-              ? "Edit the category details."
-              : "Create a new category."}
+            {technician
+              ? "Edit the technician details."
+              : "Create a new technician."}
           </DialogDescription>
         </DialogHeader>
         <form
@@ -96,23 +94,6 @@ export function CategoryForm({ category, onSave, children }: CategoryFormProps) 
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                />
-              </div>
-            )}
-          </form.Field>
-          <form.Field
-            name="color"
-          >
-            {(field) => (
-              <div>
-                <label htmlFor={field.name}>Color</label>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  type="color"
                 />
               </div>
             )}

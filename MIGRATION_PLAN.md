@@ -176,28 +176,28 @@ All tables have RLS (Row Level Security) enabled.
   - [ ] `updateCategory` - Update existing category (with updateTag)
   - [ ] `deleteCategory` - Delete category (with updateTag)
 - [x] Migrate responsive table/card layout from Vite version
-- [ ] Add create/edit dialog with shadcn/ui form components
-- [ ] Add delete confirmation dialog (AlertDialog)
-- [ ] Implement permission checks (can only edit own categories)
-- [ ] Add loading states with Suspense boundaries
-- [ ] Add error states with error.tsx
-- [ ] Use `cacheTag('categories')` for data caching
-- [ ] Use `updateTag('categories')` after mutations for immediate updates
+- [x] Add create/edit dialog with shadcn/ui form components
+- [x] Add delete confirmation dialog (AlertDialog)
+- [x] Implement permission checks (can only edit own categories)
+- [x] Add loading states with Suspense boundaries
+- [x] Add error states with error.tsx
+- [x] Use `cacheTag('categories')` for data caching
+- [x] Use `updateTag('categories')` after mutations for immediate updates
 
 ### 5.2 Technicians Page (`/tekniker`)
-- [ ] Create `app/(authenticated)/tekniker/page.tsx`
-- [ ] Create Server Actions in `app/(authenticated)/tekniker/actions.ts`:
-  - [ ] `getTechnicians` - Fetch all technicians (with cacheTag)
-  - [ ] `createTechnician` - Create new technician (with updateTag)
-  - [ ] `updateTechnician` - Update existing technician (with updateTag)
-  - [ ] `deleteTechnician` - Delete technician (with updateTag)
-- [ ] Migrate responsive table/card layout from Vite version
-- [ ] Add create/edit dialog with shadcn/ui components
-- [ ] Add delete confirmation with AlertDialog
+- [x] Create `app/(authenticated)/tekniker/page.tsx`
+- [x] Create Server Actions in `app/(authenticated)/tekniker/actions.ts`:
+  - [x] `getTechnicians` - Fetch all technicians (with cacheTag)
+  - [x] `createTechnician` - Create new technician (with updateTag)
+  - [x] `updateTechnician` - Update existing technician (with updateTag)
+  - [x] `deleteTechnician` - Delete technician (with updateTag)
+- [x] Migrate responsive table/card layout from Vite version
+- [x] Add create/edit dialog with shadcn/ui components
+- [x] Add delete confirmation with AlertDialog
 - [ ] Implement permission checks (can only edit own technicians)
 - [ ] Add search/filter functionality
-- [ ] Use `cacheTag('technicians')` for data caching
-- [ ] Use `updateTag('technicians')` after mutations
+- [x] Use `cacheTag('technicians')` for data caching
+- [x] Use `updateTag('technicians')` after mutations
 
 ### 5.3 Reporters Page (`/reporter`)
 - [ ] Create `app/(authenticated)/reporter/page.tsx`

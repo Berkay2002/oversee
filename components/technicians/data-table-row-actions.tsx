@@ -13,8 +13,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Tables } from "@/types/database"
-import { CategoryForm } from "./category-form"
-import { deleteCategory, updateCategory } from "@/app/(authenticated)/kategorier/actions"
+import { TechnicianForm } from "./technician-form"
+import { deleteTechnician, updateTechnician } from "@/app/(authenticated)/tekniker/actions"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 
 interface DataTableRowActionsProps<TData> {
@@ -24,7 +24,7 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const category = row.original as Tables<'categories'>
+  const technician = row.original as Tables<'technicians'>
 
   return (
     <DropdownMenu>
@@ -39,14 +39,14 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <CategoryForm
-          category={category}
-          onSave={(values) => updateCategory(category.id, values)}
+        <TechnicianForm
+          technician={technician}
+          onSave={(values) => updateTechnician(technician.id, values)}
         >
           <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
             Edit
           </DropdownMenuItem>
-        </CategoryForm>
+        </TechnicianForm>
         <DropdownMenuSeparator />
         <AlertDialog>
           <AlertDialogTrigger asChild>
@@ -60,12 +60,12 @@ export function DataTableRowActions<TData>({
               <AlertDialogTitle>Are you sure?</AlertDialogTitle>
               <AlertDialogDescription>
                 This action cannot be undone. This will permanently delete the
-                category.
+                technician.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={() => deleteCategory(category.id)}>
+              <AlertDialogAction onClick={() => deleteTechnician(technician.id)}>
                 Continue
               </AlertDialogAction>
             </AlertDialogFooter>

@@ -6,8 +6,8 @@ import { X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { DataTableViewOptions } from "./data-table-view-options"
-import { CategoryForm } from "./category-form"
-import { createCategory } from "@/app/(authenticated)/kategorier/actions"
+import { TechnicianForm } from "./technician-form"
+import { createTechnician } from "@/app/(authenticated)/tekniker/actions"
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
@@ -42,9 +42,9 @@ export function DataTableToolbar<TData>({
       </div>
       <div className="flex items-center gap-2">
         <DataTableViewOptions table={table} />
-        <CategoryForm onSave={createCategory}>
-          <Button size="sm">New Category</Button>
-        </CategoryForm>
+        <TechnicianForm onSave={createTechnician}>
+          <Button size="sm">New Technician</Button>
+        </TechnicianForm>
       </div>
     </div>
   )

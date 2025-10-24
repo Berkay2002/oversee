@@ -1,24 +1,14 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { columns } from "@/components/technicians/columns";
+import { DataTable } from "@/components/technicians/data-table";
+import { getTechnicians } from "./actions";
 
-export default function TeknikerPage() {
+export default async function TechniciansPage() {
+  const technicians = await getTechnicians();
+
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Tekniker</h1>
-        <p className="text-muted-foreground">
-          Manage technician profiles
-        </p>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Technicians</CardTitle>
-          <CardDescription>Create and manage technician profiles</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">Technician management coming soon...</p>
-        </CardContent>
-      </Card>
+    <div className="container mx-auto py-10">
+      <h1 className="text-2xl font-bold mb-4">Technicians</h1>
+      <DataTable columns={columns} data={technicians} />
     </div>
-  )
+  );
 }
