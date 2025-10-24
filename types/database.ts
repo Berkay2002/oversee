@@ -24,6 +24,7 @@ export interface Technician {
   name: string
   description: string | null
   is_active: boolean
+  color: string | null
   created_by_user_id: string | null
   created_at: string
   updated_at: string
@@ -89,6 +90,7 @@ export interface CreateTechnicianData {
   name: string
   description?: string | null
   is_active?: boolean
+  color?: string | null
   created_by_user_id?: string | null
 }
 

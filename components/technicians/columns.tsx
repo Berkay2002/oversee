@@ -67,13 +67,13 @@ export const columns: ColumnDef<Tables<'technicians'>>[] = [
       return (
         <div className="flex items-center gap-2">
           <div
-            className="w-4 h-4 rounded-full"
+            className="h-6 w-6 rounded-md border border-border shadow-sm"
             style={{ backgroundColor: color }}
           />
-          {color}
         </div>
       );
     },
+    enableSorting: false,
   },
   {
     id: "actions",

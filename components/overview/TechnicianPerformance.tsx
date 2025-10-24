@@ -7,6 +7,7 @@ import {
   XAxis,
   YAxis,
   LabelList,
+  Cell,
 } from 'recharts';
 import {
   Card,
@@ -20,8 +21,6 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
 } from '@/components/ui/chart';
 import { TechnicianData } from '@/app/(authenticated)/oversikt/actions';
 
@@ -29,16 +28,7 @@ export interface TechnicianPerformanceProps {
   data: TechnicianData[];
 }
 
-const chartConfig = {
-  report_count: {
-    label: 'Reports',
-    color: 'hsl(var(--chart-1))',
-  },
-  avg_days: {
-    label: 'Avg Days',
-    color: 'hsl(var(--chart-2))',
-  },
-} satisfies ChartConfig;
+const chartConfig = {} satisfies ChartConfig;
 
 export function TechnicianPerformance({ data }: TechnicianPerformanceProps) {
   if (!data || data.length === 0) {
@@ -58,25 +48,6 @@ export function TechnicianPerformance({ data }: TechnicianPerformanceProps) {
   // Sort by report count and take top 10
   const topTechnicians = data.slice(0, 10);
 
-  // Build dynamic chart config with technician colors
-  const dynamicChartConfig: ChartConfig = {
-    report_count: {
-      label: 'Reports',
-      color: 'hsl(var(--chart-1))',
-    },
-    avg_days: {
-      label: 'Avg Days',
-      color: 'hsl(var(--chart-2))',
-    },
-  };
-
-  // Add each technician with their color
-  topTechnicians.forEach((tech, index) => {
-    dynamicChartConfig[`tech_${index}`] = {
-      label: tech.technician_name,
-      color: tech.color || '#6366f1',
-    };
-  });
 
   return (
     <Card className="flex flex-col">
@@ -87,7 +58,7 @@ export function TechnicianPerformance({ data }: TechnicianPerformanceProps) {
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1">
-        <ChartContainer config={dynamicChartConfig} className="h-[400px] w-full">
+        <ChartContainer config={chartConfig} className="h-[400px] w-full">
           <BarChart
             data={topTechnicians}
             layout="vertical"
@@ -118,19 +89,28 @@ export function TechnicianPerformance({ data }: TechnicianPerformanceProps) {
             <ChartTooltip
               content={
                 <ChartTooltipContent
-                  formatter={(value, name) => (
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">{chartConfig[name as keyof typeof chartConfig]?.label || name}:</span>
-                      <span className="font-bold">{value}</span>
+                  formatter={(value, name, entry) => (
+                    <div className="flex flex-col gap-1">
+                      <div className="font-bold">{entry.payload.technician_name}</div>
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="h-3 w-3 rounded-full"
+                          style={{ backgroundColor: entry.payload.color }}
+                        />
+                        <span className="font-medium">Reports:</span>
+                        <span className="font-bold">{entry.payload.report_count}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">Avg Days:</span>
+                        <span className="font-bold">{entry.payload.avg_days.toFixed(1)}</span>
+                      </div>
                     </div>
                   )}
                 />
               }
             />
-            <ChartLegend content={<ChartLegendContent />} />
             <Bar
               dataKey="report_count"
-              fill="var(--color-report_count)"
               radius={[0, 4, 4, 0]}
               maxBarSize={30}
               className="transition-all hover:opacity-80"
@@ -140,20 +120,9 @@ export function TechnicianPerformance({ data }: TechnicianPerformanceProps) {
                 position="right"
                 className="fill-foreground text-xs font-semibold"
               />
-            </Bar>
-            <Bar
-              dataKey="avg_days"
-              fill="var(--color-avg_days)"
-              radius={[0, 4, 4, 0]}
-              maxBarSize={30}
-              className="transition-all hover:opacity-80"
-            >
-              <LabelList
-                dataKey="avg_days"
-                position="right"
-                className="fill-foreground text-xs font-semibold"
-                formatter={(value: number) => value.toFixed(1)}
-              />
+              {topTechnicians.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.color || '#6366f1'} />
+              ))}
             </Bar>
           </BarChart>
         </ChartContainer>
