@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Tables } from "@/types/database";
 
 const userSchema = z.object({
-  email: z.string().email("Invalid email address"),
+  email: z.string().email("Ogiltig e-postadress"),
 });
 
 interface UserFormProps {
@@ -43,9 +43,9 @@ export function UserForm({ onSave, children }: UserFormProps) {
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Invite User</DialogTitle>
+          <DialogTitle>Bjud in användare</DialogTitle>
           <DialogDescription>
-            Enter the email of the user you want to invite.
+            Ange e-postadressen till den användare du vill bjuda in.
           </DialogDescription>
         </DialogHeader>
         <form
@@ -61,7 +61,7 @@ export function UserForm({ onSave, children }: UserFormProps) {
           >
             {(field) => (
               <div>
-                <label htmlFor={field.name}>Email</label>
+                <label htmlFor={field.name}>E-post</label>
                 <Input
                   id={field.name}
                   name={field.name}
@@ -79,7 +79,7 @@ export function UserForm({ onSave, children }: UserFormProps) {
             )}
           </form.Field>
           <DialogFooter>
-            <Button type="submit">Send Invitation</Button>
+            <Button type="submit">Skicka inbjudan</Button>
           </DialogFooter>
         </form>
       </DialogContent>

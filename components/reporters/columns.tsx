@@ -16,7 +16,7 @@ export const columns: ColumnDef<Tables<'reporters'>>[] = [
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
+        aria-label="Välj alla"
         className="translate-y-[2px]"
       />
     ),
@@ -24,7 +24,7 @@ export const columns: ColumnDef<Tables<'reporters'>>[] = [
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
+        aria-label="Välj rad"
         className="translate-y-[2px]"
       />
     ),
@@ -34,7 +34,7 @@ export const columns: ColumnDef<Tables<'reporters'>>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
+      <DataTableColumnHeader column={column} title="Namn" />
     ),
     cell: ({ row }) => {
       return (
@@ -47,7 +47,7 @@ export const columns: ColumnDef<Tables<'reporters'>>[] = [
   {
     accessorKey: "description",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Description" />
+      <DataTableColumnHeader column={column} title="Beskrivning" />
     ),
     cell: ({ row }) => {
       return (

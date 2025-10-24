@@ -85,10 +85,10 @@ export function DataTableToolbar<TData>({
         </Select>
         <Select onValueChange={(value) => handleFilterChange('category', value)} defaultValue={searchParams.get('category') || ''}>
           <SelectTrigger className="h-8 w-[150px]">
-            <SelectValue placeholder="Filter by category" />
+            <SelectValue placeholder="Filtrera på kategori" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Categories</SelectItem>
+            <SelectItem value="all">Alla kategorier</SelectItem>
             {categories.map((category) => (
               <SelectItem key={category.id} value={category.id}>
                 {category.name}
@@ -102,7 +102,7 @@ export function DataTableToolbar<TData>({
             size="sm"
             onClick={() => router.replace(pathname)}
           >
-            Reset
+            Återställ
             <X />
           </Button>
         )}

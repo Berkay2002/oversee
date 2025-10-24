@@ -17,7 +17,7 @@ export const columns: ColumnDef<Tables<'categories'>>[] = [
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
+        aria-label="Välj alla"
         className="translate-y-[2px]"
       />
     ),
@@ -25,7 +25,7 @@ export const columns: ColumnDef<Tables<'categories'>>[] = [
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
+        aria-label="Välj rad"
         className="translate-y-[2px]"
       />
     ),
@@ -35,7 +35,7 @@ export const columns: ColumnDef<Tables<'categories'>>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
+      <DataTableColumnHeader column={column} title="Namn" />
     ),
     cell: ({ row }) => {
       return (
@@ -48,7 +48,7 @@ export const columns: ColumnDef<Tables<'categories'>>[] = [
   {
     accessorKey: "description",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Description" />
+      <DataTableColumnHeader column={column} title="Beskrivning" />
     ),
     cell: ({ row }) => {
       return (
@@ -60,7 +60,7 @@ export const columns: ColumnDef<Tables<'categories'>>[] = [
   },
   {
     accessorKey: "color",
-    header: "Color",
+    header: "Färg",
     cell: ({ row }) => {
       const color = row.getValue("color") as string;
       return (

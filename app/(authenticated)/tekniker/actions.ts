@@ -8,7 +8,6 @@ import { z } from "zod";
 const technicianSchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string().optional(),
-  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Invalid hex color").default("#6366f1"),
 });
 
 export const getTechnicians = async ({

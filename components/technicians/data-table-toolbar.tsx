@@ -37,7 +37,7 @@ export function DataTableToolbar<TData>({
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center gap-2">
         <Input
-          placeholder="Filter by name..."
+          placeholder="Filtrera på namn..."
           defaultValue={searchParams.get("search")?.toString()}
           onChange={(event) => handleSearch(event.target.value)}
           className="h-8 w-[150px] lg:w-[250px]"
@@ -48,7 +48,7 @@ export function DataTableToolbar<TData>({
             size="sm"
             onClick={() => table.resetColumnFilters()}
           >
-            Reset
+            Återställ
             <X />
           </Button>
         )}
@@ -56,7 +56,7 @@ export function DataTableToolbar<TData>({
       <div className="flex items-center gap-2">
         <DataTableViewOptions table={table} />
         <TechnicianForm onSave={createTechnician}>
-          <Button size="sm">New Technician</Button>
+          <Button size="sm">Ny tekniker</Button>
         </TechnicianForm>
       </div>
     </div>

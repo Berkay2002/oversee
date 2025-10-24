@@ -35,7 +35,7 @@ export function DataTableRowActions<TData>({
           className="data-[state=open]:bg-muted size-8"
         >
           <MoreHorizontal />
-          <span className="sr-only">Open menu</span>
+          <span className="sr-only">Öppna meny</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
@@ -44,29 +44,29 @@ export function DataTableRowActions<TData>({
           onSave={(values) => updateTechnician(technician.id, values)}
         >
           <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-            Edit
+            Redigera
           </DropdownMenuItem>
         </TechnicianForm>
         <DropdownMenuSeparator />
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <DropdownMenuItem variant="destructive" onSelect={(e) => e.preventDefault()}>
-              Delete
+              Ta bort
               <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
             </DropdownMenuItem>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogTitle>Är du säker?</AlertDialogTitle>
               <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete the
-                technician.
+                Denna åtgärd kan inte ångras. Detta kommer att permanent ta bort
+                teknikern.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel>Avbryt</AlertDialogCancel>
               <AlertDialogAction onClick={() => deleteTechnician(technician.id)}>
-                Continue
+                Fortsätt
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

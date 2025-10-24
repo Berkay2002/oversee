@@ -12,7 +12,7 @@ export default async function CategoriesPage({
 
   return (
     <div className="container mx-auto py-10">
-      <h1 className="text-2xl font-bold mb-4">Categories</h1>
+      <h1 className="text-2xl font-bold mb-4">Kategorier</h1>
       <DataTable columns={columns} data={categories} />
     </div>
   );

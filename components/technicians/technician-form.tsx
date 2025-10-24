@@ -17,9 +17,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tables } from "@/types/database";
 
 const technicianSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  name: z.string().min(1, "Namn är obligatoriskt"),
   description: z.string(),
-  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Invalid hex color"),
+  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Ogiltig färgkod"),
 });
 
 interface TechnicianFormProps {
@@ -48,11 +48,11 @@ export function TechnicianForm({ technician, onSave, children }: TechnicianFormP
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{technician ? "Edit Technician" : "New Technician"}</DialogTitle>
+          <DialogTitle>{technician ? "Redigera tekniker" : "Ny tekniker"}</DialogTitle>
           <DialogDescription>
             {technician
-              ? "Edit the technician details."
-              : "Create a new technician."}
+              ? "Redigera teknikerinformation."
+              : "Skapa en ny tekniker."}
           </DialogDescription>
         </DialogHeader>
         <form
@@ -68,7 +68,7 @@ export function TechnicianForm({ technician, onSave, children }: TechnicianFormP
           >
             {(field) => (
               <div>
-                <label htmlFor={field.name}>Name</label>
+                <label htmlFor={field.name}>Namn</label>
                 <Input
                   id={field.name}
                   name={field.name}
@@ -85,49 +85,11 @@ export function TechnicianForm({ technician, onSave, children }: TechnicianFormP
             )}
           </form.Field>
           <form.Field
-            name="color"
-          >
-            {(field) => (
-              <div>
-                <label htmlFor={field.name}>Color</label>
-                <div className="flex items-center gap-3">
-                  <Input
-                    id={field.name}
-                    name={field.name}
-                    type="color"
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    className="w-20 h-10 cursor-pointer"
-                  />
-                  <Input
-                    type="text"
-                    value={field.state.value}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      if (/^#[0-9A-Fa-f]{0,6}$/.test(value)) {
-                        field.handleChange(value);
-                      }
-                    }}
-                    onBlur={field.handleBlur}
-                    placeholder="#6366f1"
-                    className="font-mono flex-1"
-                  />
-                </div>
-                {field.state.meta.errors && (
-                  <p className="text-red-500 text-sm">
-                    {field.state.meta.errors.join(", ")}
-                  </p>
-                )}
-              </div>
-            )}
-          </form.Field>
-          <form.Field
             name="description"
           >
             {(field) => (
               <div>
-                <label htmlFor={field.name}>Description</label>
+                <label htmlFor={field.name}>Beskrivning</label>
                 <Textarea
                   id={field.name}
                   name={field.name}
@@ -138,8 +100,41 @@ export function TechnicianForm({ technician, onSave, children }: TechnicianFormP
               </div>
             )}
           </form.Field>
+          <form.Field
+            name="color"
+          >
+            {(field) => (
+              <div>
+                <label htmlFor={field.name}>Färg</label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    id={field.name}
+                    type="color"
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    className="w-12 h-10 p-1"
+                  />
+                  <Input
+                    id={`${field.name}-text`}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    className="flex-1"
+                  />
+                </div>
+                {field.state.meta.errors && (
+                  <p className="text-red-500 text-sm">
+                    {field.state.meta.errors.join(", ")}
+                  </p>
+                )}
+              </div>
+            )}
+          </form.Field>
           <DialogFooter>
-            <Button type="submit">Save</Button>
+            <Button type="submit">Spara</Button>
           </DialogFooter>
         </form>
       </DialogContent>

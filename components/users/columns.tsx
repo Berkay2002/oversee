@@ -17,7 +17,7 @@ export const columns: ColumnDef<Tables<'profiles'>>[] = [
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
+        aria-label="Välj alla"
         className="translate-y-[2px]"
       />
     ),
@@ -25,7 +25,7 @@ export const columns: ColumnDef<Tables<'profiles'>>[] = [
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
+        aria-label="Välj rad"
         className="translate-y-[2px]"
       />
     ),
@@ -35,7 +35,7 @@ export const columns: ColumnDef<Tables<'profiles'>>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
+      <DataTableColumnHeader column={column} title="Namn" />
     ),
     cell: ({ row }) => {
       return (
@@ -48,7 +48,7 @@ export const columns: ColumnDef<Tables<'profiles'>>[] = [
   {
     accessorKey: "role",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Role" />
+      <DataTableColumnHeader column={column} title="Roll" />
     ),
     cell: ({ row }) => {
       const role = row.getValue("role") as string;
@@ -65,11 +65,11 @@ export const columns: ColumnDef<Tables<'profiles'>>[] = [
   {
     accessorKey: "created_at",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Joined Date" />
+      <DataTableColumnHeader column={column} title="Gick med datum" />
     ),
     cell: ({ row }) => {
       const date = new Date(row.getValue("created_at"));
-      const formattedDate = date.toLocaleDateString("en-US", {
+      const formattedDate = date.toLocaleDateString("sv-SE", {
         year: 'numeric', month: 'long', day: 'numeric'
       });
       return (

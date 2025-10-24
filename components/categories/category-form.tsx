@@ -17,7 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tables } from "@/types/database";
 
 const categorySchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  name: z.string().min(1, "Namn är obligatoriskt"),
   description: z.string(),
   color: z.string(),
 });
@@ -48,11 +48,11 @@ export function CategoryForm({ category, onSave, children }: CategoryFormProps) 
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{category ? "Edit Category" : "New Category"}</DialogTitle>
+          <DialogTitle>{category ? "Redigera kategori" : "Ny kategori"}</DialogTitle>
           <DialogDescription>
             {category
-              ? "Edit the category details."
-              : "Create a new category."}
+              ? "Redigera kategoriinformation."
+              : "Skapa en ny kategori."}
           </DialogDescription>
         </DialogHeader>
         <form
@@ -68,7 +68,7 @@ export function CategoryForm({ category, onSave, children }: CategoryFormProps) 
           >
             {(field) => (
               <div>
-                <label htmlFor={field.name}>Name</label>
+                <label htmlFor={field.name}>Namn</label>
                 <Input
                   id={field.name}
                   name={field.name}
@@ -89,7 +89,7 @@ export function CategoryForm({ category, onSave, children }: CategoryFormProps) 
           >
             {(field) => (
               <div>
-                <label htmlFor={field.name}>Description</label>
+                <label htmlFor={field.name}>Beskrivning</label>
                 <Textarea
                   id={field.name}
                   name={field.name}
@@ -105,7 +105,7 @@ export function CategoryForm({ category, onSave, children }: CategoryFormProps) 
           >
             {(field) => (
               <div>
-                <label htmlFor={field.name}>Color</label>
+                <label htmlFor={field.name}>Färg</label>
                 <Input
                   id={field.name}
                   name={field.name}
@@ -118,7 +118,7 @@ export function CategoryForm({ category, onSave, children }: CategoryFormProps) 
             )}
           </form.Field>
           <DialogFooter>
-            <Button type="submit">Save</Button>
+            <Button type="submit">Spara</Button>
           </DialogFooter>
         </form>
       </DialogContent>

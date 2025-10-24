@@ -34,7 +34,7 @@ export function DataTableRowActions<TData>({
           className="data-[state=open]:bg-muted size-8"
         >
           <MoreHorizontal />
-          <span className="sr-only">Open menu</span>
+          <span className="sr-only">Öppna meny</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
@@ -43,28 +43,28 @@ export function DataTableRowActions<TData>({
           onSave={(values) => updateUserRole({ userId: user.id, role: values.role })}
         >
           <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-            Edit Role
+            Redigera roll
           </DropdownMenuItem>
         </RoleForm>
         <DropdownMenuSeparator />
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <DropdownMenuItem variant="destructive" onSelect={(e) => e.preventDefault()}>
-              Delete User
+              Ta bort användare
             </DropdownMenuItem>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogTitle>Är du säker?</AlertDialogTitle>
               <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete the
-                user.
+                Denna åtgärd kan inte ångras. Detta kommer att permanent ta bort
+                användaren.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel>Avbryt</AlertDialogCancel>
               <AlertDialogAction onClick={() => console.log("delete user", user.id)}>
-                Continue
+                Fortsätt
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

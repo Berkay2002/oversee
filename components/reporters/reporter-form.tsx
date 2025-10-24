@@ -17,7 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tables } from "@/types/database";
 
 const reporterSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  name: z.string().min(1, "Namn är obligatoriskt"),
   description: z.string(),
 });
 
@@ -46,11 +46,11 @@ export function ReporterForm({ reporter, onSave, children }: ReporterFormProps) 
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{reporter ? "Edit Reporter" : "New Reporter"}</DialogTitle>
+          <DialogTitle>{reporter ? "Redigera rapportör" : "Ny rapportör"}</DialogTitle>
           <DialogDescription>
             {reporter
-              ? "Edit the reporter details."
-              : "Create a new reporter."}
+              ? "Redigera rapportörinformation."
+              : "Skapa en ny rapportör."}
           </DialogDescription>
         </DialogHeader>
         <form
@@ -66,7 +66,7 @@ export function ReporterForm({ reporter, onSave, children }: ReporterFormProps) 
           >
             {(field) => (
               <div>
-                <label htmlFor={field.name}>Name</label>
+                <label htmlFor={field.name}>Namn</label>
                 <Input
                   id={field.name}
                   name={field.name}
@@ -87,7 +87,7 @@ export function ReporterForm({ reporter, onSave, children }: ReporterFormProps) 
           >
             {(field) => (
               <div>
-                <label htmlFor={field.name}>Description</label>
+                <label htmlFor={field.name}>Beskrivning</label>
                 <Textarea
                   id={field.name}
                   name={field.name}
@@ -99,7 +99,7 @@ export function ReporterForm({ reporter, onSave, children }: ReporterFormProps) 
             )}
           </form.Field>
           <DialogFooter>
-            <Button type="submit">Save</Button>
+            <Button type="submit">Spara</Button>
           </DialogFooter>
         </form>
       </DialogContent>

@@ -49,9 +49,9 @@ export function RoleForm({ user, onSave, children }: RoleFormProps) {
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit Role for {user.name}</DialogTitle>
+          <DialogTitle>Redigera roll för {user.name}</DialogTitle>
           <DialogDescription>
-            Select the new role for the user.
+            Välj den nya rollen för användaren.
           </DialogDescription>
         </DialogHeader>
         <form
@@ -67,24 +67,24 @@ export function RoleForm({ user, onSave, children }: RoleFormProps) {
           >
             {(field) => (
               <div>
-                <label htmlFor={field.name}>Role</label>
+                <label htmlFor={field.name}>Roll</label>
                 <Select
                   onValueChange={(value) => field.handleChange(value as "admin" | "user")}
                   defaultValue={field.state.value}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a role" />
+                    <SelectValue placeholder="Välj en roll" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="admin">Admin</SelectItem>
-                    <SelectItem value="user">User</SelectItem>
+                    <SelectItem value="admin">Administratör</SelectItem>
+                    <SelectItem value="user">Användare</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             )}
           </form.Field>
           <DialogFooter>
-            <Button type="submit">Save Role</Button>
+            <Button type="submit">Spara roll</Button>
           </DialogFooter>
         </form>
       </DialogContent>

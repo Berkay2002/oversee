@@ -12,7 +12,7 @@ export default async function ReporterPage({
 
   return (
     <div className="container mx-auto py-10">
-      <h1 className="text-2xl font-bold mb-4">Reporters</h1>
+      <h1 className="text-2xl font-bold mb-4">Rapportörer</h1>
       <DataTable columns={columns} data={data} />
     </div>
   );
