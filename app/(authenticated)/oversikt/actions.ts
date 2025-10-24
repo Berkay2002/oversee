@@ -21,6 +21,7 @@ export interface TechnicianData {
   technician_name: string;
   report_count: number;
   avg_days: number;
+  color?: string;
 }
 
 export interface MonthlyTrendData {
@@ -33,6 +34,7 @@ export interface TopRegistrationData {
   registration_number: string;
   count: number;
   categories: string[];
+  categoryColors: Record<string, string>; // Map of category name to color
 }
 
 export async function getDashboardKPIs(): Promise<DashboardKPIs> {
@@ -134,6 +136,19 @@ export async function getCategoryBreakdown(): Promise<CategoryData[]> {
 export async function getTechnicianPerformance(): Promise<TechnicianData[]> {
   const supabase = await createClient();
 
+  // Fetch technicians with colors
+  const { data: techniciansData, error: techError } = await supabase
+    .from('technicians')
+    .select('name, color');
+
+  if (techError) throw new Error(techError.message);
+
+  // Create a map of technician names to colors
+  const techColorMap = new Map<string, string>();
+  techniciansData?.forEach((tech) => {
+    techColorMap.set(tech.name, tech.color || '#6366f1');
+  });
+
   const { data, error } = await supabase
     .from('reports')
     .select('technician_name, days_taken');
@@ -162,6 +177,7 @@ export async function getTechnicianPerformance(): Promise<TechnicianData[]> {
       technician_name: name,
       report_count: stats.count,
       avg_days: Math.round((stats.totalDays / stats.count) * 10) / 10,
+      color: techColorMap.get(name) || '#6366f1',
     }))
     .sort((a, b) => b.report_count - a.report_count);
 }
@@ -220,6 +236,20 @@ export async function getMonthlyTrends(): Promise<MonthlyTrendData[]> {
 export async function getTopRegistrations(): Promise<TopRegistrationData[]> {
   const supabase = await createClient();
 
+  // First, fetch all categories with colors
+  const { data: categoriesData, error: categoriesError } = await supabase
+    .from('categories')
+    .select('name, color');
+
+  if (categoriesError) throw new Error(categoriesError.message);
+
+  // Create a map of category names to colors
+  const categoryColorMap: Record<string, string> = {};
+  categoriesData?.forEach((cat) => {
+    categoryColorMap[cat.name] = cat.color || '#8884d8';
+  });
+  categoryColorMap['Uncategorized'] = '#94a3b8';
+
   const { data, error } = await supabase
     .from('reports')
     .select('registration_numbers, categories(name)');
@@ -253,6 +283,7 @@ export async function getTopRegistrations(): Promise<TopRegistrationData[]> {
       registration_number: regNum,
       count: stats.count,
       categories: Array.from(stats.categories),
+      categoryColors: categoryColorMap,
     }))
     .sort((a, b) => b.count - a.count)
     .slice(0, 10); // Top 10

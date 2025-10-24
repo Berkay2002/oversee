@@ -51,7 +51,8 @@ export default async function OversiktPage() {
   ]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* Page Header */}
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Översikt</h1>
         <p className="text-muted-foreground">
@@ -59,32 +60,76 @@ export default async function OversiktPage() {
         </p>
       </div>
 
-      <Suspense fallback={<KPICardsSkeleton />}>
-        <KPICards
-          totalReports={kpis.totalReports}
-          avgDays={kpis.avgDays}
-          maxDays={kpis.maxDays}
-          activeCategories={kpis.activeCategories}
-        />
-      </Suspense>
+      {/* Overview Section */}
+      <section className="space-y-6">
+        <div className="flex items-center gap-3">
+          <div className="h-px flex-1 bg-gradient-to-r from-border to-transparent" />
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Overview
+          </h2>
+          <div className="h-px flex-1 bg-gradient-to-l from-border to-transparent" />
+        </div>
 
-      <Suspense fallback={<ChartSkeleton />}>
-        <MonthlyTrends data={trends} />
-      </Suspense>
-
-      <div className="grid gap-4 md:grid-cols-2">
-        <Suspense fallback={<ChartSkeleton />}>
-          <CategoryBreakdown data={categories} />
+        <Suspense fallback={<KPICardsSkeleton />}>
+          <KPICards
+            totalReports={kpis.totalReports}
+            avgDays={kpis.avgDays}
+            maxDays={kpis.maxDays}
+            activeCategories={kpis.activeCategories}
+          />
         </Suspense>
+      </section>
+
+      {/* Trends Section */}
+      <section className="space-y-6">
+        <div className="flex items-center gap-3">
+          <div className="h-px flex-1 bg-gradient-to-r from-border to-transparent" />
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Trends
+          </h2>
+          <div className="h-px flex-1 bg-gradient-to-l from-border to-transparent" />
+        </div>
 
         <Suspense fallback={<ChartSkeleton />}>
-          <TechnicianPerformance data={technicians} />
+          <MonthlyTrends data={trends} />
         </Suspense>
-      </div>
+      </section>
 
-      <Suspense fallback={<ChartSkeleton />}>
-        <TopIssues data={topIssues} />
-      </Suspense>
+      {/* Breakdown Section */}
+      <section className="space-y-6">
+        <div className="flex items-center gap-3">
+          <div className="h-px flex-1 bg-gradient-to-r from-border to-transparent" />
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Breakdown
+          </h2>
+          <div className="h-px flex-1 bg-gradient-to-l from-border to-transparent" />
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2">
+          <Suspense fallback={<ChartSkeleton />}>
+            <CategoryBreakdown data={categories} />
+          </Suspense>
+
+          <Suspense fallback={<ChartSkeleton />}>
+            <TechnicianPerformance data={technicians} />
+          </Suspense>
+        </div>
+      </section>
+
+      {/* Details Section */}
+      <section className="space-y-6">
+        <div className="flex items-center gap-3">
+          <div className="h-px flex-1 bg-gradient-to-r from-border to-transparent" />
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Details
+          </h2>
+          <div className="h-px flex-1 bg-gradient-to-l from-border to-transparent" />
+        </div>
+
+        <Suspense fallback={<ChartSkeleton />}>
+          <TopIssues data={topIssues} />
+        </Suspense>
+      </section>
     </div>
   );
 }

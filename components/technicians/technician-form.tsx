@@ -19,6 +19,7 @@ import { Tables } from "@/types/database";
 const technicianSchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string(),
+  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Invalid hex color"),
 });
 
 interface TechnicianFormProps {
@@ -32,6 +33,7 @@ export function TechnicianForm({ technician, onSave, children }: TechnicianFormP
     defaultValues: {
       name: technician?.name ?? "",
       description: technician?.description ?? "",
+      color: technician?.color ?? "#6366f1",
     },
     onSubmit: async ({ value }: { value: z.infer<typeof technicianSchema> }) => {
       onSave(value);
@@ -74,6 +76,44 @@ export function TechnicianForm({ technician, onSave, children }: TechnicianFormP
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
+                {field.state.meta.errors && (
+                  <p className="text-red-500 text-sm">
+                    {field.state.meta.errors.join(", ")}
+                  </p>
+                )}
+              </div>
+            )}
+          </form.Field>
+          <form.Field
+            name="color"
+          >
+            {(field) => (
+              <div>
+                <label htmlFor={field.name}>Color</label>
+                <div className="flex items-center gap-3">
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    type="color"
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    className="w-20 h-10 cursor-pointer"
+                  />
+                  <Input
+                    type="text"
+                    value={field.state.value}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (/^#[0-9A-Fa-f]{0,6}$/.test(value)) {
+                        field.handleChange(value);
+                      }
+                    }}
+                    onBlur={field.handleBlur}
+                    placeholder="#6366f1"
+                    className="font-mono flex-1"
+                  />
+                </div>
                 {field.state.meta.errors && (
                   <p className="text-red-500 text-sm">
                     {field.state.meta.errors.join(", ")}

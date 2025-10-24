@@ -1,6 +1,6 @@
 'use client';
 
-import { Pie, PieChart, Cell, Legend, ResponsiveContainer } from 'recharts';
+import { Pie, PieChart, Cell, ResponsiveContainer } from 'recharts';
 import {
   Card,
   CardContent,
@@ -35,61 +35,102 @@ export function CategoryBreakdown({ data }: CategoryBreakdownProps) {
     );
   }
 
-  // Build dynamic chart config from data
-  const chartConfig: ChartConfig = data.reduce(
+  // Sort data by report count descending
+  const sortedData = [...data].sort((a, b) => b.report_count - a.report_count);
+
+  // Build dynamic chart config using database colors
+  const chartConfig: ChartConfig = sortedData.reduce(
     (acc, item, index) => {
       const key = `category_${index}`;
       acc[key] = {
         label: item.category_name,
-        color: item.color,
+        color: item.color, // Use actual database color
       };
       return acc;
     },
     {} as ChartConfig
   );
 
-  // Transform data for recharts
-  const chartData = data.map((item, index) => ({
+  // Transform data for recharts using database colors
+  const chartData = sortedData.map((item, index) => ({
     name: item.category_name,
     value: item.report_count,
-    fill: item.color,
+    fill: item.color, // Use actual database color
     configKey: `category_${index}`,
   }));
 
   const totalReports = data.reduce((sum, item) => sum + item.report_count, 0);
 
   return (
-    <Card>
+    <Card className="flex flex-col">
       <CardHeader>
         <CardTitle>Reports by Category</CardTitle>
         <CardDescription>
           {totalReports} total reports across {data.length} categories
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig} className="h-[300px] w-full">
+      <CardContent className="flex-1 pb-0">
+        <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
-              <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+              <ChartTooltip
+                content={
+                  <ChartTooltipContent
+                    hideLabel
+                    formatter={(value, name) => (
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{name}:</span>
+                        <span className="font-bold">{value}</span>
+                        <span className="text-muted-foreground text-xs">
+                          ({((Number(value) / totalReports) * 100).toFixed(1)}%)
+                        </span>
+                      </div>
+                    )}
+                  />
+                }
+              />
               <Pie
                 data={chartData}
                 dataKey="value"
                 nameKey="name"
                 cx="50%"
                 cy="50%"
-                outerRadius={80}
-                label={({ name, percent }) =>
-                  `${name}: ${(percent * 100).toFixed(0)}%`
-                }
+                outerRadius={90}
+                innerRadius={50}
+                paddingAngle={2}
+                className="transition-all duration-300 hover:scale-105"
               >
                 {chartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.fill} />
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={entry.fill}
+                    className="hover:opacity-80 transition-opacity cursor-pointer"
+                  />
                 ))}
               </Pie>
-              <Legend />
             </PieChart>
           </ResponsiveContainer>
         </ChartContainer>
+      </CardContent>
+      <CardContent className="pt-4">
+        <div className="grid grid-cols-2 gap-3">
+          {chartData.map((item, index) => (
+            <div key={index} className="flex items-center gap-2">
+              <div
+                className="h-3 w-3 rounded-sm shrink-0"
+                style={{ backgroundColor: item.fill }}
+              />
+              <div className="flex flex-col min-w-0">
+                <span className="text-xs font-medium truncate">
+                  {item.name}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {item.value} ({((item.value / totalReports) * 100).toFixed(1)}%)
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
       </CardContent>
     </Card>
   );

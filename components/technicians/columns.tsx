@@ -58,6 +58,22 @@ export const columns: ColumnDef<Tables<'technicians'>>[] = [
     },
   },
   {
+    accessorKey: "color",
+    header: "Color",
+    cell: ({ row }) => {
+      const color = row.getValue("color") as string;
+      return (
+        <div className="flex items-center gap-2">
+          <div
+            className="h-6 w-6 rounded-md border border-border shadow-sm"
+            style={{ backgroundColor: color }}
+          />
+        </div>
+      );
+    },
+    enableSorting: false,
+  },
+  {
     id: "actions",
     cell: ({ row }) => <DataTableRowActions row={row} />,
   },

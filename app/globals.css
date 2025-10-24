@@ -188,3 +188,16 @@
     letter-spacing: var(--tracking-normal);
   }
 }
+
+/* Data Visualization Semantic Colors
+ * These colors are used consistently across charts and data displays
+ * for better visual hierarchy and information clarity.
+ *
+ * Usage Guidelines:
+ * - chart-1 to chart-5: Primary data visualization colors (harmonious palette)
+ * - Use warm colors (reds, oranges) for negative/critical metrics
+ * - Use cool colors (blues, grays) for neutral/informational metrics
+ * - Use primary/accent colors for highlights and emphasis
+ *
+ * The color system automatically adapts to light/dark mode via CSS variables.
+ */

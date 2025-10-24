@@ -60,24 +60,19 @@ export const columns: ColumnDef<Tables<'categories'>>[] = [
   },
   {
     accessorKey: "color",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Color" />
-    ),
+    header: "Color",
     cell: ({ row }) => {
       const color = row.getValue("color") as string;
       return (
         <div className="flex items-center gap-2">
           <div
-            className="h-4 w-4 rounded-full"
+            className="h-6 w-6 rounded-md border border-border shadow-sm"
             style={{ backgroundColor: color }}
           />
-          <span>{color}</span>
         </div>
       );
     },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
+    enableSorting: false,
   },
   {
     id: "actions",

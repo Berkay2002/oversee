@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import {
   Card,
   CardContent,
@@ -54,61 +54,108 @@ export function MonthlyTrends({ data }: MonthlyTrendsProps) {
       <CardHeader>
         <CardTitle>Monthly Trends</CardTitle>
         <CardDescription>
-          Report count and average days over time
+          Report count and average repair days tracked over time
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="h-[300px] w-full">
-          <AreaChart data={data}>
+        <ChartContainer config={chartConfig} className="h-[350px] w-full">
+          <AreaChart
+            data={data}
+            margin={{ top: 10, right: 12, left: 12, bottom: 0 }}
+          >
             <defs>
               <linearGradient id="fillReports" x1="0" y1="0" x2="0" y2="1">
                 <stop
-                  offset="5%"
+                  offset="0%"
                   stopColor="var(--color-report_count)"
-                  stopOpacity={0.8}
+                  stopOpacity={0.9}
                 />
                 <stop
-                  offset="95%"
+                  offset="50%"
                   stopColor="var(--color-report_count)"
-                  stopOpacity={0.1}
+                  stopOpacity={0.4}
+                />
+                <stop
+                  offset="100%"
+                  stopColor="var(--color-report_count)"
+                  stopOpacity={0.05}
                 />
               </linearGradient>
               <linearGradient id="fillAvgDays" x1="0" y1="0" x2="0" y2="1">
                 <stop
-                  offset="5%"
+                  offset="0%"
                   stopColor="var(--color-avg_days)"
-                  stopOpacity={0.8}
+                  stopOpacity={0.9}
                 />
                 <stop
-                  offset="95%"
+                  offset="50%"
                   stopColor="var(--color-avg_days)"
-                  stopOpacity={0.1}
+                  stopOpacity={0.4}
+                />
+                <stop
+                  offset="100%"
+                  stopColor="var(--color-avg_days)"
+                  stopOpacity={0.05}
                 />
               </linearGradient>
             </defs>
-            <CartesianGrid vertical={false} />
+            <CartesianGrid
+              vertical={false}
+              strokeDasharray="3 3"
+              stroke="hsl(var(--border))"
+              opacity={0.3}
+            />
             <XAxis
               dataKey="month"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
               minTickGap={32}
+              stroke="hsl(var(--muted-foreground))"
+              fontSize={12}
             />
-            <ChartTooltip content={<ChartTooltipContent indicator="dot" />} />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              stroke="hsl(var(--muted-foreground))"
+              fontSize={12}
+            />
+            <ChartTooltip
+              content={
+                <ChartTooltipContent
+                  indicator="dot"
+                  formatter={(value, name) => (
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">
+                        {chartConfig[name as keyof typeof chartConfig]?.label}:
+                      </span>
+                      <span className="font-bold">{value}</span>
+                    </div>
+                  )}
+                />
+              }
+            />
             <ChartLegend content={<ChartLegendContent />} />
             <Area
               dataKey="report_count"
-              type="natural"
+              type="monotone"
               fill="url(#fillReports)"
               stroke="var(--color-report_count)"
+              strokeWidth={2}
               stackId="a"
+              className="transition-all hover:opacity-80"
+              animationDuration={1000}
             />
             <Area
               dataKey="avg_days"
-              type="natural"
+              type="monotone"
               fill="url(#fillAvgDays)"
               stroke="var(--color-avg_days)"
+              strokeWidth={2}
               stackId="b"
+              className="transition-all hover:opacity-80"
+              animationDuration={1000}
             />
           </AreaChart>
         </ChartContainer>
