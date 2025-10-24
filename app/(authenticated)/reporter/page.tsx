@@ -2,8 +2,13 @@ import { getReporters } from "./actions";
 import { columns } from "@/components/reporters/columns";
 import { DataTable } from "@/components/reporters/data-table";
 
-export default async function ReporterPage() {
-  const data = await getReporters();
+export default async function ReporterPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ search?: string }>;
+}) {
+  const { search } = await searchParams;
+  const data = await getReporters({ search });
 
   return (
     <div className="container mx-auto py-10">

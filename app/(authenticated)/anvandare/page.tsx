@@ -2,8 +2,13 @@ import { getUsers } from "./actions";
 import { columns } from "@/components/users/columns";
 import { DataTable } from "@/components/users/data-table";
 
-export default async function AnvandarePage() {
-  const users = await getUsers();
+export default async function AnvandarePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ search?: string }>;
+}) {
+  const { search } = await searchParams;
+  const users = await getUsers({ search });
 
   return (
     <div className="container mx-auto py-10">

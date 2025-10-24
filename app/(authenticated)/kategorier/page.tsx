@@ -2,8 +2,13 @@ import { columns } from "@/components/categories/columns";
 import { DataTable } from "@/components/categories/data-table";
 import { getCategories } from "./actions";
 
-export default async function CategoriesPage() {
-  const categories = await getCategories();
+export default async function CategoriesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ search?: string }>;
+}) {
+  const { search } = await searchParams;
+  const categories = await getCategories({ search });
 
   return (
     <div className="container mx-auto py-10">

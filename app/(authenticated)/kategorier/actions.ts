@@ -11,14 +11,22 @@ const categorySchema = z.object({
   color: z.string().optional(),
 });
 
-export async function getCategories() {
+export const getCategories = async ({
+  search,
+}: { search?: string } = {}) => {
   const supabase = await createClient();
 
   const getCategoriesFromDb = async () => {
-    const { data, error } = await supabase
+    let query = supabase
       .from("categories")
       .select("*")
       .order("created_at", { ascending: false });
+
+    if (search) {
+      query = query.ilike("name", `%${search}%`);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       console.error("Error fetching categories:", error);
@@ -27,16 +35,18 @@ export async function getCategories() {
     return data;
   };
 
+  const cacheKey = search ? `categories-${search}` : "categories";
+
   const getCachedCategories = unstable_cache(
     getCategoriesFromDb,
-    ["categories"],
+    [cacheKey],
     {
       tags: ["categories"],
     }
   );
 
   return getCachedCategories();
-}
+};
 
 export async function createCategory(values: z.infer<typeof categorySchema>) {
   const validatedValues = categorySchema.parse(values);
