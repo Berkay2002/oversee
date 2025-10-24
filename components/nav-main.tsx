@@ -21,6 +21,7 @@ export function NavMain({
     title: string
     url: string
     icon?: LucideIcon
+    adminOnly?: boolean
   }[]
   label?: string
 }) {

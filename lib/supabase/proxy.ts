@@ -35,8 +35,25 @@ export async function updateSession(request: NextRequest) {
   // IMPORTANT: DO NOT REMOVE auth.getUser()
 
   const {
-    data: { user }
-  } = await supabase.auth.getUser()
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('user_id', user.id)
+      .single();
+
+    if (
+      request.nextUrl.pathname.startsWith('/anvandare') &&
+      profile?.role !== 'admin'
+    ) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/oversikt';
+      return NextResponse.redirect(url);
+    }
+  }
 
   if (
     !user &&

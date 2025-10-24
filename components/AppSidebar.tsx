@@ -89,8 +89,14 @@ export function AppSidebar({
     name: string
     email: string
     avatar?: string
+    role?: string
   }
 }) {
+  const navManagement =
+    user?.role === "admin"
+      ? data.navManagement
+      : data.navManagement.filter((item) => !item.adminOnly)
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -116,7 +122,7 @@ export function AppSidebar({
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} label="Navigation" />
-        <NavMain items={data.navManagement} label="Hantering" />
+        <NavMain items={navManagement} label="Hantering" />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

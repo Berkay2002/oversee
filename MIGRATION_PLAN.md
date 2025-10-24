@@ -215,19 +215,19 @@ All tables have RLS (Row Level Security) enabled.
 - [x] Use `updateTag('reporters')` after mutations
 
 ### 5.4 Users/Admin Page (`/anvandare`)
-- [ ] Create `app/(authenticated)/anvandare/page.tsx`
-- [ ] Add admin-only check in proxy.ts
-- [ ] Create Server Actions in `app/(authenticated)/anvandare/actions.ts`:
-  - [ ] `getUsers` - Fetch all user profiles (with cacheTag)
-  - [ ] `inviteUser` - Send invite to new user (Supabase Auth)
-  - [ ] `updateUserRole` - Change user role admin/user (with updateTag)
-- [ ] Build user management table with shadcn/ui Table
-- [ ] Add invite user dialog (Dialog + Form components)
-- [ ] Add role change dropdown (Select component)
-- [ ] Show user join dates and current roles (Badge for roles)
-- [ ] Add proper error handling and validation
-- [ ] Use `cacheTag('users')` for data caching
-- [ ] Use `updateTag('users')` after role changes
+- [x] Create `app/(authenticated)/anvandare/page.tsx`
+- [x] Add admin-only check in proxy.ts
+- [x] Create Server Actions in `app/(authenticated)/anvandare/actions.ts`:
+  - [x] `getUsers` - Fetch all user profiles (with cacheTag)
+  - [x] `inviteUser` - Send invite to new user (Supabase Auth)
+  - [x] `updateUserRole` - Change user role admin/user (with updateTag)
+- [x] Build user management table with shadcn/ui Table
+- [x] Add invite user dialog (Dialog + Form components)
+- [x] Add role change dropdown (Select component)
+- [x] Show user join dates and current roles (Badge for roles)
+- [x] Add proper error handling and validation
+- [x] Use `cacheTag('users')` for data caching
+- [x] Use `updateTag('users')` after role changes
 
 ---
 

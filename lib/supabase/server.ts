@@ -77,3 +77,26 @@ export async function getUser() {
     return null
   }
 }
+
+export async function getUserProfile() {
+  const supabase = await createClient()
+  const user = await getUser()
+  if (!user) {
+    return null
+  }
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .single()
+    if (error) {
+      console.error('Error getting user profile:', error)
+      return null
+    }
+    return data
+  } catch (error) {
+    console.error('Error getting user profile:', error)
+    return null
+  }
+}

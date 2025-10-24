@@ -1,6 +1,6 @@
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { getSession } from "@/lib/supabase/server";
+import { getSession, getUserProfile } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
 export default async function AuthenticatedLayoutContent({
@@ -9,6 +9,7 @@ export default async function AuthenticatedLayoutContent({
   children: React.ReactNode;
 }) {
   const session = await getSession();
+  const userProfile = await getUserProfile();
 
   if (!session) {
     redirect("/login");
@@ -18,6 +19,7 @@ export default async function AuthenticatedLayoutContent({
     name: session.user.email?.split("@")[0] || "User",
     email: session.user.email || "",
     avatar: session.user.user_metadata?.avatar_url,
+    role: userProfile?.role,
   };
 
   return (
