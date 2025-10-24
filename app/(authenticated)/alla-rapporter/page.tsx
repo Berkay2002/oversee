@@ -12,13 +12,15 @@ type SearchParams = {
 export default async function AllaRapporterPage({
   searchParams,
 }: {
-  searchParams: SearchParams;
+  searchParams: Promise<SearchParams>;
 }) {
+  const { search, technician, category, page } = await searchParams;
+
   const reports = await getReports({
-    search: searchParams.search,
-    technician: searchParams.technician,
-    category: searchParams.category,
-    page: parseInt(searchParams.page || '1'),
+    search,
+    technician,
+    category,
+    page: parseInt(page || '1'),
   });
 
   return (

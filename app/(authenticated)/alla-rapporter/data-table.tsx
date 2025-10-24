@@ -77,7 +77,7 @@ export function DataTable<TData, TValue>({
     <div className="flex flex-col gap-4">
       <DataTableToolbar table={table} />
       <div className="overflow-hidden rounded-md border">
-        <Table>
+        <Table className="table-fixed w-full">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
