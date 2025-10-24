@@ -1,6 +1,3 @@
-t/* eslint-disable @typescript-eslint/no-unused-vars */
-"use client"
-
 import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import {
