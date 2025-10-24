@@ -134,33 +134,34 @@ All tables have RLS (Row Level Security) enabled.
 
 ---
 
-## Phase 4: Layout & Navigation
+## Phase 4: Layout & Navigation ✅ COMPLETED
 
-### 4.1 Root Layout
-- [ ] Verify `app/layout.tsx` has correct structure
-- [ ] Ensure ThemeProvider is properly configured
-- [ ] Add font configuration if needed
-- [ ] Add metadata (title, description)
+### 4.1 Root Layout ✅
+- [x] Verify `app/layout.tsx` has correct structure
+- [x] Ensure ThemeProvider is properly configured
+- [x] Add font configuration if needed
+- [x] Add metadata (title, description)
 
-### 4.2 Authenticated Layout
-- [ ] Create `app/(authenticated)/layout.tsx`
-- [ ] Integrate AppSidebar component
-- [ ] Add main content area wrapper
-- [ ] Add user profile display
-- [ ] Add sign-out functionality
+### 4.2 Authenticated Layout ✅
+- [x] Create `app/(authenticated)/layout.tsx`
+- [x] Integrate AppSidebar component
+- [x] Add main content area wrapper
+- [x] Add user profile display (email shown in header)
+- [x] Add sign-out functionality
 
-### 4.3 Navigation Components
-- [ ] Update `components/AppSidebar.tsx` to use Next.js `Link`
-- [ ] Update navigation links to match new route structure:
-  - [ ] `/oversikt` - Dashboard
-  - [ ] `/ny-rapport` - New Report
-  - [ ] `/alla-rapporter` - All Reports
-  - [ ] `/anvandare` - Users (Admin only)
-  - [ ] `/kategorier` - Categories
-  - [ ] `/tekniker` - Technicians
-  - [ ] `/reporter` - Reporters
-- [ ] Add active route highlighting
-- [ ] Ensure mobile responsiveness
+### 4.3 Navigation Components ✅
+- [x] Create `components/AppSidebar.tsx` to use Next.js `Link`
+- [x] Update navigation links to match new route structure:
+  - [x] `/oversikt` - Dashboard
+  - [x] `/ny-rapport` - New Report
+  - [x] `/alla-rapporter` - All Reports
+  - [x] `/anvandare` - Users (Admin only)
+  - [x] `/kategorier` - Categories
+  - [x] `/tekniker` - Technicians
+  - [x] `/reporter` - Reporters
+- [x] Add active route highlighting (using isActive prop)
+- [x] Ensure mobile responsiveness (using SidebarTrigger)
+- [x] Create placeholder pages for all routes
 
 ---
 
@@ -1062,8 +1063,8 @@ This approach gives you:
 ## Progress Tracking
 
 **Total Tasks**: 235+
-**Completed**: ~55 (Phases 1, 2, and most of 3 complete)
-**In Progress**: Phase 3.3 (Auth Context decision) & Testing
+**Completed**: ~70 (Phases 1, 2, 3, and 4 complete)
+**In Progress**: Phase 5 (Data Management Pages)
 
 **Started**: 2025-10-24
 **Target Completion**: TBD
@@ -1072,9 +1073,11 @@ This approach gives you:
 ### Phases Completed
 - ✅ Phase 1: Project Setup & Dependencies (mostly complete, pending .env.local setup)
 - ✅ Phase 2: Core Architecture Setup (fully complete)
-- ⏳ Phase 3: Authentication System (proxy, pages, and actions complete - testing pending)
+- ✅ Phase 3: Authentication System (proxy, pages, and actions complete - testing pending)
+- ✅ Phase 4: Layout & Navigation (fully complete with placeholder pages)
 
 ### Recent Updates
+- 2025-10-24: Completed Phase 4 - Created authenticated layout with AppSidebar, all navigation routes with placeholder pages, active route highlighting, and mobile responsiveness
 - 2025-10-24: Fixed all TypeScript errors - Updated auth actions to use proper useFormState signature, fixed deprecated Zod methods (flatten/format/email), fixed proxy.ts client usage
 - 2025-10-24: Completed Phase 3.1 & 3.2 - Created proxy.ts (NOT middleware.ts), auth layout, login page with validation, and Server Actions (signIn, signOut, getSession, getUser)
 - 2025-10-24: Completed Phase 2 - Created directory structure, database types verified against Supabase schema via MCP, and set up all three Supabase clients (client, server, proxy)

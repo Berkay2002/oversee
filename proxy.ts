@@ -11,7 +11,8 @@ export async function proxy(request: NextRequest) {
   // Get current session
   const { data: { session } } = await supabase.auth.getSession()
 
-  const isAuthPage = request.nextUrl.pathname.startsWith('/login')
+  const isAuthPage = request.nextUrl.pathname.startsWith('/login') ||
+                     request.nextUrl.pathname.startsWith('/sign-in')
   const isPublicPath = request.nextUrl.pathname === '/' ||
                        request.nextUrl.pathname.startsWith('/_next') ||
                        request.nextUrl.pathname.startsWith('/api/auth')

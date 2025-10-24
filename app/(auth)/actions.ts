@@ -5,11 +5,26 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { loginSchema } from '@/lib/schemas/auth'
 
+// Default redirect paths
+const DEFAULT_LOGIN_REDIRECT = '/oversikt'
+const DEFAULT_LOGOUT_REDIRECT = '/login'
+
 export type SignInState = {
   error?: string
   fields?: {
     email?: string[]
     password?: string[]
+  }
+}
+
+export type SignUpState = {
+  error?: string
+  success?: boolean
+  fields?: {
+    name?: string[]
+    email?: string[]
+    password?: string[]
+    confirmPassword?: string[]
   }
 }
 
@@ -65,7 +80,77 @@ export async function signIn(
 
   // Revalidate and redirect
   revalidatePath('/', 'layout')
-  redirect('/oversikt')
+  redirect(DEFAULT_LOGIN_REDIRECT)
+}
+
+/**
+ * Sign up with email and password
+ */
+export async function signUp(
+  _prevState: SignUpState | undefined,
+  formData: FormData
+): Promise<SignUpState | undefined> {
+  const supabase = await createClient()
+
+  const email = formData.get('email') as string
+  const password = formData.get('password') as string
+  const confirmPassword = formData.get('confirmPassword') as string
+  const name = formData.get('name') as string
+
+  // Basic validation
+  const fields: SignUpState['fields'] = {}
+
+  if (!name || name.trim().length < 2) {
+    fields.name = ['Name must be at least 2 characters']
+  }
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    fields.email = ['Please enter a valid email address']
+  }
+
+  if (!password || password.length < 8) {
+    fields.password = ['Password must be at least 8 characters']
+  }
+
+  if (password !== confirmPassword) {
+    fields.confirmPassword = ['Passwords do not match']
+  }
+
+  if (Object.keys(fields).length > 0) {
+    return {
+      error: 'Please fix the errors below',
+      fields,
+    }
+  }
+
+  // Attempt to sign up
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        name,
+      },
+    },
+  })
+
+  if (error) {
+    return {
+      error: error.message || 'Could not create account',
+    }
+  }
+
+  // Check if email confirmation is required
+  if (data.user && !data.session) {
+    return {
+      success: true,
+      error: 'Please check your email to confirm your account',
+    }
+  }
+
+  // Revalidate and redirect
+  revalidatePath('/', 'layout')
+  redirect(DEFAULT_LOGIN_REDIRECT)
 }
 
 /**
@@ -77,28 +162,28 @@ export async function signOut() {
   const { error } = await supabase.auth.signOut()
 
   if (error) {
-    return {
-      error: 'Kunde inte logga ut',
-    }
+    console.error('Sign out error:', error)
+    // Even if there's an error, try to clear local state and redirect
   }
 
   revalidatePath('/', 'layout')
-  redirect('/login')
+  redirect(DEFAULT_LOGOUT_REDIRECT)
 }
 
 /**
  * Get the current session
+ * Returns the session object directly (null if not authenticated)
  */
 export async function getSession() {
   const supabase = await createClient()
 
   const { data: { session }, error } = await supabase.auth.getSession()
 
-  if (error) {
-    return { session: null, error: error.message }
+  if (error || !session) {
+    return null
   }
 
-  return { session, error: null }
+  return session
 }
 
 /**

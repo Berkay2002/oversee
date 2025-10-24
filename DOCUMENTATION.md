@@ -4,7 +4,7 @@
 
 This document provides a comprehensive overview of the folder structure and key files within the "Verkstads Insikt" project. The project is a modern web application built with React, Vite, TypeScript, and Supabase, designed for managing reports in a workshop environment.
 
-If you wanna see the repo, use github mcp, search for user "Berkay2002" and repo "verkstads-insikt".
+If you wanna see the repo, use github mcp, search for user "Berkay2002" and repo "verkstads-insikt". If you wanna inspect and get the content from this repository, use the github mcp. Do this only if the info below isnt enough.
 
 ## Visual Folder Structure
 
