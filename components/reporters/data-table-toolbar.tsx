@@ -37,7 +37,7 @@ export function DataTableToolbar<TData>({
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center gap-2">
         <Input
-          placeholder="Filtrera på namn..."
+          placeholder="Namn..."
           defaultValue={searchParams.get("search")?.toString()}
           onChange={(event) => handleSearch(event.target.value)}
           className="h-8 w-[150px] lg:w-[250px]"
