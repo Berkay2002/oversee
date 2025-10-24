@@ -13,7 +13,7 @@ export const columns: ColumnDef<Tables<"reports">>[] = [
   {
     id: "select",
     header: ({ table }) => (
-      <div className="flex items-center justify-center px-2">
+      <div className="flex items-center justify-start pl-2">
         <Checkbox
           checked={
             table.getIsAllPageRowsSelected() ||
@@ -27,7 +27,7 @@ export const columns: ColumnDef<Tables<"reports">>[] = [
       </div>
     ),
     cell: ({ row }) => (
-      <div className="flex items-center justify-center px-2">
+      <div className="flex items-center justify-start pl-2">
         <Checkbox
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
@@ -37,7 +37,7 @@ export const columns: ColumnDef<Tables<"reports">>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
-    size: 36, // tighter
+    size: 50,
   },
 
   //
@@ -49,11 +49,11 @@ export const columns: ColumnDef<Tables<"reports">>[] = [
       <DataTableColumnHeader column={column} title="Technician" />
     ),
     cell: ({ row }) => (
-      <div className="px-3 text-sm font-medium text-foreground/90">
+      <div className="text-sm font-medium text-foreground/90">
         {row.getValue("technician_name")}
       </div>
     ),
-    size: 140,
+    size: 130,
   },
 
   //
@@ -67,12 +67,12 @@ export const columns: ColumnDef<Tables<"reports">>[] = [
     cell: ({ row }) => {
       const numbers = row.getValue("registration_numbers") as string[];
       return (
-        <div className="px-3 text-sm text-foreground/80 max-w-[10rem] truncate">
+        <div className="text-sm text-foreground/80 max-w-[10rem] truncate">
           {numbers.join(", ")}
         </div>
       );
     },
-    size: 160,
+    size: 120,
   },
 
   //
@@ -84,12 +84,11 @@ export const columns: ColumnDef<Tables<"reports">>[] = [
       <DataTableColumnHeader column={column} title="Days" />
     ),
     cell: ({ row }) => (
-      <div className="px-3 text-sm tabular-nums text-foreground/80">
+      <div className="text-sm tabular-nums text-foreground/80">
         {row.getValue("days_taken")}
       </div>
     ),
-    // narrow numeric column
-    size: 64,
+    size: 70,
     meta: {
       align: "right",
     },
@@ -104,11 +103,11 @@ export const columns: ColumnDef<Tables<"reports">>[] = [
       <DataTableColumnHeader column={column} title="Problem" />
     ),
     cell: ({ row }) => (
-      <div className=" text-sm text-foreground/80 leading-snug line-clamp-2 max-w-md">
+      <div className="pr-4 text-sm text-foreground/80 leading-snug line-clamp-2">
         {row.getValue("problem_description") as string}
       </div>
     ),
-    size: 480,
+    size: 400,
   },
 
   //
@@ -129,15 +128,12 @@ export const columns: ColumnDef<Tables<"reports">>[] = [
       });
 
       return (
-        <div className="px-3 text-sm text-foreground/70 whitespace-nowrap text-right">
+        <div className="text-sm text-foreground/70 whitespace-nowrap">
           {formattedDate}
         </div>
       );
     },
-    size: 170,
-    meta: {
-      align: "right",
-    },
+    size: 160,
   },
 
   //
