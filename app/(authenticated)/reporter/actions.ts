@@ -3,43 +3,29 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { Tables } from "@/types/database";
-import { revalidatePath, updateTag, unstable_cache } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 
 export const getReporters = async ({
   search,
 }: { search?: string } = {}) => {
   const supabase = await createClient();
 
-  const getReportersFromDb = async () => {
-    let query = supabase
-      .from("reporters")
-      .select("*")
-      .order("created_at", { ascending: false });
+  let query = supabase
+    .from("reporters")
+    .select("*")
+    .order("created_at", { ascending: false });
 
-    if (search) {
-      query = query.ilike("name", `%${search}%`);
-    }
+  if (search) {
+    query = query.ilike("name", `%${search}%`);
+  }
 
-    const { data, error } = await query;
+  const { data, error } = await query;
 
-    if (error) {
-      console.error("Error fetching reporters:", error);
-      throw new Error("Could not fetch reporters.");
-    }
-    return data;
-  };
-
-  const cacheKey = search ? `reporters-${search}` : "reporters";
-
-  const getCachedReporters = unstable_cache(
-    getReportersFromDb,
-    [cacheKey],
-    {
-      tags: ["reporters"],
-    }
-  );
-
-  return getCachedReporters();
+  if (error) {
+    console.error("Error fetching reporters:", error);
+    throw new Error("Could not fetch reporters.");
+  }
+  return data;
 };
 
 export async function createReporter(

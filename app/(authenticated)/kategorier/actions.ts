@@ -2,7 +2,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { revalidateTag, updateTag, unstable_cache } from "next/cache";
+import { revalidateTag, updateTag } from "next/cache";
 import { z } from "zod";
 
 const categorySchema = z.object({
@@ -16,36 +16,22 @@ export const getCategories = async ({
 }: { search?: string } = {}) => {
   const supabase = await createClient();
 
-  const getCategoriesFromDb = async () => {
-    let query = supabase
-      .from("categories")
-      .select("*")
-      .order("created_at", { ascending: false });
+  let query = supabase
+    .from("categories")
+    .select("*")
+    .order("created_at", { ascending: false });
 
-    if (search) {
-      query = query.ilike("name", `%${search}%`);
-    }
+  if (search) {
+    query = query.ilike("name", `%${search}%`);
+  }
 
-    const { data, error } = await query;
+  const { data, error } = await query;
 
-    if (error) {
-      console.error("Error fetching categories:", error);
-      throw new Error("Could not fetch categories.");
-    }
-    return data;
-  };
-
-  const cacheKey = search ? `categories-${search}` : "categories";
-
-  const getCachedCategories = unstable_cache(
-    getCategoriesFromDb,
-    [cacheKey],
-    {
-      tags: ["categories"],
-    }
-  );
-
-  return getCachedCategories();
+  if (error) {
+    console.error("Error fetching categories:", error);
+    throw new Error("Could not fetch categories.");
+  }
+  return data;
 };
 
 export async function createCategory(values: z.infer<typeof categorySchema>) {

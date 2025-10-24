@@ -2,7 +2,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { revalidateTag, updateTag, unstable_cache } from "next/cache";
+import { revalidateTag, updateTag } from "next/cache";
 import { z } from "zod";
 
 const technicianSchema = z.object({
@@ -15,36 +15,22 @@ export const getTechnicians = async ({
 }: { search?: string } = {}) => {
   const supabase = await createClient();
 
-  const getTechniciansFromDb = async () => {
-    let query = supabase
-      .from("technicians")
-      .select("*")
-      .order("created_at", { ascending: false });
+  let query = supabase
+    .from("technicians")
+    .select("*")
+    .order("created_at", { ascending: false });
 
-    if (search) {
-      query = query.ilike("name", `%${search}%`);
-    }
+  if (search) {
+    query = query.ilike("name", `%${search}%`);
+  }
 
-    const { data, error } = await query;
+  const { data, error } = await query;
 
-    if (error) {
-      console.error("Error fetching technicians:", error);
-      throw new Error("Could not fetch technicians.");
-    }
-    return data;
-  };
-
-  const cacheKey = search ? `technicians-${search}` : "technicians";
-
-  const getCachedTechnicians = unstable_cache(
-    getTechniciansFromDb,
-    [cacheKey],
-    {
-      tags: ["technicians"],
-    }
-  );
-
-  return getCachedTechnicians();
+  if (error) {
+    console.error("Error fetching technicians:", error);
+    throw new Error("Could not fetch technicians.");
+  }
+  return data;
 };
 
 export async function createTechnician(values: z.infer<typeof technicianSchema>) {

@@ -36,6 +36,7 @@ export async function createReport(formData: FormData) {
   }
 
   updateTag('reports');
+  updateTag('dashboard');
 
   return {
     message: 'Success: Report created successfully.',

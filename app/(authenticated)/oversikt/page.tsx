@@ -1,6 +1,55 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Suspense } from 'react';
+import { KPICards } from '@/components/overview/KPICards';
+import { CategoryBreakdown } from '@/components/overview/CategoryBreakdown';
+import { TechnicianPerformance } from '@/components/overview/TechnicianPerformance';
+import { MonthlyTrends } from '@/components/overview/MonthlyTrends';
+import { TopIssues } from '@/components/overview/TopIssues';
+import {
+  getDashboardKPIs,
+  getCategoryBreakdown,
+  getTechnicianPerformance,
+  getMonthlyTrends,
+  getTopRegistrations,
+} from './actions';
+import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 
-export default function OversiktPage() {
+function KPICardsSkeleton() {
+  return (
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {[...Array(4)].map((_, i) => (
+        <Card key={i}>
+          <CardContent className="p-6">
+            <Skeleton className="h-4 w-24 mb-2" />
+            <Skeleton className="h-8 w-16 mb-2" />
+            <Skeleton className="h-3 w-32" />
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
+function ChartSkeleton() {
+  return (
+    <Card>
+      <CardContent className="p-6">
+        <Skeleton className="h-[300px] w-full" />
+      </CardContent>
+    </Card>
+  );
+}
+
+export default async function OversiktPage() {
+  // Fetch all dashboard data in parallel
+  const [kpis, categories, technicians, trends, topIssues] = await Promise.all([
+    getDashboardKPIs(),
+    getCategoryBreakdown(),
+    getTechnicianPerformance(),
+    getMonthlyTrends(),
+    getTopRegistrations(),
+  ]);
+
   return (
     <div className="space-y-6">
       <div>
@@ -10,37 +59,32 @@ export default function OversiktPage() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Card>
-          <CardHeader>
-            <CardTitle>Total Reports</CardTitle>
-            <CardDescription>All time reports count</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">Coming soon</div>
-          </CardContent>
-        </Card>
+      <Suspense fallback={<KPICardsSkeleton />}>
+        <KPICards
+          totalReports={kpis.totalReports}
+          avgDays={kpis.avgDays}
+          maxDays={kpis.maxDays}
+          activeCategories={kpis.activeCategories}
+        />
+      </Suspense>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Average Repair Time</CardTitle>
-            <CardDescription>Days taken on average</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">Coming soon</div>
-          </CardContent>
-        </Card>
+      <Suspense fallback={<ChartSkeleton />}>
+        <MonthlyTrends data={trends} />
+      </Suspense>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Maximum Time</CardTitle>
-            <CardDescription>Longest repair duration</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">Coming soon</div>
-          </CardContent>
-        </Card>
+      <div className="grid gap-4 md:grid-cols-2">
+        <Suspense fallback={<ChartSkeleton />}>
+          <CategoryBreakdown data={categories} />
+        </Suspense>
+
+        <Suspense fallback={<ChartSkeleton />}>
+          <TechnicianPerformance data={technicians} />
+        </Suspense>
       </div>
+
+      <Suspense fallback={<ChartSkeleton />}>
+        <TopIssues data={topIssues} />
+      </Suspense>
     </div>
-  )
+  );
 }

@@ -48,6 +48,7 @@ export async function updateReport(reportId: string, formData: FormData) {
   }
 
   updateTag('reports');
+  updateTag('dashboard');
   return { message: 'Success: Report updated successfully.' };
 }
 
@@ -60,5 +61,6 @@ export async function deleteReport(reportId: string) {
   }
 
   updateTag('reports');
+  updateTag('dashboard');
   return { message: 'Success: Report deleted successfully.' };
 }
