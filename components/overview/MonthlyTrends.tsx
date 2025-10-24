@@ -58,7 +58,10 @@ export function MonthlyTrends({ data }: MonthlyTrendsProps) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="h-[350px] w-full">
+        <ChartContainer
+          config={chartConfig}
+          className="h-[300px] w-full sm:h-[350px]"
+        >
           <AreaChart
             data={data}
             margin={{ top: 10, right: 12, left: 12, bottom: 0 }}

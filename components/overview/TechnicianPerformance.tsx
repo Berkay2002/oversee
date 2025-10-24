@@ -58,7 +58,10 @@ export function TechnicianPerformance({ data }: TechnicianPerformanceProps) {
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1">
-        <ChartContainer config={chartConfig} className="h-[400px] w-full">
+        <ChartContainer
+          config={chartConfig}
+          className="h-[300px] w-full sm:h-[400px]"
+        >
           <BarChart
             data={topTechnicians}
             layout="vertical"
@@ -81,7 +84,6 @@ export function TechnicianPerformance({ data }: TechnicianPerformanceProps) {
               tickLine={false}
               tickMargin={10}
               axisLine={false}
-              width={100}
               stroke="hsl(var(--muted-foreground))"
               fontSize={12}
               className="font-medium"

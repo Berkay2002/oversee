@@ -65,7 +65,7 @@ export function KPICards({
             key={kpi.title}
             className={cn(
               'transition-all duration-200 hover:shadow-lg hover:scale-[1.02]',
-              'border-l-4',
+              'border-0',
               kpi.accentColor
             )}
           >

@@ -66,8 +66,14 @@ export function TopIssues({ data }: TopIssuesProps) {
           <Table>
             <TableHeader>
               <TableRow className="border-b bg-muted/50">
-                <TableHead className="font-semibold">Registration Number</TableHead>
-                <TableHead className="text-right font-semibold">Report Count</TableHead>
+                <TableHead className="font-semibold w-[150px] sm:w-auto">
+                  <span className="hidden sm:inline">Registration Number</span>
+                  <span className="inline sm:hidden">Reg. No</span>
+                </TableHead>
+                <TableHead className="text-right font-semibold w-[120px] sm:w-auto">
+                  <span className="hidden sm:inline">Report Count</span>
+                  <span className="inline sm:hidden">Count</span>
+                </TableHead>
                 <TableHead className="font-semibold">Categories</TableHead>
               </TableRow>
             </TableHeader>
@@ -81,7 +87,7 @@ export function TopIssues({ data }: TopIssuesProps) {
                     ${index % 2 === 0 ? 'bg-card' : 'bg-muted/20'}
                   `}
                 >
-                  <TableCell className="font-mono font-semibold text-base">
+                  <TableCell className="font-mono font-semibold text-sm sm:text-base">
                     {item.registration_number}
                   </TableCell>
                   <TableCell className="text-right">
@@ -92,7 +98,7 @@ export function TopIssues({ data }: TopIssuesProps) {
                       {item.count}
                     </Badge>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="py-2 px-4">
                     <div className="flex flex-wrap gap-1.5">
                       {item.categories.slice(0, 3).map((category, idx) => (
                         <Badge

@@ -113,7 +113,7 @@ export function CategoryBreakdown({ data }: CategoryBreakdownProps) {
         </ChartContainer>
       </CardContent>
       <CardContent className="pt-4">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {chartData.map((item, index) => (
             <div key={index} className="flex items-center gap-2">
               <div
