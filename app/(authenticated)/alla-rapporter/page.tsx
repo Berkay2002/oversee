@@ -1,24 +1,35 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { getReports } from './actions';
+import { columns } from '@/app/(authenticated)/alla-rapporter/columns';
+import { DataTable } from '@/app/(authenticated)/alla-rapporter/data-table';
 
-export default function AllaRapporterPage() {
+type SearchParams = {
+  search?: string;
+  technician?: string;
+  category?: string;
+  page?: string;
+};
+
+export default async function AllaRapporterPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const reports = await getReports({
+    search: searchParams.search,
+    technician: searchParams.technician,
+    category: searchParams.category,
+    page: parseInt(searchParams.page || '1'),
+  });
+
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Alla Rapporter</h1>
-        <p className="text-muted-foreground">
-          View and manage all workshop reports
+        <h3 className="text-lg font-medium">All Reports</h3>
+        <p className="text-sm text-muted-foreground">
+          Browse and manage all reports.
         </p>
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Reports Table</CardTitle>
-          <CardDescription>Search, filter, and manage reports</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">Reports list coming soon...</p>
-        </CardContent>
-      </Card>
+      <DataTable columns={columns} data={reports} />
     </div>
-  )
+  );
 }

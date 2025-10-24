@@ -231,56 +231,56 @@ All tables have RLS (Row Level Security) enabled.
 
 ---
 
-## Phase 6: Page Migrations - Reports
+## Phase 6: Page Migrations - Reports ✅ COMPLETED
 
 ### 6.1 New Report Page (`/ny-rapport`)
-- [ ] Create `app/(authenticated)/ny-rapport/page.tsx`
-- [ ] Mark as Client Component (`'use client'`)
-- [ ] Set up react-hook-form with Zod validation schema
-- [ ] Create form schema in `lib/schemas/report.ts`:
-  - [ ] technician_name (required)
-  - [ ] registration_numbers (array, required)
-  - [ ] days_taken (number, required)
-  - [ ] problem_description (text, required)
-  - [ ] improvement_description (text, optional)
-  - [ ] category_id (uuid, optional)
-  - [ ] reporter_name (text, optional)
-- [ ] Create Server Action: `createReport` in `actions.ts`
-- [ ] Migrate form components:
-  - [ ] TechnicianSelector
-  - [ ] CategorySelector
-  - [ ] ReviewerSelector (reporter)
-  - [ ] Registration numbers input
-  - [ ] Days taken input
-  - [ ] Problem description textarea
-  - [ ] Improvement description textarea
-- [ ] Add form validation and error display
-- [ ] Add success toast and redirect to /alla-rapporter
-- [ ] Add loading state during submission
+- [x] Create `app/(authenticated)/ny-rapport/page.tsx`
+- [x] Mark as Client Component (`'use client'`)
+- [x] Set up react-hook-form with Zod validation schema
+- [x] Create form schema in `lib/schemas/report.ts`:
+  - [x] technician_name (required)
+  - [x] registration_numbers (array, required)
+  - [x] days_taken (number, required)
+  - [x] problem_description (text, required)
+  - [x] improvement_description (text, optional)
+  - [x] category_id (uuid, optional)
+  - [x] reporter_name (text, optional)
+- [x] Create Server Action: `createReport` in `actions.ts`
+- [x] Migrate form components:
+  - [x] TechnicianSelector
+  - [x] CategorySelector
+  - [x] ReviewerSelector (reporter)
+  - [x] Registration numbers input
+  - [x] Days taken input
+  - [x] Problem description textarea
+  - [x] Improvement description textarea
+- [x] Add form validation and error display
+- [x] Add success toast and redirect to /alla-rapporter
+- [x] Add loading state during submission
 
 ### 6.2 All Reports Page (`/alla-rapporter`)
-- [ ] Create `app/(authenticated)/alla-rapporter/page.tsx`
-- [ ] Create Server Component for initial data load with async searchParams
-- [ ] Use searchParams for filters and pagination (await searchParams)
-- [ ] Create Server Actions in `app/(authenticated)/alla-rapporter/actions.ts`:
-  - [ ] `getReports` - Fetch reports with filters (with cacheTag)
-  - [ ] `updateReport` - Update existing report (with updateTag)
-  - [ ] `deleteReport` - Delete report (with updateTag)
-- [ ] Create client component for interactive table: `components/reports/ReportsTable.tsx`
-- [ ] Implement features:
-  - [ ] Search functionality (client-side filtering)
-  - [ ] Filter by technician (Select component)
-  - [ ] Filter by category (Select component)
-  - [ ] Sort by date (Table sorting)
-  - [ ] Sort by days_taken (Table sorting)
-  - [ ] Pagination with searchParams
-- [ ] Add view report dialog (Dialog component)
-- [ ] Add edit report dialog (reuse form components)
-- [ ] Add delete confirmation dialog (AlertDialog)
-- [ ] Implement permission checks (can only edit/delete own reports or if admin)
-- [ ] Add loading states with Suspense boundaries
-- [ ] Use `cacheTag('reports')` for data caching
-- [ ] Use `updateTag('reports')` after mutations for immediate UI updates
+- [x] Create `app/(authenticated)/alla-rapporter/page.tsx`
+- [x] Create Server Component for initial data load with async searchParams
+- [x] Use searchParams for filters and pagination (await searchParams)
+- [x] Create Server Actions in `app/(authenticated)/alla-rapporter/actions.ts`:
+  - [x] `getReports` - Fetch reports with filters (with cacheTag)
+  - [x] `updateReport` - Update existing report (with updateTag)
+  - [x] `deleteReport` - Delete report (with updateTag)
+- [x] Create client component for interactive table: `components/reports/ReportsTable.tsx`
+- [x] Implement features:
+  - [x] Search functionality (client-side filtering)
+  - [x] Filter by technician (Select component)
+  - [x] Filter by category (Select component)
+  - [x] Sort by date (Table sorting)
+  - [x] Sort by days_taken (Table sorting)
+  - [x] Pagination with searchParams
+- [x] Add view report dialog (Dialog component)
+- [x] Add edit report dialog (reuse form components)
+- [x] Add delete confirmation dialog (AlertDialog)
+- [x] Implement permission checks (can only edit/delete own reports or if admin)
+- [x] Add loading states with Suspense boundaries
+- [x] Use `cacheTag('reports')` for data caching
+- [x] Use `updateTag('reports')` after mutations for immediate UI updates
 
 ---
 
