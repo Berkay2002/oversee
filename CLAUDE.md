@@ -112,6 +112,26 @@ The application supports light/dark mode using `next-themes`:
 - Module resolution: bundler
 - Incremental builds: enabled
 
+## Migration Tracking
+
+**CRITICAL**: This project is currently migrating from Vite to Next.js 16. When working on migration tasks:
+
+1. **ALWAYS update MIGRATION_PLAN.md** after completing **EACH SUBTASK** (not just main tasks) by checking off the corresponding checkbox with `[x]`
+2. Update immediately after completing each individual subtask - do not wait to batch multiple completions
+3. Update the "Recent Updates" section in the Progress Tracking area with what was just completed
+4. Update the "Completed" count in Progress Tracking after each subtask completion
+5. If you discover new subtasks or issues during migration, add them to the appropriate phase immediately
+6. Reference MIGRATION_PLAN.md frequently to understand context and next steps
+7. Mark phases as complete (e.g., "✅ COMPLETED") only when ALL subtasks within that phase are done
+
+**Example workflow:**
+- Complete subtask: "Create lib/supabase/client.ts"
+- Immediately update MIGRATION_PLAN.md: Change `- [ ]` to `- [x]` for that specific line
+- Add note in Recent Updates if significant
+- Continue to next subtask
+
+The migration plan is the source of truth for project progress and must be kept up-to-date in real-time, not retroactively.
+
 ## Git Workflow
 
 ### Commit Guidelines
