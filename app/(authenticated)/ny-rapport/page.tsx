@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import * as React from 'react';
@@ -11,6 +12,7 @@ import { toast } from 'sonner';
 import { differenceInDays } from 'date-fns';
 import { Wrench, Car, AlertCircle, Loader2 } from 'lucide-react';
 
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -41,9 +43,11 @@ export default function NewReportPage() {
   const [categories, setCategories] = React.useState<Category[]>([]);
   const [technicians, setTechnicians] = React.useState<Technician[]>([]);
   const [reporters, setReporters] = React.useState<Reporter[]>([]);
+  const technicianInputRef = React.useRef<HTMLButtonElement>(null);
 
   const form = useForm<ReportFormData>({
     resolver: zodResolver(reportSchema),
+    mode: 'onBlur',
     defaultValues: {
       technician_id: '',
       technician_name: '',
@@ -80,7 +84,15 @@ export default function NewReportPage() {
     loadData();
   }, []);
 
+  // Auto-focus the first field when data is loaded
+  React.useEffect(() => {
+    if (!isLoading) {
+      technicianInputRef.current?.focus();
+    }
+  }, [isLoading]);
+
   // Watch dates and calculate days_taken
+  // eslint-disable-next-line react-hooks/incompatible-library
   const startDate = form.watch('start_date');
   const endDate = form.watch('end_date');
 
@@ -206,13 +218,14 @@ export default function NewReportPage() {
                 <FormField
                   control={form.control}
                   name="technician_id"
-                  render={({ field }) => (
+                  render={({ field, fieldState }) => (
                     <FormItem>
                       <FormLabel>
                         Technician Assigned <span className="text-destructive">*</span>
                       </FormLabel>
                       <FormControl>
                         <Combobox
+                          ref={technicianInputRef}
                           options={technicianOptions}
                           value={field.value}
                           onValueChange={(value) => {
@@ -238,7 +251,7 @@ export default function NewReportPage() {
                 <FormField
                   control={form.control}
                   name="reporter_id"
-                  render={({ field }) => (
+                  render={({ field, fieldState }) => (
                     <FormItem>
                       <FormLabel>Reported By (Optional)</FormLabel>
                       <FormControl>
@@ -262,14 +275,18 @@ export default function NewReportPage() {
                 {showCustomReporter && (
                   <FormField
                     control={form.control}
-                    name="custom_reporter_name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>
+                  name="custom_reporter_name"
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <FormLabel>
                           Custom Reporter Name <span className="text-destructive">*</span>
                         </FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter reporter name..." {...field} />
+                          <Input
+                            placeholder="Enter reporter name..."
+                            {...field}
+                            className={cn(fieldState.invalid && 'border-destructive')}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -311,7 +328,7 @@ export default function NewReportPage() {
                 <FormField
                   control={form.control}
                   name="registration_numbers"
-                  render={({ field }) => (
+                  render={({ field, fieldState }) => (
                     <FormItem>
                       <FormLabel>
                         Registration Numbers <span className="text-destructive">*</span>
@@ -321,6 +338,7 @@ export default function NewReportPage() {
                           value={field.value}
                           onChange={field.onChange}
                           placeholder="Type registration and press Enter (e.g., ABC123)"
+                          className={cn(fieldState.invalid && 'border-destructive focus-within:ring-destructive')}
                         />
                       </FormControl>
                       <FormDescription>
@@ -334,7 +352,7 @@ export default function NewReportPage() {
                 <FormField
                   control={form.control}
                   name="category_id"
-                  render={({ field }) => (
+                  render={({ field, fieldState }) => (
                     <FormItem>
                       <FormLabel>
                         Problem Category <span className="text-destructive">*</span>
@@ -347,17 +365,21 @@ export default function NewReportPage() {
                           placeholder="Select category..."
                           searchPlaceholder="Search categories..."
                           emptyText="No category found."
-                          renderOption={(option) => (
-                            <div className="flex items-center gap-2">
-                              {option.metadata?.color && (
-                                <div
-                                  className="h-3 w-3 rounded-full"
-                                  style={{ backgroundColor: option.metadata.color }}
-                                />
-                              )}
-                              <span>{option.label}</span>
-                            </div>
-                          )}
+                          renderOption={(option) => {
+                            const colorValue = option.metadata?.color;
+                            const color = typeof colorValue === 'string' ? colorValue : null;
+                            return (
+                              <div className="flex items-center gap-2">
+                                {color && (
+                                  <div
+                                    className="h-3 w-3 rounded-full"
+                                    style={{ backgroundColor: color }}
+                                  />
+                                )}
+                                <span>{option.label}</span>
+                              </div>
+                            );
+                          }}
                         />
                       </FormControl>
                       <FormDescription>
@@ -380,7 +402,7 @@ export default function NewReportPage() {
                 <FormField
                   control={form.control}
                   name="problem_description"
-                  render={({ field }) => (
+                  render={({ field, fieldState }) => (
                     <FormItem>
                       <FormLabel>
                         Problem Description <span className="text-destructive">*</span>
@@ -388,7 +410,7 @@ export default function NewReportPage() {
                       <FormControl>
                         <Textarea
                           placeholder="What went wrong or needs attention?"
-                          className="min-h-24 resize-none"
+                          className={cn('min-h-24 resize-none', fieldState.invalid && 'border-destructive')}
                           {...field}
                         />
                       </FormControl>
@@ -403,7 +425,7 @@ export default function NewReportPage() {
                 <FormField
                   control={form.control}
                   name="improvement_description"
-                  render={({ field }) => (
+                  render={({ field, fieldState }) => (
                     <FormItem>
                       <FormLabel>Improvement Description (Optional)</FormLabel>
                       <FormControl>
@@ -423,7 +445,12 @@ export default function NewReportPage() {
               </div>
 
               <div className="flex justify-center pt-4">
-                <Button type="submit" disabled={isSubmitting} size="lg" className="min-w-48">
+                <Button
+                  type="submit"
+                  disabled={isSubmitting || !form.formState.isValid}
+                  size="lg"
+                  className="min-w-48"
+                >
                   {isSubmitting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />

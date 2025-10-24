@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const locales = {
   en: enUS,
@@ -90,6 +91,7 @@ export function DateRangePicker({
   disabled = false,
   className,
 }: DateRangePickerProps) {
+  const isMobile = useIsMobile();
   const [locale, setLocale] = React.useState<keyof typeof localizedStrings>('en');
   const [dateRange, setDateRange] = React.useState<DateRange | undefined>({
     from: startDate,
@@ -173,7 +175,7 @@ export function DateRangePicker({
             selected={dateRange}
             onSelect={handleSelect}
             defaultMonth={dateRange?.from}
-            numberOfMonths={2}
+            numberOfMonths={isMobile ? 1 : 2}
             locale={locales[locale]}
             className="bg-transparent p-0"
             buttonVariant="outline"
