@@ -14,10 +14,10 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-import { CategoryData } from '@/app/(authenticated)/oversikt/actions';
+import type { KategoriData } from '@/app/(authenticated)/oversikt/actions';
 
 export interface CategoryBreakdownProps {
-  data: CategoryData[];
+  data: KategoriData[];
 }
 
 export function CategoryBreakdown({ data }: CategoryBreakdownProps) {
@@ -35,15 +35,24 @@ export function CategoryBreakdown({ data }: CategoryBreakdownProps) {
     );
   }
 
+  const normalizedData = data.map((item) => ({
+    id: item.kategori_id ?? 'unknown',
+    name: item.kategori_namn,
+    color: item.color,
+    reportCount: item.rapport_antal,
+  }));
+
   // Sort data by report count descending
-  const sortedData = [...data].sort((a, b) => b.report_count - a.report_count);
+  const sortedData = [...normalizedData].sort(
+    (a, b) => b.reportCount - a.reportCount
+  );
 
   // Build dynamic chart config using database colors
   const chartConfig: ChartConfig = sortedData.reduce(
     (acc, item, index) => {
       const key = `category_${index}`;
       acc[key] = {
-        label: item.category_name,
+        label: item.name,
         color: item.color, // Use actual database color
       };
       return acc;
@@ -53,13 +62,13 @@ export function CategoryBreakdown({ data }: CategoryBreakdownProps) {
 
   // Transform data for recharts using database colors
   const chartData = sortedData.map((item, index) => ({
-    name: item.category_name,
-    value: item.report_count,
+    name: item.name,
+    value: item.reportCount,
     fill: item.color, // Use actual database color
     configKey: `category_${index}`,
   }));
 
-  const totalReports = data.reduce((sum, item) => sum + item.report_count, 0);
+  const totalReports = sortedData.reduce((sum, item) => sum + item.reportCount, 0);
 
   return (
     <Card className="flex flex-col">
