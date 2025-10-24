@@ -1,5 +1,6 @@
 "use client"
 
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Table } from "@tanstack/react-table"
 import {
   ChevronLeft,
@@ -19,25 +20,37 @@ import {
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>
+  totalReports: number
 }
 
 export function DataTablePagination<TData>({
   table,
+  totalReports,
 }: DataTablePaginationProps<TData>) {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  const createQueryString = (name: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set(name, value)
+    return params.toString()
+  }
+
   return (
-    <div className="flex items-center justify-between px-2">
-      <div className="text-muted-foreground flex-1 text-sm">
-        {table.getFilteredSelectedRowModel().rows.length} av{" "}
-        {table.getFilteredRowModel().rows.length} rad(er) valda.
+    <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 px-2 sm:justify-between">
+      <div className="text-muted-foreground text-sm">
+        {table.getFilteredSelectedRowModel().rows.length} / {totalReports}{" "}
+        valda.
       </div>
-      <div className="flex items-center space-x-6 lg:space-x-8">
+      <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 lg:gap-8">
         <div className="flex items-center space-x-2">
-          <p className="text-sm font-medium">Rader per sida</p>
+          <p className="text-sm font-medium">Rader</p>
           <Select
             value={`${table.getState().pagination.pageSize}`}
-            onValueChange={(value) => {
-              table.setPageSize(Number(value))
-            }}
+            onValueChange={(value) =>
+              router.push(`${pathname}?${createQueryString("pageSize", value)}`)
+            }
           >
             <SelectTrigger className="h-8 w-[70px]">
               <SelectValue placeholder={table.getState().pagination.pageSize} />
@@ -60,7 +73,9 @@ export function DataTablePagination<TData>({
             variant="outline"
             size="icon"
             className="hidden size-8 lg:flex"
-            onClick={() => table.setPageIndex(0)}
+            onClick={() =>
+              router.push(`${pathname}?${createQueryString("page", "1")}`)
+            }
             disabled={!table.getCanPreviousPage()}
           >
             <span className="sr-only">Gå till första sidan</span>
@@ -70,7 +85,14 @@ export function DataTablePagination<TData>({
             variant="outline"
             size="icon"
             className="size-8"
-            onClick={() => table.previousPage()}
+            onClick={() =>
+              router.push(
+                `${pathname}?${createQueryString(
+                  "page",
+                  `${table.getState().pagination.pageIndex}`
+                )}`
+              )
+            }
             disabled={!table.getCanPreviousPage()}
           >
             <span className="sr-only">Gå till föregående sida</span>
@@ -80,7 +102,14 @@ export function DataTablePagination<TData>({
             variant="outline"
             size="icon"
             className="size-8"
-            onClick={() => table.nextPage()}
+            onClick={() =>
+              router.push(
+                `${pathname}?${createQueryString(
+                  "page",
+                  `${table.getState().pagination.pageIndex + 2}`
+                )}`
+              )
+            }
             disabled={!table.getCanNextPage()}
           >
             <span className="sr-only">Gå till nästa sida</span>
@@ -90,7 +119,14 @@ export function DataTablePagination<TData>({
             variant="outline"
             size="icon"
             className="hidden size-8 lg:flex"
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+            onClick={() =>
+              router.push(
+                `${pathname}?${createQueryString(
+                  "page",
+                  `${table.getPageCount()}`
+                )}`
+              )
+            }
             disabled={!table.getCanNextPage()}
           >
             <span className="sr-only">Gå till sista sidan</span>

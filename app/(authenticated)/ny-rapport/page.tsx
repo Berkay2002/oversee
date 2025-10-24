@@ -424,11 +424,12 @@ export default function NewReportPage() {
                             Problembeskrivning <span className="text-destructive">*</span>
                           </FormLabel>
                           <FormControl>
-                            <Textarea
-                              placeholder="Beskriv vad som gick fel..."
-                              className={cn('min-h-[140px] resize-none', fieldState.invalid && 'border-destructive')}
-                              {...field}
-                            />
+<Textarea
+  {...field}
+  value={field.value ?? ""}
+  placeholder="Beskriv eventuella förbättringar som gjorts för att åtgärda problemet"
+  className="h-32"
+/>
                           </FormControl>
                           <FormDescription>
                             Beskriv vad som gick fel, symptom och vad som behöver åtgärdas.
@@ -445,11 +446,12 @@ export default function NewReportPage() {
                         <FormItem>
                           <FormLabel>Utförd arbete (Valfritt)</FormLabel>
                           <FormControl>
-                            <Textarea
-                              placeholder="Beskriv det utförda arbetet..."
-                              className="min-h-[140px] resize-none"
-                              {...field}
-                            />
+<Textarea
+  placeholder="Beskriv det utförda arbetet..."
+  className="min-h-[140px] resize-none"
+  {...field}
+  value={field.value ?? ""}
+/>
                           </FormControl>
                           <FormDescription>
                             Beskriv det utförda arbetet, utbytta delar eller gjorda justeringar.

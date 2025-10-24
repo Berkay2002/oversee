@@ -65,14 +65,14 @@ export function DataTableToolbar<TData>({
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center gap-2">
         <Input
-          placeholder="Filtrera på problem..."
+          placeholder="Problem..."
           defaultValue={searchParams.get("search")?.toString()}
           onChange={(event) => handleSearch(event.target.value)}
           className="h-8 w-[150px] lg:w-[250px]"
         />
         <Select onValueChange={(value) => handleFilterChange('technician', value)} defaultValue={searchParams.get('technician') || ''}>
           <SelectTrigger className="h-8 w-[150px]">
-            <SelectValue placeholder="Filtrera på tekniker" />
+            <SelectValue placeholder="Tekniker" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Alla tekniker</SelectItem>
@@ -85,7 +85,7 @@ export function DataTableToolbar<TData>({
         </Select>
         <Select onValueChange={(value) => handleFilterChange('category', value)} defaultValue={searchParams.get('category') || ''}>
           <SelectTrigger className="h-8 w-[150px]">
-            <SelectValue placeholder="Filtrera på kategori" />
+            <SelectValue placeholder="Kategori" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Alla kategorier</SelectItem>

@@ -9,9 +9,12 @@ export async function getReports(filters: {
   technician?: string;
   category?: string;
   page?: number;
+  pageSize?: number;
 }) {
   const supabase = await createClient();
-  let query = supabase.from('reports').select('*, categories(*)');
+  let query = supabase
+    .from('reports')
+    .select('*, categories(*)', { count: 'exact' });
 
   if (filters.search) {
     query = query.ilike('problem_description', `%${filters.search}%`);
@@ -23,15 +26,20 @@ export async function getReports(filters: {
     query = query.eq('category_id', filters.category);
   }
 
-  const { data, error } = await query
+  const pageSize = filters.pageSize || 10;
+  const { data, error, count } = await query
     .order('created_at', { ascending: false })
-    .range(((filters.page || 1) - 1) * 10, (filters.page || 1) * 10 - 1);
+    .range(
+      ((filters.page || 1) - 1) * pageSize,
+      (filters.page || 1) * pageSize - 1
+    );
 
   if (error) {
-    throw new Error(error.message);
+    console.error('Error fetching reports:', error);
+    throw new Error('Failed to fetch reports');
   }
 
-  return data;
+  return { data, count: count ?? 0 };
 }
 
 export async function updateReport(reportId: string, formData: FormData) {

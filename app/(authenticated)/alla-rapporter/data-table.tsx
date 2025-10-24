@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import * as React from "react"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -31,12 +33,18 @@ import { DataTableToolbar } from "./data-table-toolbar"
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  pageCount: number
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  pageCount,
 }: DataTableProps<TData, TValue>) {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
@@ -45,19 +53,25 @@ export function DataTable<TData, TValue>({
   )
   const [sorting, setSorting] = React.useState<SortingState>([])
 
+  const page = searchParams.get("page") ?? "1"
+  const pageSize = searchParams.get("pageSize") ?? "10"
+
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,
+    pageCount: Math.ceil(pageCount / parseInt(pageSize)),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    getRowId: (row: any) => row.id,
+    manualPagination: true,
     state: {
       sorting,
       columnVisibility,
       rowSelection,
       columnFilters,
-    },
-    initialState: {
       pagination: {
-        pageSize: 10,
+        pageIndex: parseInt(page) - 1,
+        pageSize: parseInt(pageSize),
       },
     },
     enableRowSelection: true,
@@ -66,6 +80,20 @@ export function DataTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
+    onPaginationChange: (updater) => {
+      const newPagination =
+        typeof updater === "function"
+          ? updater({
+              pageIndex: parseInt(page) - 1,
+              pageSize: parseInt(pageSize),
+            })
+          : updater
+
+      const params = new URLSearchParams(searchParams)
+      params.set("page", (newPagination.pageIndex + 1).toString())
+      params.set("pageSize", newPagination.pageSize.toString())
+      router.push(`${pathname}?${params.toString()}`)
+    },
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -133,7 +161,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+<DataTablePagination table={table} totalReports={pageCount} />
     </div>
   )
 }

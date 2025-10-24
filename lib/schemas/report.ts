@@ -8,10 +8,10 @@ export const reportSchema = z.object({
   end_date: z.date().optional(),
   days_taken: z.number().min(0, { message: 'Days taken must be a positive number' }),
   problem_description: z.string().min(1, { message: 'Problem description is required' }),
-  improvement_description: z.string().optional(),
+  improvement_description: z.string().nullable(),
   category_id: z.string().min(1, { message: 'Category is required' }),
   reporter_id: z.string().optional(),
-  reporter_name: z.string().optional(),
+  reporter_name: z.string().nullable(),
   custom_reporter_name: z.string().optional(),
 })
 .refine((data) => !!data.start_date, {
@@ -33,3 +33,9 @@ export const reportSchema = z.object({
 });
 
 export type ReportFormData = z.infer<typeof reportSchema>;
+
+export type Report = ReportFormData & {
+  id: string;
+  created_by_user_id: string;
+  created_at: string;
+};
