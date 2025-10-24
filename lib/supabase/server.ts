@@ -32,17 +32,33 @@ export async function createClient() {
 
 // Helper function to get the current session
 export async function getSession() {
-  const supabase = await createClient()
+  const supabase = await createClient();
   try {
-    const { data: { session }, error } = await supabase.auth.getSession()
-    if (error) {
-      console.error('Error getting session:', error)
-      return null
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+    if (userError) {
+      console.error("Error getting user for session validation:", userError);
+      return null;
     }
-    return session
+    if (!user) {
+      return null; // No authenticated user
+    }
+
+    // If user is validated, then get the session
+    const {
+      data: { session },
+      error: sessionError,
+    } = await supabase.auth.getSession();
+    if (sessionError) {
+      console.error("Error getting session:", sessionError);
+      return null;
+    }
+    return session;
   } catch (error) {
-    console.error('Error getting session:', error)
-    return null
+    console.error("Error getting session:", error);
+    return null;
   }
 }
 

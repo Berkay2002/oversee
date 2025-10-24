@@ -1,7 +1,7 @@
 import { AppSidebar } from "@/components/AppSidebar"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
-import { getSession } from "@/app/(auth)/actions"
+import { getSession } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 
 export default async function AuthenticatedLayout({

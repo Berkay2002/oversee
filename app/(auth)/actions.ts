@@ -170,21 +170,6 @@ export async function signOut() {
   redirect(DEFAULT_LOGOUT_REDIRECT)
 }
 
-/**
- * Get the current session
- * Returns the session object directly (null if not authenticated)
- */
-export async function getSession() {
-  const supabase = await createClient()
-
-  const { data: { session }, error } = await supabase.auth.getSession()
-
-  if (error || !session) {
-    return null
-  }
-
-  return session
-}
 
 /**
  * Get the current user
