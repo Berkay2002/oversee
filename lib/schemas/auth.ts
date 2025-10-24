@@ -4,10 +4,7 @@ import { z } from 'zod'
  * Login form validation schema
  */
 export const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, 'E-postadress krävs')
-    .pipe(z.email('Ogiltig e-postadress')),
+  email: z.string().email('Ogiltig e-postadress'),
   password: z
     .string()
     .min(1, 'Lösenord krävs')
