@@ -1,24 +1,14 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { columns } from "@/components/categories/columns";
+import { DataTable } from "@/components/categories/data-table";
+import { getCategories } from "./actions";
 
-export default function KategorierPage() {
+export default async function CategoriesPage() {
+  const categories = await getCategories();
+
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Kategorier</h1>
-        <p className="text-muted-foreground">
-          Manage report categories
-        </p>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Categories</CardTitle>
-          <CardDescription>Create and manage problem categories</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">Category management coming soon...</p>
-        </CardContent>
-      </Card>
+    <div className="container mx-auto py-10">
+      <h1 className="text-2xl font-bold mb-4">Categories</h1>
+      <DataTable columns={columns} data={categories} />
     </div>
-  )
+  );
 }

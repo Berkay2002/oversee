@@ -168,14 +168,14 @@ All tables have RLS (Row Level Security) enabled.
 ## Phase 5: Page Migrations - Data Management Pages
 
 ### 5.1 Categories Page (`/kategorier`)
-- [ ] Create `app/(authenticated)/kategorier/page.tsx`
-- [ ] Convert to Server Component for initial data load
-- [ ] Create `app/(authenticated)/kategorier/actions.ts` for Server Actions:
-  - [ ] `getCategories` - Fetch all categories (with cacheTag)
+- [x] Create `app/(authenticated)/kategorier/page.tsx`
+- [x] Convert to Server Component for initial data load
+- [x] Create `app/(authenticated)/kategorier/actions.ts` for Server Actions:
+  - [x] `getCategories` - Fetch all categories (with cacheTag)
   - [ ] `createCategory` - Create new category (with updateTag)
   - [ ] `updateCategory` - Update existing category (with updateTag)
   - [ ] `deleteCategory` - Delete category (with updateTag)
-- [ ] Migrate responsive table/card layout from Vite version
+- [x] Migrate responsive table/card layout from Vite version
 - [ ] Add create/edit dialog with shadcn/ui form components
 - [ ] Add delete confirmation dialog (AlertDialog)
 - [ ] Implement permission checks (can only edit own categories)

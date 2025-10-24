@@ -134,3 +134,31 @@ export interface PaginatedResponse<T> {
   page: number
   perPage: number
 }
+
+export type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row'];
+export type Enums<T extends keyof Database['public']['Enums']> = Database['public']['Enums'][T];
+
+export type Database = {
+  public: {
+    Tables: {
+      profiles: {
+        Row: Profile
+      }
+      reports: {
+        Row: Report
+      }
+      categories: {
+        Row: Category
+      }
+      technicians: {
+        Row: Technician
+      }
+      reporters: {
+        Row: Reporter
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+  }
+}
