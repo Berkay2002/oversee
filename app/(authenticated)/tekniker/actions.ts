@@ -1,11 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use server";
 
-"use server";
-
 import { createClient } from "@/lib/supabase/server";
-import { revalidateTag, updateTag, cacheTag } from "next/cache";
-import { cache } from "react";
+import { revalidateTag, updateTag, unstable_cache } from "next/cache";
 import { z } from "zod";
 
 const technicianSchema = z.object({
@@ -13,10 +10,12 @@ const technicianSchema = z.object({
   description: z.string().optional(),
 });
 
-export const getTechnicians = cache(
-  async ({ search }: { search?: string } = {}) => {
-    cacheTag("technicians");
-    const supabase = await createClient();
+export const getTechnicians = async ({
+  search,
+}: { search?: string } = {}) => {
+  const supabase = await createClient();
+
+  const getTechniciansFromDb = async () => {
     let query = supabase
       .from("technicians")
       .select("*")
@@ -33,8 +32,20 @@ export const getTechnicians = cache(
       throw new Error("Could not fetch technicians.");
     }
     return data;
-  }
-);
+  };
+
+  const cacheKey = search ? `technicians-${search}` : "technicians";
+
+  const getCachedTechnicians = unstable_cache(
+    getTechniciansFromDb,
+    [cacheKey],
+    {
+      tags: ["technicians"],
+    }
+  );
+
+  return getCachedTechnicians();
+};
 
 export async function createTechnician(values: z.infer<typeof technicianSchema>) {
   const validatedValues = technicianSchema.parse(values);

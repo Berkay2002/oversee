@@ -1,22 +1,31 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use server";
 
-"use server";
-
 import { createClient } from "@/lib/supabase/server";
 import { Tables } from "@/types/database";
-import { revalidatePath, updateTag, cacheTag } from "next/cache";
-import { cache } from "react";
+import { revalidatePath, updateTag, unstable_cache } from "next/cache";
 
-export const getReporters = cache(async () => {
-  cacheTag("reporters");
+export const getReporters = async () => {
   const supabase = await createClient();
-  const { data, error } = await supabase.from("reporters").select("*");
-  if (error) {
-    throw error;
-  }
-  return data;
-});
+
+  const getReportersFromDb = async () => {
+    const { data, error } = await supabase.from("reporters").select("*");
+    if (error) {
+      throw error;
+    }
+    return data;
+  };
+
+  const getCachedReporters = unstable_cache(
+    getReportersFromDb,
+    ["reporters"],
+    {
+      tags: ["reporters"],
+    }
+  );
+
+  return getCachedReporters();
+};
 
 export async function createReporter(
   values: Pick<Tables<'reporters'>, "name" | "description">

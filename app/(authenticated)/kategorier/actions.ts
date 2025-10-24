@@ -1,11 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use server";
 
-"use server";
-
 import { createClient } from "@/lib/supabase/server";
-import { revalidateTag, updateTag, cacheTag } from "next/cache";
-import { cache } from "react";
+import { revalidateTag, updateTag, unstable_cache } from "next/cache";
 import { z } from "zod";
 
 const categorySchema = z.object({
@@ -14,20 +11,32 @@ const categorySchema = z.object({
   color: z.string().optional(),
 });
 
-export const getCategories = cache(async () => {
-  cacheTag("categories");
+export async function getCategories() {
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("categories")
-    .select("*")
-    .order("created_at", { ascending: false });
 
-  if (error) {
-    console.error("Error fetching categories:", error);
-    throw new Error("Could not fetch categories.");
-  }
-  return data;
-});
+  const getCategoriesFromDb = async () => {
+    const { data, error } = await supabase
+      .from("categories")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching categories:", error);
+      throw new Error("Could not fetch categories.");
+    }
+    return data;
+  };
+
+  const getCachedCategories = unstable_cache(
+    getCategoriesFromDb,
+    ["categories"],
+    {
+      tags: ["categories"],
+    }
+  );
+
+  return getCachedCategories();
+}
 
 export async function createCategory(values: z.infer<typeof categorySchema>) {
   const validatedValues = categorySchema.parse(values);

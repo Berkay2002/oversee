@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Enable Cache Components (PPR)
+  cacheComponents: true,
+
   // React Compiler for automatic memoization (Next.js 16)
   reactCompiler: true,
 

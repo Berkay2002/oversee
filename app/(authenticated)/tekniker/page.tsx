@@ -5,9 +5,10 @@ import { getTechnicians } from "./actions";
 export default async function TechniciansPage({
   searchParams,
 }: {
-  searchParams: { search?: string };
+  searchParams: Promise<{ search?: string }>;
 }) {
-  const technicians = await getTechnicians({ search: searchParams.search });
+  const { search } = await searchParams;
+  const technicians = await getTechnicians({ search });
 
   return (
     <div className="container mx-auto py-10">
