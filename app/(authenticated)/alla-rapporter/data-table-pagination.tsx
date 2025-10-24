@@ -48,9 +48,12 @@ export function DataTablePagination<TData>({
           <p className="text-sm font-medium">Rader</p>
           <Select
             value={`${table.getState().pagination.pageSize}`}
-            onValueChange={(value) =>
-              router.push(`${pathname}?${createQueryString("pageSize", value)}`)
-            }
+            onValueChange={(value) => {
+              const params = new URLSearchParams(searchParams.toString())
+              params.set("pageSize", value)
+              params.set("page", "1")
+              router.push(`${pathname}?${params.toString()}`)
+            }}
           >
             <SelectTrigger className="h-8 w-[70px]">
               <SelectValue placeholder={table.getState().pagination.pageSize} />

@@ -35,7 +35,7 @@ export async function getReports(filters: {
     );
 
   if (error) {
-    console.error('Error fetching reports:', error);
+    console.error('Error fetching reports:', JSON.stringify(error, null, 2));
     throw new Error('Failed to fetch reports');
   }
 
