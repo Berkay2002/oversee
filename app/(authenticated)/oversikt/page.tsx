@@ -63,11 +63,11 @@ export default async function OversiktPage() {
       {/* Overview Section */}
       <section className="space-y-6">
         <div className="flex items-center gap-3">
-          <div className="h-px flex-1 bg-gradient-to-r from-border to-transparent" />
+          <div className="h-px flex-1 bg-linear-to-r from-border to-transparent" />
           <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
             Overview
           </h2>
-          <div className="h-px flex-1 bg-gradient-to-l from-border to-transparent" />
+          <div className="h-px flex-1 bg-linear-to-l from-border to-transparent" />
         </div>
 
         <Suspense fallback={<KPICardsSkeleton />}>
@@ -83,11 +83,11 @@ export default async function OversiktPage() {
       {/* Trends Section */}
       <section className="space-y-6">
         <div className="flex items-center gap-3">
-          <div className="h-px flex-1 bg-gradient-to-r from-border to-transparent" />
+          <div className="h-px flex-1 bg-linear-to-r from-border to-transparent" />
           <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
             Trends
           </h2>
-          <div className="h-px flex-1 bg-gradient-to-l from-border to-transparent" />
+          <div className="h-px flex-1 bg-linear-to-l from-border to-transparent" />
         </div>
 
         <Suspense fallback={<ChartSkeleton />}>
@@ -98,11 +98,11 @@ export default async function OversiktPage() {
       {/* Breakdown Section */}
       <section className="space-y-6">
         <div className="flex items-center gap-3">
-          <div className="h-px flex-1 bg-gradient-to-r from-border to-transparent" />
+          <div className="h-px flex-1 bg-linear-to-r from-border to-transparent" />
           <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
             Breakdown
           </h2>
-          <div className="h-px flex-1 bg-gradient-to-l from-border to-transparent" />
+          <div className="h-px flex-1 bg-linear-to-l from-border to-transparent" />
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
@@ -119,11 +119,11 @@ export default async function OversiktPage() {
       {/* Details Section */}
       <section className="space-y-6">
         <div className="flex items-center gap-3">
-          <div className="h-px flex-1 bg-gradient-to-r from-border to-transparent" />
+          <div className="h-px flex-1 bg-linear-to-r from-border to-transparent" />
           <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
             Details
           </h2>
-          <div className="h-px flex-1 bg-gradient-to-l from-border to-transparent" />
+          <div className="h-px flex-1 bg-linear-to-l from-border to-transparent" />
         </div>
 
         <Suspense fallback={<ChartSkeleton />}>

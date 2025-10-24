@@ -65,17 +65,17 @@ export function DataTableToolbar<TData>({
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center gap-2">
         <Input
-          placeholder="Filter by problem..."
+          placeholder="Filtrera på problem..."
           defaultValue={searchParams.get("search")?.toString()}
           onChange={(event) => handleSearch(event.target.value)}
           className="h-8 w-[150px] lg:w-[250px]"
         />
         <Select onValueChange={(value) => handleFilterChange('technician', value)} defaultValue={searchParams.get('technician') || ''}>
           <SelectTrigger className="h-8 w-[150px]">
-            <SelectValue placeholder="Filter by technician" />
+            <SelectValue placeholder="Filtrera på tekniker" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Technicians</SelectItem>
+            <SelectItem value="all">Alla tekniker</SelectItem>
             {technicians.map((technician) => (
               <SelectItem key={technician.id} value={technician.name}>
                 {technician.name}

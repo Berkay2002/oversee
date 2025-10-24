@@ -262,7 +262,7 @@ export async function getTopRegistrations(): Promise<TopRegistrationData[]> {
   data?.forEach((report) => {
     const regNumbers = report.registration_numbers || [];
     const categoryName =
-      (report.categories as { name: string } | null)?.name || 'Uncategorized';
+      (report.categories as unknown as { name: string } | null)?.name || 'Uncategorized';
 
     regNumbers.forEach((regNum: string) => {
       const existing = regMap.get(regNum);

@@ -10,7 +10,8 @@ import { getCategories, getTechnicians, getReporters, type Category, type Techni
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { differenceInDays } from 'date-fns';
-import { Wrench, Car, AlertCircle, Loader2 } from 'lucide-react';
+import { type DateRange } from 'react-day-picker';
+import { Wrench, Car, ClipboardCheck, Loader2 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -29,7 +30,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { Combobox, type ComboboxOption } from '@/components/ui/combobox';
 import { RegistrationInput } from '@/components/reports/registration-input';
-import { DateRangePicker } from '@/components/reports/date-range-picker';
+import { DateRangePickerCard } from '@/components/reports/date-range-picker-card';
 
 const CUSTOM_REPORTER_VALUE = '__custom__';
 
@@ -99,7 +100,9 @@ export default function NewReportPage() {
   React.useEffect(() => {
     if (startDate && endDate) {
       const days = differenceInDays(endDate, startDate) + 1;
-      form.setValue('days_taken', days);
+      form.setValue('days_taken', days > 0 ? days : 1);
+    } else {
+      form.setValue('days_taken', 0);
     }
   }, [startDate, endDate, form]);
 
@@ -148,10 +151,10 @@ export default function NewReportPage() {
     setIsSubmitting(false);
 
     if (result.message.startsWith('Success')) {
-      toast.success('Report Created', {
-        description: 'The new report has been successfully created.',
+      toast.success('Rapport skapad', {
+        description: 'Den nya rapporten har skapats.',
         action: {
-          label: 'View All Reports',
+          label: 'Visa alla rapporter',
           onClick: () => router.push('/alla-rapporter'),
         },
       });
@@ -159,7 +162,7 @@ export default function NewReportPage() {
       // Reset form for next entry
       form.reset();
     } else {
-      toast.error('Error Creating Report', {
+      toast.error('Fel vid skapande av rapport', {
         description: result.message,
       });
     }
@@ -184,7 +187,7 @@ export default function NewReportPage() {
       label: rep.name,
       metadata: { description: rep.description },
     })),
-    { value: CUSTOM_REPORTER_VALUE, label: 'Other / Custom', metadata: {} },
+    { value: CUSTOM_REPORTER_VALUE, label: 'Annan / Anpassad', metadata: {} },
   ];
 
   if (isLoading) {
@@ -196,270 +199,296 @@ export default function NewReportPage() {
   }
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-8">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">New Service Report</CardTitle>
-          <CardDescription>
-            Create a new service report to document an issue and any corrective work done.
+    <div className="container mx-auto max-w-6xl px-4 py-8">
+      <Card className="overflow-hidden rounded-xl border-border/60 bg-linear-to-b from-card to-card/95 shadow-sm">
+        <CardHeader className="bg-card/50 p-6 md:p-8">
+          <CardTitle className="text-3xl font-bold">Skapa Rapport</CardTitle>
+          <CardDescription className="max-w-prose text-muted-foreground">
+            Logga ett problem och allt arbete som utförts.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6 md:p-8">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              {/* Work Information Section */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <Wrench className="h-5 w-5 text-muted-foreground" />
-                  <h3 className="text-lg font-semibold">Work Information</h3>
-                </div>
-                <Separator />
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
+              <div className="grid grid-cols-1 gap-x-12 gap-y-10 lg:grid-cols-2">
+                {/* Left Column */}
+                <div className="flex flex-col gap-10">
+                  {/* Work Information Section */}
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-3">
+                      <Wrench className="h-6 w-6 text-muted-foreground" />
+                      <h3 className="text-xl font-semibold">Arbetsinformation</h3>
+                    </div>
+                    <Separator />
 
-                <FormField
-                  control={form.control}
-                  name="technician_id"
-                  render={({ field, fieldState }) => (
-                    <FormItem>
-                      <FormLabel>
-                        Technician Assigned <span className="text-destructive">*</span>
-                      </FormLabel>
-                      <FormControl>
-                        <Combobox
-                          ref={technicianInputRef}
-                          options={technicianOptions}
-                          value={field.value}
-                          onValueChange={(value) => {
-                            field.onChange(value);
-                            const tech = technicians.find(t => t.id === value);
-                            if (tech) {
-                              form.setValue('technician_name', tech.name);
-                            }
-                          }}
-                          placeholder="Select technician..."
-                          searchPlaceholder="Search technicians..."
-                          emptyText="No technician found."
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        Select the technician who worked on this repair.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                    <FormField
+                      control={form.control}
+                      name="technician_id"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <FormLabel>
+                            Tilldelad tekniker <span className="text-destructive">*</span>
+                          </FormLabel>
+                          <FormControl>
+                            <Combobox
+                              ref={technicianInputRef}
+                              options={technicianOptions}
+                              value={field.value}
+                              onValueChange={(value) => {
+                                field.onChange(value);
+                                const tech = technicians.find(t => t.id === value);
+                                if (tech) {
+                                  form.setValue('technician_name', tech.name);
+                                }
+                              }}
+                              placeholder="Välj tekniker..."
+                              searchPlaceholder="Sök tekniker..."
+                              emptyText="Ingen tekniker hittades."
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Personen som arbetade med denna reparation.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                <FormField
-                  control={form.control}
-                  name="reporter_id"
-                  render={({ field, fieldState }) => (
-                    <FormItem>
-                      <FormLabel>Reported By (Optional)</FormLabel>
-                      <FormControl>
-                        <Combobox
-                          options={reporterOptions}
-                          value={field.value}
-                          onValueChange={field.onChange}
-                          placeholder="Select reporter..."
-                          searchPlaceholder="Search reporters..."
-                          emptyText="No reporter found."
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        Who reported or inspected this issue?
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                    <FormField
+                      control={form.control}
+                      name="reporter_id"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <FormLabel>Rapportör (Valfritt)</FormLabel>
+                          <FormControl>
+                            <Combobox
+                              options={reporterOptions}
+                              value={field.value}
+                              onValueChange={field.onChange}
+                              placeholder="Välj rapportör..."
+                              searchPlaceholder="Sök rapportörer..."
+                              emptyText="Ingen rapportör hittades."
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Vem som rapporterade eller inspekterade detta problem.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                {showCustomReporter && (
-                  <FormField
-                    control={form.control}
-                  name="custom_reporter_name"
-                  render={({ field, fieldState }) => (
-                    <FormItem>
-                      <FormLabel>
-                          Custom Reporter Name <span className="text-destructive">*</span>
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Enter reporter name..."
-                            {...field}
-                            className={cn(fieldState.invalid && 'border-destructive')}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
+                    {showCustomReporter && (
+                      <FormField
+                        control={form.control}
+                        name="custom_reporter_name"
+                        render={({ field, fieldState }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Anpassat rapportörnamn <span className="text-destructive">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Ange rapportörnamn..."
+                                {...field}
+                                className={cn(fieldState.invalid && 'border-destructive')}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     )}
-                  />
-                )}
+                    
+                    <div className="space-y-2 pt-2">
+                      <FormLabel>
+                        Arbetsperiod <span className="text-destructive">*</span>
+                      </FormLabel>
+                      <DateRangePickerCard
+                        dateRange={{ from: form.watch('start_date'), to: form.watch('end_date') }}
+                        onDateRangeChange={(range: DateRange | undefined) => {
+                          form.setValue('start_date', range?.from ?? undefined);
+                          form.setValue('end_date', range?.to ?? undefined);
+                        }}
+                      />
+                      <FormDescription className="px-1">
+                        När arbetet påbörjades och när det slutfördes.
+                      </FormDescription>
+                      {form.formState.errors.start_date && (
+                        <p className="px-1 text-sm font-medium text-destructive">
+                          {form.formState.errors.start_date.message}
+                        </p>
+                      )}
+                      {form.formState.errors.end_date && (
+                        <p className="px-1 text-sm font-medium text-destructive">
+                          {form.formState.errors.end_date.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
 
-                <div className="space-y-2">
-                  <FormLabel>
-                    Work Period <span className="text-destructive">*</span>
-                  </FormLabel>
-                  <DateRangePicker
-                    startDate={form.watch('start_date')}
-                    endDate={form.watch('end_date')}
-                    onStartDateChange={(date) => form.setValue('start_date', date as Date)}
-                    onEndDateChange={(date) => form.setValue('end_date', date as Date)}
-                  />
-                  {form.formState.errors.start_date && (
-                    <p className="text-sm font-medium text-destructive">
-                      {form.formState.errors.start_date.message}
-                    </p>
-                  )}
-                  {form.formState.errors.end_date && (
-                    <p className="text-sm font-medium text-destructive">
-                      {form.formState.errors.end_date.message}
-                    </p>
-                  )}
+                </div>
+
+                {/* Right Column */}
+                <div className="flex flex-col gap-10">
+                  {/* Vehicle Details Section */}
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Car className="h-6 w-6 text-muted-foreground" />
+                        <h3 className="text-xl font-semibold">Fordonsinformation</h3>
+                      </div>
+                      <p className="text-sm text-muted-foreground">Kan inkludera flera fordon.</p>
+                    </div>
+                    <Separator />
+
+                    <FormField
+                      control={form.control}
+                      name="registration_numbers"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <FormLabel>
+                            Registreringsnummer <span className="text-destructive">*</span>
+                          </FormLabel>
+                          <FormControl>
+                            <RegistrationInput
+                              value={field.value}
+                              onChange={field.onChange}
+                              placeholder="Skriv en registreringsskylt och tryck på Enter (t.ex. ABC123)"
+                              className={cn(fieldState.invalid && 'border-destructive focus-within:ring-destructive')}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Lägg till ett eller flera fordon som är involverade i denna rapport.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="category_id"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <FormLabel>
+                            Problemkategori <span className="text-destructive">*</span>
+                          </FormLabel>
+                          <FormControl>
+                            <Combobox
+                              options={categoryOptions}
+                              value={field.value}
+                              onValueChange={field.onChange}
+                              placeholder="Välj kategori..."
+                              searchPlaceholder="Sök kategorier..."
+                              emptyText="Ingen kategori hittades."
+                              renderOption={(option) => {
+                                const colorValue = option.metadata?.color;
+                                const color = typeof colorValue === 'string' ? colorValue : null;
+                                return (
+                                  <div className="flex items-center gap-2">
+                                    {color && (
+                                      <div
+                                        className="h-3 w-3 rounded-full"
+                                        style={{ backgroundColor: color }}
+                                      />
+                                    )}
+                                    <span>{option.label}</span>
+                                  </div>
+                                );
+                              }}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Används för spårning och analys.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  {/* Issue & Fix Section */}
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-3">
+                      <ClipboardCheck className="h-6 w-6 text-muted-foreground" />
+                      <h3 className="text-xl font-semibold">Problem & Lösning</h3>
+                    </div>
+                    <Separator />
+
+                    <FormField
+                      control={form.control}
+                      name="problem_description"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <FormLabel>
+                            Problembeskrivning <span className="text-destructive">*</span>
+                          </FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Beskriv vad som gick fel..."
+                              className={cn('min-h-[140px] resize-none', fieldState.invalid && 'border-destructive')}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Beskriv vad som gick fel, symptom och vad som behöver åtgärdas.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="improvement_description"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <FormLabel>Utförd arbete (Valfritt)</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Beskriv det utförda arbetet..."
+                              className="min-h-[140px] resize-none"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Beskriv det utförda arbetet, utbytta delar eller gjorda justeringar.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
               </div>
 
-              {/* Vehicle Details Section */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <Car className="h-5 w-5 text-muted-foreground" />
-                  <h3 className="text-lg font-semibold">Vehicle Details</h3>
-                </div>
-                <Separator />
-
-                <FormField
-                  control={form.control}
-                  name="registration_numbers"
-                  render={({ field, fieldState }) => (
-                    <FormItem>
-                      <FormLabel>
-                        Registration Numbers <span className="text-destructive">*</span>
-                      </FormLabel>
-                      <FormControl>
-                        <RegistrationInput
-                          value={field.value}
-                          onChange={field.onChange}
-                          placeholder="Type registration and press Enter (e.g., ABC123)"
-                          className={cn(fieldState.invalid && 'border-destructive focus-within:ring-destructive')}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        Add vehicle registration numbers. Press Enter after each one, or paste multiple separated by commas.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="category_id"
-                  render={({ field, fieldState }) => (
-                    <FormItem>
-                      <FormLabel>
-                        Problem Category <span className="text-destructive">*</span>
-                      </FormLabel>
-                      <FormControl>
-                        <Combobox
-                          options={categoryOptions}
-                          value={field.value}
-                          onValueChange={field.onChange}
-                          placeholder="Select category..."
-                          searchPlaceholder="Search categories..."
-                          emptyText="No category found."
-                          renderOption={(option) => {
-                            const colorValue = option.metadata?.color;
-                            const color = typeof colorValue === 'string' ? colorValue : null;
-                            return (
-                              <div className="flex items-center gap-2">
-                                {color && (
-                                  <div
-                                    className="h-3 w-3 rounded-full"
-                                    style={{ backgroundColor: color }}
-                                  />
-                                )}
-                                <span>{option.label}</span>
-                              </div>
-                            );
-                          }}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        Categorize the type of issue for tracking and analytics.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              {/* Problem & Resolution Section */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <AlertCircle className="h-5 w-5 text-muted-foreground" />
-                  <h3 className="text-lg font-semibold">Problem & Resolution</h3>
-                </div>
-                <Separator />
-
-                <FormField
-                  control={form.control}
-                  name="problem_description"
-                  render={({ field, fieldState }) => (
-                    <FormItem>
-                      <FormLabel>
-                        Problem Description <span className="text-destructive">*</span>
-                      </FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="What went wrong or needs attention?"
-                          className={cn('min-h-24 resize-none', fieldState.invalid && 'border-destructive')}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        Describe the issue in detail, including symptoms and any diagnostic findings.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="improvement_description"
-                  render={({ field, fieldState }) => (
-                    <FormItem>
-                      <FormLabel>Improvement Description (Optional)</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="What fixes or improvements were applied?"
-                          className="min-h-24 resize-none"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        Document the corrective actions taken, parts replaced, or preventive measures implemented.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <div className="flex justify-center pt-4">
+              <div className="flex flex-col items-center gap-3 pt-6">
                 <Button
                   type="submit"
                   disabled={isSubmitting || !form.formState.isValid}
                   size="lg"
-                  className="min-w-48"
+                  className="h-12 min-w-56 text-base"
                 >
                   {isSubmitting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Creating Report...
+                      Skapar rapport...
                     </>
                   ) : (
-                    'Create Report'
+                    'Skapa rapport'
                   )}
                 </Button>
+                <p className="text-center text-sm text-muted-foreground">
+                  eller{' '}
+                  <Button
+                    variant="link"
+                    type="button"
+                    className="h-auto p-0"
+                    onClick={() => router.push('/alla-rapporter')}
+                  >
+                    Visa alla rapporter
+                  </Button>
+                </p>
               </div>
             </form>
           </Form>

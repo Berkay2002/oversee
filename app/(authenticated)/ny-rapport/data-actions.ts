@@ -38,7 +38,7 @@ export async function getCategories(): Promise<{ data: Category[] | null; error:
     return { data, error: null };
   } catch (error) {
     console.error('Unexpected error fetching categories:', error);
-    return { data: null, error: 'Failed to fetch categories' };
+    return { data: null, error: 'Misslyckades med att hämta kategorier' };
   }
 }
 
@@ -60,7 +60,7 @@ export async function getTechnicians(): Promise<{ data: Technician[] | null; err
     return { data, error: null };
   } catch (error) {
     console.error('Unexpected error fetching technicians:', error);
-    return { data: null, error: 'Failed to fetch technicians' };
+    return { data: null, error: 'Misslyckades med att hämta tekniker' };
   }
 }
 
@@ -82,6 +82,6 @@ export async function getReporters(): Promise<{ data: Reporter[] | null; error: 
     return { data, error: null };
   } catch (error) {
     console.error('Unexpected error fetching reporters:', error);
-    return { data: null, error: 'Failed to fetch reporters' };
+    return { data: null, error: 'Misslyckades med att hämta rapportörer' };
   }
 }

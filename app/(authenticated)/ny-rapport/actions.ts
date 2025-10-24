@@ -39,7 +39,7 @@ export async function createReport(formData: FormData) {
     console.error('Validation Errors:', validatedFields.error.flatten().fieldErrors);
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Error: Invalid form data.',
+      message: 'Fel: Ogiltig formulärdata.',
     };
   }
 
@@ -55,7 +55,7 @@ export async function createReport(formData: FormData) {
   if (error) {
     console.error('Database Error:', error);
     return {
-      message: `Database Error: ${error.message}`,
+      message: `Databasfel: ${error.message}`,
     };
   }
 
@@ -64,7 +64,7 @@ export async function createReport(formData: FormData) {
   updateTag('dashboard');
 
   return {
-    message: 'Success: Report created successfully.',
+    message: 'Success: Rapporten har skapats.',
     data,
   };
 }
