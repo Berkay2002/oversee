@@ -1,24 +1,14 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { getReporters } from "./actions";
+import { columns } from "@/components/reporters/columns";
+import { DataTable } from "@/components/reporters/data-table";
 
-export default function ReporterPage() {
+export default async function ReporterPage() {
+  const data = await getReporters();
+
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Reporter</h1>
-        <p className="text-muted-foreground">
-          Manage reporter profiles
-        </p>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Reporters</CardTitle>
-          <CardDescription>Create and manage reporter profiles</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">Reporter management coming soon...</p>
-        </CardContent>
-      </Card>
+    <div className="container mx-auto py-10">
+      <h1 className="text-2xl font-bold mb-4">Reporters</h1>
+      <DataTable columns={columns} data={data} />
     </div>
-  )
+  );
 }

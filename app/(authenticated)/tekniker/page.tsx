@@ -2,8 +2,12 @@ import { columns } from "@/components/technicians/columns";
 import { DataTable } from "@/components/technicians/data-table";
 import { getTechnicians } from "./actions";
 
-export default async function TechniciansPage() {
-  const technicians = await getTechnicians();
+export default async function TechniciansPage({
+  searchParams,
+}: {
+  searchParams: { search?: string };
+}) {
+  const technicians = await getTechnicians({ search: searchParams.search });
 
   return (
     <div className="container mx-auto py-10">

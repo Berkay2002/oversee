@@ -172,9 +172,9 @@ All tables have RLS (Row Level Security) enabled.
 - [x] Convert to Server Component for initial data load
 - [x] Create `app/(authenticated)/kategorier/actions.ts` for Server Actions:
   - [x] `getCategories` - Fetch all categories (with cacheTag)
-  - [ ] `createCategory` - Create new category (with updateTag)
-  - [ ] `updateCategory` - Update existing category (with updateTag)
-  - [ ] `deleteCategory` - Delete category (with updateTag)
+- [x] `createCategory` - Create new category (with updateTag)
+- [x] `updateCategory` - Update existing category (with updateTag)
+- [x] `deleteCategory` - Delete category (with updateTag)
 - [x] Migrate responsive table/card layout from Vite version
 - [x] Add create/edit dialog with shadcn/ui form components
 - [x] Add delete confirmation dialog (AlertDialog)
@@ -194,25 +194,25 @@ All tables have RLS (Row Level Security) enabled.
 - [x] Migrate responsive table/card layout from Vite version
 - [x] Add create/edit dialog with shadcn/ui components
 - [x] Add delete confirmation with AlertDialog
-- [ ] Implement permission checks (can only edit own technicians)
-- [ ] Add search/filter functionality
+- [x] Implement permission checks (can only edit own technicians)
+- [x] Add search/filter functionality
 - [x] Use `cacheTag('technicians')` for data caching
 - [x] Use `updateTag('technicians')` after mutations
 
 ### 5.3 Reporters Page (`/reporter`)
-- [ ] Create `app/(authenticated)/reporter/page.tsx`
-- [ ] Create Server Actions in `app/(authenticated)/reporter/actions.ts`:
-  - [ ] `getReporters` - Fetch all reporters (with cacheTag)
-  - [ ] `createReporter` - Create new reporter (with updateTag)
-  - [ ] `updateReporter` - Update existing reporter (with updateTag)
-  - [ ] `deleteReporter` - Delete reporter (with updateTag)
-- [ ] Migrate responsive table/card layout
-- [ ] Add CRUD dialogs with shadcn/ui components
-- [ ] Implement permission checks
-- [ ] Add loading states with Suspense
-- [ ] Add error handling with error.tsx
-- [ ] Use `cacheTag('reporters')` for data caching
-- [ ] Use `updateTag('reporters')` after mutations
+- [x] Create `app/(authenticated)/reporter/page.tsx`
+- [x] Create Server Actions in `app/(authenticated)/reporter/actions.ts`:
+  - [x] `getReporters` - Fetch all reporters (with cacheTag)
+  - [x] `createReporter` - Create new reporter (with updateTag)
+  - [x] `updateReporter` - Update existing reporter (with updateTag)
+  - [x] `deleteReporter` - Delete reporter (with updateTag)
+- [x] Migrate responsive table/card layout
+- [x] Add CRUD dialogs with shadcn/ui components
+- [x] Implement permission checks
+- [x] Add loading states with Suspense
+- [x] Add error handling with error.tsx
+- [x] Use `cacheTag('reporters')` for data caching
+- [x] Use `updateTag('reporters')` after mutations
 
 ### 5.4 Users/Admin Page (`/anvandare`)
 - [ ] Create `app/(authenticated)/anvandare/page.tsx`

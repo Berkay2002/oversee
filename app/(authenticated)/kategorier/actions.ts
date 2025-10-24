@@ -1,7 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+"use server";
+
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { unstable_cache as cache, revalidateTag } from "next/cache";
+import { revalidateTag, updateTag, cacheTag } from "next/cache";
+import { cache } from "react";
 import { z } from "zod";
 
 const categorySchema = z.object({
@@ -10,25 +14,20 @@ const categorySchema = z.object({
   color: z.string().optional(),
 });
 
-export async function getCategories() {
+export const getCategories = cache(async () => {
+  cacheTag("categories");
   const supabase = await createClient();
-  const fetchCategories = async () => {
-    const { data, error } = await supabase
-      .from("categories")
-      .select("*")
-      .order("created_at", { ascending: false });
+  const { data, error } = await supabase
+    .from("categories")
+    .select("*")
+    .order("created_at", { ascending: false });
 
-    if (error) {
-      console.error("Error fetching categories:", error);
-      throw new Error("Could not fetch categories.");
-    }
-    return data;
-  };
-
-  return cache(fetchCategories, ["categories"], {
-    tags: ["categories"],
-  })();
-}
+  if (error) {
+    console.error("Error fetching categories:", error);
+    throw new Error("Could not fetch categories.");
+  }
+  return data;
+});
 
 export async function createCategory(values: z.infer<typeof categorySchema>) {
   const validatedValues = categorySchema.parse(values);
@@ -44,7 +43,7 @@ export async function createCategory(values: z.infer<typeof categorySchema>) {
     throw new Error("Could not create category.");
   }
 
-  revalidateTag("categories", 'max');
+  updateTag("categories");
   return data;
 }
 
@@ -66,7 +65,7 @@ export async function updateCategory(
     throw new Error("Could not update category.");
   }
 
-  revalidateTag("categories", 'max');
+  updateTag("categories");
   return data;
 }
 
@@ -82,6 +81,6 @@ export async function deleteCategory(id: string) {
     throw new Error("Could not delete category.");
   }
 
-  revalidateTag("categories", 'max');
+  updateTag("categories");
   return data;
 }

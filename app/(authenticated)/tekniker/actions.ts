@@ -1,7 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+"use server";
+
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { unstable_cache as cache, revalidateTag } from "next/cache";
+import { revalidateTag, updateTag, cacheTag } from "next/cache";
+import { cache } from "react";
 import { z } from "zod";
 
 const technicianSchema = z.object({
@@ -9,32 +13,43 @@ const technicianSchema = z.object({
   description: z.string().optional(),
 });
 
-export async function getTechnicians() {
-  const supabase = await createClient();
-  const fetchTechnicians = async () => {
-    const { data, error } = await supabase
+export const getTechnicians = cache(
+  async ({ search }: { search?: string } = {}) => {
+    cacheTag("technicians");
+    const supabase = await createClient();
+    let query = supabase
       .from("technicians")
       .select("*")
       .order("created_at", { ascending: false });
+
+    if (search) {
+      query = query.ilike("name", `%${search}%`);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       console.error("Error fetching technicians:", error);
       throw new Error("Could not fetch technicians.");
     }
     return data;
-  };
-
-  return cache(fetchTechnicians, ["technicians"], {
-    tags: ["technicians"],
-  })();
-}
+  }
+);
 
 export async function createTechnician(values: z.infer<typeof technicianSchema>) {
   const validatedValues = technicianSchema.parse(values);
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+
   const { data, error } = await supabase
     .from("technicians")
-    .insert(validatedValues)
+    .insert({ ...validatedValues, created_by_user_id: user.id })
     .select()
     .single();
 
@@ -43,7 +58,7 @@ export async function createTechnician(values: z.infer<typeof technicianSchema>)
     throw new Error("Could not create technician.");
   }
 
-  revalidateTag("technicians", 'max');
+  updateTag("technicians");
   return data;
 }
 
@@ -53,6 +68,28 @@ export async function updateTechnician(
 ) {
   const validatedValues = technicianSchema.parse(values);
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+
+  const { data: technician, error: fetchError } = await supabase
+    .from("technicians")
+    .select("created_by_user_id")
+    .eq("id", id)
+    .single();
+
+  if (fetchError || !technician) {
+    throw new Error("Technician not found.");
+  }
+
+  if (technician.created_by_user_id !== user.id) {
+    throw new Error("You do not have permission to edit this technician.");
+  }
+
   const { data, error } = await supabase
     .from("technicians")
     .update(validatedValues)
@@ -65,12 +102,34 @@ export async function updateTechnician(
     throw new Error("Could not update technician.");
   }
 
-  revalidateTag("technicians", 'max');
+  updateTag("technicians");
   return data;
 }
 
 export async function deleteTechnician(id: string) {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+
+  const { data: technician, error: fetchError } = await supabase
+    .from("technicians")
+    .select("created_by_user_id")
+    .eq("id", id)
+    .single();
+
+  if (fetchError || !technician) {
+    throw new Error("Technician not found.");
+  }
+
+  if (technician.created_by_user_id !== user.id) {
+    throw new Error("You do not have permission to delete this technician.");
+  }
+
   const { data, error } = await supabase
     .from("technicians")
     .delete()
@@ -81,6 +140,6 @@ export async function deleteTechnician(id: string) {
     throw new Error("Could not delete technician.");
   }
 
-  revalidateTag("technicians", 'max');
+  updateTag("technicians");
   return data;
 }
