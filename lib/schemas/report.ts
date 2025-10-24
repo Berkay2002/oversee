@@ -9,7 +9,7 @@ export const reportSchema = z.object({
   days_taken: z.number().min(0, { message: 'Days taken must be a positive number' }),
   problem_description: z.string().min(1, { message: 'Problem description is required' }),
   improvement_description: z.string().optional(),
-  category_id: z.string().uuid({ message: 'Category is required' }),
+  category_id: z.string().min(1, { message: 'Category is required' }),
   reporter_id: z.string().optional(),
   reporter_name: z.string().optional(),
   custom_reporter_name: z.string().optional(),

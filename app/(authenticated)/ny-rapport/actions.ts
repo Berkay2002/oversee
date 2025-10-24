@@ -45,11 +45,25 @@ export async function createReport(formData: FormData) {
 
   // Remove form-only fields before database insertion
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { custom_reporter_name, ...dbData } = validatedFields.data;
+  const { custom_reporter_name, start_date, end_date, reporter_id, technician_id, ...dbData } = validatedFields.data;
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return {
+      message: 'Fel: Användaren är inte autentiserad.',
+    };
+  }
+
+  const dataToInsert = {
+    ...dbData,
+    created_by_user_id: user.id,
+  };
 
   const { data, error } = await supabase
     .from('reports')
-    .insert([dbData])
+    .insert([dataToInsert])
     .select();
 
   if (error) {

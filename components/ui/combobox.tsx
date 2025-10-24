@@ -82,7 +82,7 @@ export const Combobox = React.forwardRef<HTMLButtonElement, ComboboxProps>(
                     key={option.value}
                     value={option.value}
                     onSelect={(currentValue) => {
-                      onValueChange(currentValue === value ? '' : currentValue);
+                      onValueChange(currentValue);
                       setOpen(false);
                     }}
                   >
