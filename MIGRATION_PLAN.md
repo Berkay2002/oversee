@@ -618,6 +618,24 @@ const nextConfig = {
 
 ## Next.js 16 Caching APIs Reference
 
+⚠️ **IMPORTANT NOTE ON AUTHENTICATED DATA CACHING**
+
+**This project does NOT use `'use cache'` for authenticated data fetching** due to the following incompatibility:
+- All data fetching functions use `createClient()` which internally calls `await cookies()` for authentication
+- `'use cache'` directive **does not allow** dynamic APIs like `cookies()`, `headers()`, or `searchParams` inside cached functions
+- Runtime error occurs: "Route used `cookies()` inside 'use cache'. Accessing Dynamic data sources inside a cache scope is not supported."
+
+**Current Caching Strategy:**
+- ✅ **No explicit caching** for authenticated queries (getCategories, getReports, etc.)
+- ✅ Efficiency maintained through **Server Actions** and **Supabase connection pooling**
+- ✅ **`updateTag()`** still used for cache invalidation in mutation actions (for future static/shared data)
+- ✅ User-specific data **should not be cached across users** anyway
+
+**When to Use `'use cache'` in this Project:**
+- Only for truly **static, shared data** that doesn't require authentication
+- Only for data that doesn't use `cookies()`, `headers()`, or `searchParams`
+- Consider `'use cache: private'` for personalized content that needs runtime prefetching (more complex setup)
+
 ### Overview of Caching Functions
 
 | Function | Purpose | When to Use | Return Value |
@@ -630,19 +648,20 @@ const nextConfig = {
 
 ### Code Examples
 
-#### Example 1: Categories Page with updateTag (Immediate Updates)
+#### Example 1: Categories Page (Actual Implementation - No Caching)
+
+⚠️ **Note**: This example shows the **actual implementation** used in this project. We do NOT use `'use cache'` because `createClient()` calls `cookies()` internally.
 
 ```tsx
 // app/(authenticated)/kategorier/actions.ts
 'use server'
 
-import { updateTag, cacheTag } from 'next/cache'
+import { updateTag } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 
 export async function getCategories() {
-  'use cache'
-  cacheTag('categories')
-
+  // NO 'use cache' directive - incompatible with cookies()
+  // Efficiency maintained through Server Actions and Supabase pooling
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('categories')
@@ -668,7 +687,8 @@ export async function createCategory(formData: FormData) {
 
   if (error) throw error
 
-  // Immediate cache update - user sees their new category right away
+  // updateTag still used for cache invalidation
+  // (useful for future static/shared data caching)
   updateTag('categories')
 }
 ```
@@ -835,23 +855,33 @@ export const config = {
 
 ### When to Use Each API
 
+⚠️ **Project-Specific Note**: In this project, we do NOT use `'use cache'` with authenticated data (which is most data). Therefore, `updateTag` and `revalidateTag` are primarily kept for future use with truly static/shared data.
+
 **Use `updateTag`** when:
 - User just submitted a form (categories, technicians, reporters)
 - User just updated their profile/settings
 - User expects to see changes immediately
 - User performs CRUD operations
+- ⚠️ In this project: Used in mutation actions but data isn't explicitly cached (ready for future static data)
 
 **Use `revalidateTag`** when:
 - Content updates happen in background
 - Slight delay in updates is acceptable (blog posts, product catalogs)
 - You want stale-while-revalidate behavior
 - Non-critical data updates
+- ⚠️ In this project: Not currently used due to lack of cached data
 
 **Use `refresh`** when:
 - You need to refresh client router state
 - After Server Action that affects multiple pages
 - When client-side navigation needs updating
 - For non-cached updates (notifications, badges)
+
+**Use `'use cache'` (NOT used in this project)** when:
+- Data is truly static and shared across all users
+- Data doesn't require authentication (no cookies/headers)
+- Example: public blog posts, product catalogs without user-specific prices
+- ⚠️ This project: All data requires authentication, so `'use cache'` is not used
 
 ### Example 7: Using shadcn/ui Chart Components (for Dashboard)
 
@@ -1057,9 +1087,11 @@ This approach gives you:
 - ✅ Phase 7: Dashboard/Overview Page (fully complete)
 
 ### Recent Updates
-- 2025-10-24: Completed Phase 7 - Implemented fully dynamic dashboard with KPI cards, charts (Monthly Trends, Category Breakdown, Technician Performance), and Top Issues table using shadcn/ui charts and unstable_cache pattern
+- 2025-10-24: **REVERTED caching migration** - Removed all `'use cache'` directives from authenticated data fetching functions due to incompatibility with `cookies()` API
+- 2025-10-24: **Important Discovery**: `'use cache'` cannot be used with functions that call `cookies()` internally (via Supabase `createClient()`). All authenticated data fetching is now uncached but remains efficient through Server Actions and Supabase connection pooling.
+- 2025-10-24: Attempted migration from `unstable_cache` to stable `'use cache'` directive but encountered runtime error: "Route used `cookies()` inside 'use cache'. Accessing Dynamic data sources inside a cache scope is not supported."
+- 2025-10-24: Completed Phase 7 - Implemented fully dynamic dashboard with KPI cards, charts (Monthly Trends, Category Breakdown, Technician Performance), and Top Issues table using shadcn/ui charts
 - 2025-10-24: Added updateTag('dashboard') to all report mutation actions for real-time dashboard updates
-- 2025-10-24: Fixed caching issues by using unstable_cache instead of 'use cache' directive to avoid cookies() conflicts in cached functions
 - 2025-10-24: Created 5 dashboard components: KPICards, CategoryBreakdown, TechnicianPerformance, MonthlyTrends, TopIssues - all with proper empty states and loading skeletons
 - 2025-10-24: Completed Phases 5 & 6 - All CRUD pages for Categories, Technicians, Reporters, Users, and Reports with proper caching, validation, and permission checks
 
