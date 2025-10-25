@@ -52,7 +52,7 @@ export async function createTechnician(
 
   const { data, error } = await supabase
     .from("technicians")
-    .insert({ ...validatedValues, created_by_user_id: user.id, org_id: orgId })
+    .insert({ ...validatedValues, org_id: orgId })
     .select()
     .single();
 
@@ -82,7 +82,7 @@ export async function updateTechnician(
 
   const { data: technician, error: fetchError } = await supabase
     .from("technicians")
-    .select("created_by_user_id, org_id")
+    .select("org_id")
     .eq("id", id)
     .single();
 
@@ -94,9 +94,6 @@ export async function updateTechnician(
     throw new Error("Technician does not belong to this organization.");
   }
 
-  if (technician.created_by_user_id !== user.id) {
-    throw new Error("You do not have permission to edit this technician.");
-  }
 
   const { data, error } = await supabase
     .from("technicians")
@@ -127,7 +124,7 @@ export async function deleteTechnician(orgId: string, id: string) {
 
   const { data: technician, error: fetchError } = await supabase
     .from("technicians")
-    .select("created_by_user_id, org_id")
+    .select("org_id")
     .eq("id", id)
     .single();
 
@@ -139,9 +136,6 @@ export async function deleteTechnician(orgId: string, id: string) {
     throw new Error("Technician does not belong to this organization.");
   }
 
-  if (technician.created_by_user_id !== user.id) {
-    throw new Error("You do not have permission to delete this technician.");
-  }
 
   const { data, error } = await supabase
     .from("technicians")

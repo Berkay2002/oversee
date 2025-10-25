@@ -100,7 +100,6 @@ export async function createReport(orgId: string, formData: FormData) {
 
   const dataToInsert = {
     ...dbData,
-    created_by_user_id: user.id,
     org_id: orgId,
   };
 

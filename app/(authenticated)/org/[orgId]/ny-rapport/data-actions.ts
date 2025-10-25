@@ -88,3 +88,45 @@ export async function getReporters(orgId: string): Promise<{ data: Reporter[] | 
     return { data: null, error: 'Misslyckades med att hamta rapportörer' };
   }
 }
+
+export async function getOrgMembers(orgId: string): Promise<{ data: Reporter[] | null; error: string | null }> {
+  try {
+    const supabase = await createClient();
+
+    const { data: members, error: membersError } = await supabase
+      .from('organization_members')
+      .select('user_id, role')
+      .eq('org_id', orgId);
+
+    if (membersError) {
+      console.error('Error fetching org members:', membersError);
+      return { data: null, error: membersError.message };
+    }
+
+    const userIds = members.map(member => member.user_id);
+
+    const { data: profiles, error: profilesError } = await supabase
+      .from('profiles')
+      .select('user_id, name')
+      .in('user_id', userIds);
+
+    if (profilesError) {
+      console.error('Error fetching profiles:', profilesError);
+      return { data: null, error: profilesError.message };
+    }
+
+    const reporters: Reporter[] = members.map(member => {
+      const profile = profiles.find(p => p.user_id === member.user_id);
+      return {
+        id: member.user_id,
+        name: profile?.name ?? 'Okänt namn',
+        description: member.role,
+      };
+    });
+
+    return { data: reporters, error: null };
+  } catch (error) {
+    console.error('Unexpected error fetching org members:', error);
+    return { data: null, error: 'Misslyckades med att hamta organisationsmedlemmar' };
+  }
+}

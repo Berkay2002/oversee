@@ -1,5 +1,6 @@
 import { getReports } from '@/lib/actions/report';
 import { AllaRapporter } from './alla-rapporter';
+import { Button } from '@/components/ui/button';
 
 type SearchParams = {
   search?: string;
@@ -31,12 +32,12 @@ export default async function AllaRapporterPage({
   });
 
   return (
-    <div className="space-y-6 p-4 md:p-0">
-      <div>
-        <h3 className="text-lg font-medium">All Reports</h3>
-        <p className="text-sm text-muted-foreground">
-          Browse and manage all reports.
-        </p>
+    <div className="container mx-auto py-10 px-4 md:px-0">
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-bold">Alla Rapporter</h1>
+        <Button size="sm" asChild>
+          <a href={`/org/${orgId}/ny-rapport`}>Ny rapport</a>
+        </Button>
       </div>
       <AllaRapporter reports={reports} count={count} orgId={orgId} />
     </div>

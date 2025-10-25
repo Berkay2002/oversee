@@ -43,7 +43,7 @@ export async function createReporter(
 
   const { data, error } = await supabase
     .from("reporters")
-    .insert([{ ...values, user_id: user.id, org_id: orgId }])
+    .insert([{ ...values, org_id: orgId }])
     .select();
 
   if (error) {
@@ -69,7 +69,7 @@ export async function updateReporter(
 
   const { data: reporter, error: fetchError } = await supabase
     .from("reporters")
-    .select("user_id, org_id")
+    .select("org_id")
     .eq("id", id)
     .single();
 
@@ -81,9 +81,6 @@ export async function updateReporter(
     throw new Error("Reporter does not belong to this organization.");
   }
 
-  if (reporter.user_id !== user.id) {
-    throw new Error("You do not have permission to edit this reporter.");
-  }
 
   const { data, error } = await supabase
     .from("reporters")
@@ -111,7 +108,7 @@ export async function deleteReporter(orgId: string, id: string) {
 
   const { data: reporter, error: fetchError } = await supabase
     .from("reporters")
-    .select("user_id, org_id")
+    .select("org_id")
     .eq("id", id)
     .single();
 
@@ -123,9 +120,6 @@ export async function deleteReporter(orgId: string, id: string) {
     throw new Error("Reporter does not belong to this organization.");
   }
 
-  if (reporter.user_id !== user.id) {
-    throw new Error("You do not have permission to delete this reporter.");
-  }
 
   const { data, error } = await supabase
     .from("reporters")

@@ -52,6 +52,92 @@ export type Database = {
           },
         ]
       }
+      org_invitations: {
+        Row: {
+          accepted_at: string | null
+          accepted_by: string | null
+          created_at: string
+          created_by: string
+          email: string
+          expires_at: string
+          id: string
+          org_id: string
+          role: Database["public"]["Enums"]["org_role"]
+          token: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+          created_by: string
+          email: string
+          expires_at: string
+          id?: string
+          org_id: string
+          role?: Database["public"]["Enums"]["org_role"]
+          token: string
+        }
+        Update: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+          created_by?: string
+          email?: string
+          expires_at?: string
+          id?: string
+          org_id?: string
+          role?: Database["public"]["Enums"]["org_role"]
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "org_invitations_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organization_join_requests: {
+        Row: {
+          created_at: string | null
+          id: string
+          org_id: string | null
+          status: Database["public"]["Enums"]["request_status"] | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          org_id?: string | null
+          status?: Database["public"]["Enums"]["request_status"] | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          org_id?: string | null
+          status?: Database["public"]["Enums"]["request_status"] | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_join_requests_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organization_join_requests_user_id_profiles_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       organization_members: {
         Row: {
           created_at: string
@@ -285,14 +371,14 @@ export type Database = {
       org_report_stats: {
         Row: {
           avg_days_taken: number | null
-          org_id: string | null
+          organization_id: string | null
           report_count: number | null
           technician_count: number | null
         }
         Relationships: [
           {
             foreignKeyName: "reports_org_id_fkey"
-            columns: ["org_id"]
+            columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
             referencedColumns: ["id"]
@@ -314,7 +400,7 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           id?: string | null
-          is_predefined?: string | null
+          is_predefined?: boolean | null
           name?: string | null
           org_id?: string | null
         }
@@ -323,7 +409,7 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           id?: string | null
-          is_predefined?: string | null
+          is_predefined?: boolean | null
           name?: string | null
           org_id?: string | null
         }
@@ -512,6 +598,7 @@ export type Database = {
     }
     Enums: {
       org_role: "owner" | "admin" | "member"
+      request_status: "pending" | "accepted" | "rejected"
       user_role: "admin" | "user"
     }
     CompositeTypes: {
@@ -641,6 +728,7 @@ export const Constants = {
   public: {
     Enums: {
       org_role: ["owner", "admin", "member"],
+      request_status: ["pending", "accepted", "rejected"],
       user_role: ["admin", "user"],
     },
   },
