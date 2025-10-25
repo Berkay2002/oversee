@@ -2,6 +2,8 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@supabase/supabase-js'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { getAllOrganizations, sendJoinRequest } from '@/lib/org/actions'
@@ -16,6 +18,7 @@ import { Building2, UserPlus, Loader2 } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 
 export default function OnboardingPage() {
+  const router = useRouter()
   const [submitted, setSubmitted] = useState(false)
   const [selectedOrg, setSelectedOrg] = useState<string>('')
   const [organizations, setOrganizations] = useState<Array<{ id: string; name: string }>>([])
@@ -35,6 +38,42 @@ export default function OnboardingPage() {
     }
     fetchOrganizations()
   }, [])
+
+  useEffect(() => {
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
+
+    const checkUserAndSubscribe = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      const user = session?.user
+
+      if (user) {
+        const channel = supabase
+          .channel('organization_members')
+          .on(
+            'postgres_changes',
+            {
+              event: 'INSERT',
+              schema: 'public',
+              table: 'organization_members',
+              filter: `user_id=eq.${user.id}`,
+            },
+            () => {
+              router.refresh()
+            }
+          )
+          .subscribe()
+
+        return () => {
+          supabase.removeChannel(channel)
+        }
+      }
+    }
+
+    checkUserAndSubscribe()
+  }, [router])
 
   const handleJoinRequest = async (e: React.FormEvent) => {
     e.preventDefault()
