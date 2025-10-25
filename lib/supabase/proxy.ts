@@ -114,41 +114,42 @@ export async function updateSession(request: NextRequest) {
 
     // Handle root path redirect
     if (pathname === '/' || pathname === '') {
-      // Check if user has any organization membership
-      const { data: memberships } = await supabase
-        .from('organization_members')
-        .select('org_id')
-        .eq('user_id', user.id)
-        .limit(1);
+      let orgIdToRedirect: string | null = null;
 
-      // If no memberships, redirect to onboarding
-      if (!memberships || memberships.length === 0) {
-        const url = request.nextUrl.clone();
-        url.pathname = '/onboarding';
-        return NextResponse.redirect(url);
-      }
+      // 1. Check for activeOrgId in cookie
+      orgIdToRedirect = request.cookies.get('activeOrgId')?.value || null;
 
-      // User has memberships, try to get their default org
-      let activeOrgId = request.cookies.get('activeOrgId')?.value;
-
-      if (!activeOrgId) {
+      // 2. If not in cookie, check for default_org_id in profile
+      if (!orgIdToRedirect) {
         const { data: profile } = await supabase
           .from('profiles')
           .select('default_org_id')
           .eq('user_id', user.id)
           .single();
-
-        activeOrgId = profile?.default_org_id || null;
+        orgIdToRedirect = profile?.default_org_id || null;
       }
 
-      if (activeOrgId) {
+      // 3. If still no org, check for any membership
+      if (!orgIdToRedirect) {
+        const { data: memberships } = await supabase
+          .from('organization_members')
+          .select('org_id')
+          .eq('user_id', user.id)
+          .limit(1);
+        
+        if (memberships && memberships.length > 0) {
+            orgIdToRedirect = memberships[0].org_id;
+        }
+      }
+
+      // 4. Redirect to org or onboarding
+      if (orgIdToRedirect) {
         const url = request.nextUrl.clone();
-        url.pathname = `/org/${activeOrgId}/oversikt`;
+        url.pathname = `/org/${orgIdToRedirect}/oversikt`;
         return NextResponse.redirect(url);
       } else {
-        // User has memberships but no default org set, use their first membership
         const url = request.nextUrl.clone();
-        url.pathname = `/org/${memberships[0].org_id}/oversikt`;
+        url.pathname = '/onboarding';
         return NextResponse.redirect(url);
       }
     }
