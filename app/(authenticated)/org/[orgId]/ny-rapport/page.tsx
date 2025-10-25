@@ -46,7 +46,6 @@ export default function NewReportPage() {
   const [categories, setCategories] = React.useState<Category[]>([]);
   const [technicians, setTechnicians] = React.useState<Technician[]>([]);
   const [reporters, setReporters] = React.useState<Reporter[]>([]);
-  const [orgMembers, setOrgMembers] = React.useState<Reporter[]>([]);
   const technicianInputRef = React.useRef<HTMLButtonElement>(null);
 
   const form = useForm<ReportFormData>({
@@ -72,17 +71,15 @@ export default function NewReportPage() {
   React.useEffect(() => {
     async function loadData() {
       setIsLoading(true);
-      const [categoriesResult, techniciansResult, reportersResult, orgMembersResult] = await Promise.all([
+      const [categoriesResult, techniciansResult, reportersResult] = await Promise.all([
         getCategories(orgId),
         getTechnicians(orgId),
         getReporters(orgId),
-        getOrgMembers(orgId),
       ]);
 
       if (categoriesResult.data) setCategories(categoriesResult.data);
       if (techniciansResult.data) setTechnicians(techniciansResult.data);
       if (reportersResult.data) setReporters(reportersResult.data);
-      if (orgMembersResult.data) setOrgMembers(orgMembersResult.data);
 
       setIsLoading(false);
     }
@@ -122,13 +119,12 @@ export default function NewReportPage() {
       form.setValue('custom_reporter_name', '');
 
       // Set reporter_name from selected reporter
-      const allReporters = [...reporters, ...orgMembers];
-      const selectedReporter = allReporters.find(r => r.id === reporterId);
+      const selectedReporter = reporters.find(r => r.id === reporterId);
       if (selectedReporter) {
         form.setValue('reporter_name', selectedReporter.name);
       }
     }
-  }, [reporterId, reporters, orgMembers, form]);
+  }, [reporterId, reporters, form]);
 
   async function onSubmit(data: ReportFormData) {
     setIsSubmitting(true);
@@ -188,11 +184,6 @@ export default function NewReportPage() {
   }));
 
   const reporterOptions: ComboboxOption[] = [
-    ...orgMembers.map(member => ({
-      value: member.id,
-      label: member.name,
-      metadata: { description: member.description },
-    })),
     ...reporters.map(rep => ({
       value: rep.id,
       label: rep.name,

@@ -46,7 +46,7 @@ export function DataTableRowActions<TData>({
           onSave={(values) => updateReporter(activeOrg.id, reporter.id, values)}
         >
           <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-            Redigera
+            Redigera / Koppla användare
           </DropdownMenuItem>
         </ReporterForm>
         <DropdownMenuSeparator />

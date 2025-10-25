@@ -13,7 +13,7 @@ export const getReporters = async (
 
   let query = supabase
     .from("reporters")
-    .select("*")
+    .select("*, profiles(name)")
     .eq("org_id", orgId)
     .order("created_at", { ascending: false });
 
@@ -32,7 +32,7 @@ export const getReporters = async (
 
 export async function createReporter(
   orgId: string,
-  values: Pick<Tables<'reporters'>, "name" | "description">
+  values: Pick<Tables<'reporters'>, "name" | "description" | "user_id">
 ) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -56,7 +56,7 @@ export async function createReporter(
 export async function updateReporter(
   orgId: string,
   id: string,
-  values: Pick<Tables<'reporters'>, "name" | "description">
+  values: Pick<Tables<'reporters'>, "name" | "description" | "user_id">
 ) {
   const supabase = await createClient();
   const {

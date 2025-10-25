@@ -6,7 +6,9 @@ import { DataTableColumnHeader } from "../categories/data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
 import { Tables } from "@/types/database";
 
-export const columns: ColumnDef<Tables<'reporters'>>[] = [
+type Reporter = Tables<'reporters'> & { profiles: { name: string } | null };
+
+export const columns: ColumnDef<Reporter>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -53,6 +55,20 @@ export const columns: ColumnDef<Tables<'reporters'>>[] = [
       return (
         <span className="max-w-[500px] truncate">
           {row.getValue("description")}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: "profiles",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Kopplad användare" />
+    ),
+    cell: ({ row }) => {
+      const reporter = row.original;
+      return (
+        <span className="max-w-[500px] truncate">
+          {reporter.profiles?.name ?? "Ingen"}
         </span>
       );
     },

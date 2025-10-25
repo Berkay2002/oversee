@@ -70,19 +70,35 @@ export async function getReporters(orgId: string): Promise<{ data: Reporter[] | 
   try {
     const supabase = await createClient();
 
-    const { data, error } = await supabase
+    const { data: reporters, error: reportersError } = await supabase
       .from('reporters')
       .select('id, name, description')
       .eq('org_id', orgId)
       .eq('is_active', true)
       .order('name', { ascending: true });
 
-    if (error) {
-      console.error('Error fetching reporters:', error);
-      return { data: null, error: error.message };
+    if (reportersError) {
+      console.error('Error fetching reporters:', reportersError);
+      return { data: null, error: reportersError.message };
     }
 
-    return { data, error: null };
+    const { data: orgMembers, error: orgMembersError } = await getOrgMembers(orgId);
+
+    if (orgMembersError) {
+      console.error('Error fetching org members for reporters:', orgMembersError);
+      // Don't fail, just return reporters
+      return { data: reporters, error: null };
+    }
+
+    if (orgMembers) {
+      const memberNames = new Set(orgMembers.map(m => m.name));
+      const filteredReporters = reporters.filter(r => !memberNames.has(r.name));
+      const combined = [...orgMembers, ...filteredReporters];
+      combined.sort((a, b) => a.name.localeCompare(b.name));
+      return { data: combined, error: null };
+    }
+
+    return { data: reporters, error: null };
   } catch (error) {
     console.error('Unexpected error fetching reporters:', error);
     return { data: null, error: 'Misslyckades med att hamta rapportörer' };

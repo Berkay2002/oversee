@@ -39,6 +39,30 @@ export async function inviteUser({ email }: { email: string }) {
   return data;
 }
 
+export const getOrgMembers = async (orgId: string) => {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("organization_members")
+    .select(`
+      user_id,
+      profiles (
+        name
+      )
+    `)
+    .eq("org_id", orgId);
+
+  if (error) {
+    console.error("Error fetching org members:", error);
+    throw new Error("Could not fetch org members.");
+  }
+
+  return data.map((member) => ({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    name: (member.profiles as any)?.name || "Unknown User",
+    user_id: member.user_id,
+  }));
+};
+
 export async function updateUserRole({
   userId,
   role,
