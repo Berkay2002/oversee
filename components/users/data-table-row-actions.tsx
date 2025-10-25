@@ -15,6 +15,7 @@ import { Tables } from "@/types/database"
 import { RoleForm } from "./role-form"
 import { updateUserRole } from "@/lib/actions/user"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { useParams } from "next/navigation"
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
@@ -23,7 +24,9 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const user = row.original as Tables<'profiles'>
+  const params = useParams();
+  const orgId = params.orgId as string;
+  const user = row.original as Tables<'profiles'> & { role: "admin" | "member" | "owner" }
 
   return (
     <DropdownMenu>
@@ -40,7 +43,7 @@ export function DataTableRowActions<TData>({
       <DropdownMenuContent align="end" className="w-[160px]">
         <RoleForm
           user={user}
-          onSave={(values) => updateUserRole({ userId: user.id, role: values.role })}
+          onSave={(values) => updateUserRole({ userId: user.user_id, orgId, role: values.role })}
         >
           <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
             Redigera roll

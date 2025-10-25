@@ -19,14 +19,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tables } from "@/types/database";
+import { Database, Tables } from "@/types/database";
 
 const roleSchema = z.object({
-  role: z.enum(["admin", "user"]),
+  role: z.enum(["admin", "member", "owner"]),
 });
 
 interface RoleFormProps {
-  user: Tables<'profiles'>;
+  user: Tables<'profiles'> & { role: Database["public"]["Enums"]["org_role"] };
   onSave: (values: z.infer<typeof roleSchema>) => void;
   children: React.ReactNode;
 }
@@ -34,13 +34,10 @@ interface RoleFormProps {
 export function RoleForm({ user, onSave, children }: RoleFormProps) {
   const form = useForm({
     defaultValues: {
-      role: user.role ?? "user",
+      role: user.role as "admin" | "member" | "owner",
     },
     onSubmit: async ({ value }: { value: z.infer<typeof roleSchema> }) => {
       onSave(value);
-    },
-    validators: {
-      onChange: roleSchema,
     },
   });
 
@@ -69,15 +66,16 @@ export function RoleForm({ user, onSave, children }: RoleFormProps) {
               <div>
                 <label htmlFor={field.name}>Roll</label>
                 <Select
-                  onValueChange={(value) => field.handleChange(value as "admin" | "user")}
+                  onValueChange={(value) => field.handleChange(value as "admin" | "member" | "owner")}
                   defaultValue={field.state.value}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Välj en roll" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="owner">Ägare</SelectItem>
                     <SelectItem value="admin">Administratör</SelectItem>
-                    <SelectItem value="user">Användare</SelectItem>
+                    <SelectItem value="member">Medlem</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

@@ -2,29 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { updateTag } from "next/cache";
-
-export const getUsers = async ({
-  search,
-}: { search?: string } = {}) => {
-  const supabase = await createClient();
-
-  let query = supabase
-    .from("profiles")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (search) {
-    query = query.ilike("name", `%${search}%`);
-  }
-
-  const { data, error } = await query;
-
-  if (error) {
-    console.error("Error fetching users:", error);
-    throw new Error("Could not fetch users.");
-  }
-  return data;
-};
+import { Database } from "@/types/database";
 
 export async function inviteUser({ email }: { email: string }) {
   const supabase = await createClient();
@@ -39,42 +17,62 @@ export async function inviteUser({ email }: { email: string }) {
   return data;
 }
 
-export const getOrgMembers = async (orgId: string) => {
+export const getUsersByOrg = async (
+  orgId: string,
+  search?: string,
+): Promise<(Database["public"]["Tables"]["profiles"]["Row"] & { role: Database["public"]["Enums"]["org_role"] })[]> => {
+  if (!orgId) {
+    return [];
+  }
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("organization_members")
-    .select(`
-      user_id,
-      profiles (
-        name
-      )
-    `)
+
+  let query = supabase.from("organization_members").select(
+    `
+    role,
+    profiles (
+      *
+    )
+  `,
+  )
     .eq("org_id", orgId);
 
+  if (search) {
+    query = query.ilike("profiles.name", `%${search}%`);
+  }
+
+  const { data, error } = await query;
   if (error) {
     console.error("Error fetching org members:", error);
     throw new Error("Could not fetch org members.");
   }
 
-  return data.map((member) => ({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    name: (member.profiles as any)?.name || "Unknown User",
-    user_id: member.user_id,
-  }));
+  return data.map((member) => {
+    if (!member.profiles || Array.isArray(member.profiles)) {
+      throw new Error("Invalid profile data structure");
+    }
+    const profile = member.profiles as Database["public"]["Tables"]["profiles"]["Row"];
+    return {
+      ...profile,
+      role: member.role,
+    };
+  });
 };
 
 export async function updateUserRole({
   userId,
+  orgId,
   role,
 }: {
   userId: string;
-  role: "admin" | "user";
+  orgId: string;
+  role: "admin" | "member" | "owner";
 }) {
   const supabase = await createClient();
   const { data, error } = await supabase
-    .from("profiles")
+    .from("organization_members")
     .update({ role })
-    .eq("user_id", userId);
+    .eq("user_id", userId)
+    .eq("org_id", orgId);
 
   if (error) {
     console.error("Error updating user role:", error);

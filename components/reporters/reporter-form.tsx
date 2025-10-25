@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tables } from "@/types/database";
 import { Combobox, ComboboxOption } from "@/components/ui/combobox";
-import { getOrgMembers } from "@/lib/actions/user";
+import { getUsersByOrg } from "@/lib/actions/user";
 import { useParams } from "next/navigation";
 import React from "react";
 
@@ -35,11 +35,11 @@ interface ReporterFormProps {
 export function ReporterForm({ reporter, onSave, children }: ReporterFormProps) {
   const params = useParams();
   const orgId = params.orgId as string;
-  const [orgMembers, setOrgMembers] = React.useState<{ name: string; user_id: string }[]>([]);
+  const [orgMembers, setOrgMembers] = React.useState<Awaited<ReturnType<typeof getUsersByOrg>>>([]);
 
   React.useEffect(() => {
     if (orgId) {
-      getOrgMembers(orgId).then(setOrgMembers);
+      getUsersByOrg(orgId).then(setOrgMembers);
     }
   }, [orgId]);
 

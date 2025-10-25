@@ -1,27 +1,27 @@
-import { getUsers } from "@/lib/actions/user";
-import { columns } from "@/components/users/columns";
-import { DataTable } from "@/components/users/data-table";
-import { UserForm } from "@/components/users/user-form";
-import { inviteUser } from "@/lib/actions/user";
-import { Button } from "@/components/ui/button";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
-export default async function AnvandarePage({
-  searchParams,
-}: {
-  searchParams: Promise<{ search?: string }>;
-}) {
-  const { search } = await searchParams;
-  const users = await getUsers({ search });
+export default async function AnvandareRedirectPage() {
+  const supabase = await createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  return (
-    <div className="container mx-auto py-10 px-4 md:px-0">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold">Användarhantering</h1>
-        <UserForm onSave={inviteUser}>
-          <Button size="sm">Bjud in användare</Button>
-        </UserForm>
-      </div>
-      <DataTable columns={columns} data={users} />
-    </div>
-  );
+  if (!session) {
+    redirect("/login");
+  }
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("default_org_id")
+    .eq("user_id", session.user.id)
+    .single();
+
+  if (profile?.default_org_id) {
+    redirect(`/org/${profile.default_org_id}/anvandare`);
+  } else {
+    redirect("/onboarding");
+  }
+
+  return null;
 }
