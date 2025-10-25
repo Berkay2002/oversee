@@ -65,6 +65,39 @@ export async function switchOrganization(
 }
 
 /**
+ * Get all organizations
+ * Used for the onboarding page
+ */
+export async function getAllOrganizations(): Promise<{
+  success: boolean;
+  organizations?: Array<{ id: string; name: string }>;
+  error?: string;
+}> {
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("organizations")
+      .select("id, name");
+
+    if (error) {
+      console.error("Error getting all organizations:", error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, organizations: data };
+  } catch (error) {
+    console.error("Error getting all organizations:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to get all organizations",
+    };
+  }
+}
+
+/**
  * Send a join request to an organization
  */
 export async function sendJoinRequest(

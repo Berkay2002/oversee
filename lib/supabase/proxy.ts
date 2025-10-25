@@ -84,7 +84,8 @@ export async function updateSession(request: NextRequest) {
       pathname.startsWith('/kategorier') ||
       pathname.startsWith('/tekniker') ||
       pathname.startsWith('/reporter') ||
-      pathname.startsWith('/ny-rapport')
+      pathname.startsWith('/ny-rapport') ||
+      pathname.startsWith('/join-requests')
     ) {
       // Get active org from cookie or profile
       let activeOrgId = request.cookies.get('activeOrgId')?.value;
