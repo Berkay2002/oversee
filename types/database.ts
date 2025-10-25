@@ -1,4 +1,5 @@
 // Database types for Verkstads Insikt Supabase tables
+// LEGACTY
 
 export interface Profile {
   id: string
