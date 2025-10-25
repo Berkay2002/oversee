@@ -8,8 +8,7 @@ import { useDebouncedCallback } from "use-debounce";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DataTableViewOptions } from "./data-table-view-options";
-import { TechnicianForm } from "./technician-form";
-import { createTechnician } from "@/app/(authenticated)/tekniker/actions";
+import { useMobile } from "@/hooks/use-mobile";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -22,6 +21,7 @@ export function DataTableToolbar<TData>({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const isMobile = useMobile();
 
   const handleSearch = useDebouncedCallback((value: string) => {
     const params = new URLSearchParams(searchParams);
@@ -32,6 +32,34 @@ export function DataTableToolbar<TData>({
     }
     router.replace(`${pathname}?${params.toString()}`);
   }, 300);
+
+  if (isMobile) {
+    return (
+      <div className="flex flex-col gap-2">
+        <Input
+          placeholder="Namn..."
+          defaultValue={searchParams.get("search")?.toString()}
+          onChange={(event) => handleSearch(event.target.value)}
+          className="h-8 w-full"
+        />
+        <div className="flex items-center justify-between">
+          {isFiltered && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => table.resetColumnFilters()}
+            >
+              Återställ
+              <X />
+            </Button>
+          )}
+          <div className="flex items-center gap-2">
+            <DataTableViewOptions table={table} />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center justify-between">
@@ -55,9 +83,6 @@ export function DataTableToolbar<TData>({
       </div>
       <div className="flex items-center gap-2">
         <DataTableViewOptions table={table} />
-        <TechnicianForm onSave={createTechnician}>
-          <Button size="sm">Ny tekniker</Button>
-        </TechnicianForm>
       </div>
     </div>
   );

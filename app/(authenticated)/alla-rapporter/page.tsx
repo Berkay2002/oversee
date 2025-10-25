@@ -26,7 +26,7 @@ export default async function AllaRapporterPage({
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4 md:p-0">
       <div>
         <h3 className="text-lg font-medium">All Reports</h3>
         <p className="text-sm text-muted-foreground">

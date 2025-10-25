@@ -13,6 +13,7 @@ import { getCategories } from "@/app/(authenticated)/kategorier/actions"
 import { useEffect, useState } from "react"
 import { Tables } from "@/types/database"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useMobile } from "@/hooks/use-mobile"
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
@@ -26,6 +27,7 @@ export function DataTableToolbar<TData>({
   const searchParams = useSearchParams()
   const [technicians, setTechnicians] = useState<Tables<'technicians'>[]>([]);
   const [categories, setCategories] = useState<Tables<'categories'>[]>([]);
+  const isMobile = useMobile();
 
   useEffect(() => {
     async function fetchData() {
@@ -60,6 +62,60 @@ export function DataTableToolbar<TData>({
   };
 
   const isFiltered = searchParams.has("search") || searchParams.has("technician") || searchParams.has("category");
+
+  if (isMobile) {
+    return (
+      <div className="flex flex-col gap-2">
+        <Input
+          placeholder="Problem..."
+          defaultValue={searchParams.get("search")?.toString()}
+          onChange={(event) => handleSearch(event.target.value)}
+          className="h-8 w-full"
+        />
+        <div className="flex gap-2">
+          <Select onValueChange={(value) => handleFilterChange('technician', value)} defaultValue={searchParams.get('technician') || ''}>
+            <SelectTrigger className="h-8 w-full">
+              <SelectValue placeholder="Tekniker" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Alla tekniker</SelectItem>
+              {technicians.map((technician) => (
+                <SelectItem key={technician.id} value={technician.name}>
+                  {technician.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select onValueChange={(value) => handleFilterChange('category', value)} defaultValue={searchParams.get('category') || ''}>
+            <SelectTrigger className="h-8 w-full">
+              <SelectValue placeholder="Kategori" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Alla kategorier</SelectItem>
+              {categories.map((category) => (
+                <SelectItem key={category.id} value={category.id}>
+                  {category.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex items-center justify-between">
+          {isFiltered && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.replace(pathname)}
+            >
+              Återställ
+              <X />
+            </Button>
+          )}
+          <DataTableViewOptions table={table} />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex items-center justify-between">

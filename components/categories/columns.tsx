@@ -4,7 +4,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
-import { Badge } from "@/components/ui/badge";
 import { Tables } from "@/types/database";
 
 export const columns: ColumnDef<Tables<'categories'>>[] = [
@@ -52,7 +51,7 @@ export const columns: ColumnDef<Tables<'categories'>>[] = [
     ),
     cell: ({ row }) => {
       return (
-        <span className="max-w-[500px] truncate">
+        <span className="max-w-[100px] md:max-w-[500px] truncate">
           {row.getValue("description")}
         </span>
       );
