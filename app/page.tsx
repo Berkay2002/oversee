@@ -26,6 +26,6 @@ export default async function Home() {
     redirect(`/org/${orgs[0].org_id}/oversikt`)
   }
 
-  // No org found, redirect to create organization
-  redirect("/create-organization")
+  // No org found, redirect to the onboarding page
+  redirect("/onboarding")
 }

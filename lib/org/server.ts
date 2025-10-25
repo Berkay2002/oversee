@@ -188,3 +188,38 @@ export async function requireOrgRole(
     throw new Error(`Requires ${requiredRole} role or higher`);
   }
 }
+
+/**
+ * Get all join requests for an organization
+ */
+export async function getJoinRequests(
+  orgId: string
+): Promise<{ id: string; user_name: string }[]> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("organization_join_requests")
+    .select(
+      `
+      id,
+      profiles (
+        name
+      )
+    `
+    )
+    .eq("org_id", orgId)
+    .eq("status", "pending");
+
+  if (error) {
+    console.error("Error fetching join requests:", error);
+    return [];
+  }
+
+  return (
+    data?.map((r) => ({
+      id: r.id,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      user_name: (r.profiles as any)?.name ?? "Unknown",
+    })) ?? []
+  );
+}

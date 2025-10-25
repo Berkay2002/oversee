@@ -1,8 +1,8 @@
-import { getUsers } from "./actions";
+import { getUsers } from "@/lib/actions/user";
 import { columns } from "@/components/users/columns";
 import { DataTable } from "@/components/users/data-table";
 import { UserForm } from "@/components/users/user-form";
-import { inviteUser } from "@/app/(authenticated)/anvandare/actions";
+import { inviteUser } from "@/lib/actions/user";
 import { Button } from "@/components/ui/button";
 
 export default async function AnvandarePage({

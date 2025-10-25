@@ -14,7 +14,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-import { KategoriData } from '@/app/(authenticated)/oversikt/actions';
+import { KategoriData } from '@/lib/actions/dashboard';
 
 export interface KategoriFordelningProps {
   data: KategoriData[];

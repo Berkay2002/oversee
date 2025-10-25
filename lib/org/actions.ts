@@ -65,6 +65,109 @@ export async function switchOrganization(
 }
 
 /**
+ * Send a join request to an organization
+ */
+export async function sendJoinRequest(
+  orgId: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return { success: false, error: "Not authenticated" };
+    }
+
+    const { error } = await supabase.from("organization_join_requests").insert({
+      organization_id: orgId,
+      user_id: user.id,
+    });
+
+    if (error) {
+      console.error("Error sending join request:", error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error sending join request:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to send join request",
+    };
+  }
+}
+
+/**
+ * Accept or reject a join request
+ */
+export async function manageJoinRequest(
+  requestId: string,
+  action: "accept" | "reject"
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return { success: false, error: "Not authenticated" };
+    }
+
+    // Get the request
+    const { data: request, error: requestError } = await supabase
+      .from("organization_join_requests")
+      .select("org_id, user_id")
+      .eq("id", requestId)
+      .single();
+
+    if (requestError || !request) {
+      return { success: false, error: "Request not found" };
+    }
+
+    // RLS will enforce that the user is an admin of the organization
+
+    if (action === "accept") {
+      // Add user to organization
+      await supabase.from("organization_members").insert({
+        org_id: request.org_id,
+        user_id: request.user_id,
+        role: "member",
+      });
+
+      // Update request status
+      await supabase
+        .from("organization_join_requests")
+        .update({ status: "accepted" })
+        .eq("id", requestId);
+    } else {
+      // Update request status
+      await supabase
+        .from("organization_join_requests")
+        .update({ status: "rejected" })
+        .eq("id", requestId);
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error managing join request:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to manage join request",
+    };
+  }
+}
+
+/**
  * Get the active organization ID from cookie or user's default
  * Used in proxy.ts and layouts
  */

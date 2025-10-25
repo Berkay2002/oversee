@@ -22,7 +22,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-import { TeknikerData } from '@/app/(authenticated)/oversikt/actions';
+import { TeknikerData } from '@/lib/actions/dashboard';
 
 export interface TeknikerPrestationProps {
   data: TeknikerData[];

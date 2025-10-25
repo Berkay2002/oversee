@@ -18,7 +18,7 @@ import {
   ChartLegendContent,
 } from '@/components/ui/chart';
 import { useMobile } from '@/hooks/use-mobile';
-import { DagstrendData } from '@/app/(authenticated)/oversikt/actions';
+import { DagstrendData } from '@/lib/actions/dashboard';
 
 export interface DagstrenderProps {
   data: DagstrendData[];

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use server'
 
 import { revalidatePath } from 'next/cache'
@@ -78,9 +79,9 @@ export async function signIn(
     }
   }
 
-  // Revalidate and redirect
-  revalidatePath('/', 'layout')
-  redirect(DEFAULT_LOGIN_REDIRECT)
+  // Revalidate and redirect to onboarding
+  revalidatePath('/onboarding', 'layout')
+  redirect('/onboarding')
 }
 
 /**
@@ -140,17 +141,23 @@ export async function signUp(
     }
   }
 
-  // Check if email confirmation is required
+  // If email confirmation is required, Supabase returns a user but no session
+  // In this case, we can't automatically log them in.
+  // Instead of redirecting, we'll show a success message.
   if (data.user && !data.session) {
+    // This is the intended behavior when email confirmation is on.
+    // To automatically log in, you would need to disable email confirmation in Supabase project settings.
+    // For now, we will provide a clear message to the user.
     return {
       success: true,
-      error: 'Please check your email to confirm your account',
+      error:
+        'Account created successfully! Please check your email to verify your account before logging in.',
     }
   }
 
-  // Revalidate and redirect
-  revalidatePath('/', 'layout')
-  redirect(DEFAULT_LOGIN_REDIRECT)
+  // Revalidate and redirect to onboarding
+  revalidatePath('/onboarding', 'layout')
+  redirect('/onboarding')
 }
 
 /**

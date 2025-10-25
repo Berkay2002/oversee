@@ -41,6 +41,11 @@ export async function updateSession(request: NextRequest) {
   if (user) {
     const pathname = request.nextUrl.pathname;
 
+    // Allow access to onboarding and create-organization without any checks
+    if (pathname.startsWith('/onboarding') || pathname.startsWith('/create-organization')) {
+      return supabaseResponse;
+    }
+
     // Check for organization-scoped routes
     const orgMatch = pathname.match(/^\/org\/([^/]+)/);
 
@@ -56,10 +61,10 @@ export async function updateSession(request: NextRequest) {
         .single();
 
       if (memberError || !membership) {
-        // User is not a member, redirect to root (will pick a valid org)
-        console.log('Proxy: User not a member, redirecting to /', { memberError });
+        // User is not a member, redirect to onboarding
+        console.log('Proxy: User not a member, redirecting to /onboarding', { memberError });
         const url = request.nextUrl.clone();
-        url.pathname = '/';
+        url.pathname = '/onboarding';
         return NextResponse.redirect(url);
       }
 
@@ -99,15 +104,30 @@ export async function updateSession(request: NextRequest) {
         url.pathname = `/org/${activeOrgId}${pathname}`;
         return NextResponse.redirect(url);
       } else {
-        // No org found, redirect to create organization
+        // No org found, redirect to onboarding
         const url = request.nextUrl.clone();
-        url.pathname = '/create-organization';
+        url.pathname = '/onboarding';
         return NextResponse.redirect(url);
       }
     }
 
     // Handle root path redirect
     if (pathname === '/' || pathname === '') {
+      // Check if user has any organization membership
+      const { data: memberships } = await supabase
+        .from('organization_members')
+        .select('org_id')
+        .eq('user_id', user.id)
+        .limit(1);
+
+      // If no memberships, redirect to onboarding
+      if (!memberships || memberships.length === 0) {
+        const url = request.nextUrl.clone();
+        url.pathname = '/onboarding';
+        return NextResponse.redirect(url);
+      }
+
+      // User has memberships, try to get their default org
       let activeOrgId = request.cookies.get('activeOrgId')?.value;
 
       if (!activeOrgId) {
@@ -125,9 +145,9 @@ export async function updateSession(request: NextRequest) {
         url.pathname = `/org/${activeOrgId}/oversikt`;
         return NextResponse.redirect(url);
       } else {
-        // No org found, redirect to create organization
+        // User has memberships but no default org set, use their first membership
         const url = request.nextUrl.clone();
-        url.pathname = '/create-organization';
+        url.pathname = `/org/${memberships[0].org_id}/oversikt`;
         return NextResponse.redirect(url);
       }
     }
@@ -143,7 +163,7 @@ export async function updateSession(request: NextRequest) {
       pathname.startsWith('/anvandare') &&
       profile?.role !== 'admin'
     ) {
-      // Redirect to user's active org instead
+      // Redirect to user's active org or onboarding
       let activeOrgId = request.cookies.get('activeOrgId')?.value;
 
       if (!activeOrgId) {
@@ -157,7 +177,7 @@ export async function updateSession(request: NextRequest) {
       }
 
       const url = request.nextUrl.clone();
-      url.pathname = activeOrgId ? `/org/${activeOrgId}/oversikt` : '/';
+      url.pathname = activeOrgId ? `/org/${activeOrgId}/oversikt` : '/onboarding';
       return NextResponse.redirect(url);
     }
   }
@@ -165,6 +185,7 @@ export async function updateSession(request: NextRequest) {
   if (
     !user &&
     !request.nextUrl.pathname.startsWith('/login') &&
+    !request.nextUrl.pathname.startsWith('/sign-in') &&
     !request.nextUrl.pathname.startsWith('/auth') &&
     !request.nextUrl.pathname.startsWith('/error')
   ) {

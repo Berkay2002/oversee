@@ -52,6 +52,12 @@ const data = {
       adminOnly: true,
     },
     {
+      title: "Join Requests",
+      url: "/join-requests",
+      icon: UserCheck,
+      adminOnly: true,
+    },
+    {
       title: "Kategorier",
       url: "/kategorier",
       icon: FolderOpen,

@@ -2,6 +2,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { getSession, getUserProfile } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 
 export default async function AuthenticatedLayoutContent({
   children,
@@ -9,6 +10,8 @@ export default async function AuthenticatedLayoutContent({
   children: React.ReactNode;
 }) {
   const session = await getSession();
+  const headersList = await headers();
+  const pathname = headersList.get("x-next-pathname") || "";
 
   if (!session) {
     redirect("/login");
@@ -24,12 +27,14 @@ export default async function AuthenticatedLayoutContent({
     role: userProfile?.role,
   };
 
+  const showSidebar = !pathname.startsWith("/onboarding") && !pathname.startsWith("/create-organization");
+
   return (
     <SidebarProvider>
-      <AppSidebar user={userData} />
+      {showSidebar && <AppSidebar user={userData} />}
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-          <SidebarTrigger />
+          {showSidebar && <SidebarTrigger />}
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
           {children}

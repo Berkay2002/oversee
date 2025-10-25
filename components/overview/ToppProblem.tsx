@@ -16,7 +16,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { ToppRegistreringData } from '@/app/(authenticated)/oversikt/actions';
+import { ToppRegistreringData } from '@/lib/actions/dashboard';
 
 export interface ToppProblemProps {
   data: ToppRegistreringData[];
