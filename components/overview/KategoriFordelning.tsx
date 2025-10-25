@@ -14,36 +14,36 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-import { CategoryData } from '@/app/(authenticated)/oversikt/actions';
+import { KategoriData } from '@/app/(authenticated)/oversikt/actions';
 
-export interface CategoryBreakdownProps {
-  data: CategoryData[];
+export interface KategoriFordelningProps {
+  data: KategoriData[];
 }
 
-export function CategoryBreakdown({ data }: CategoryBreakdownProps) {
+export function KategoriFordelning({ data }: KategoriFordelningProps) {
   if (!data || data.length === 0) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Reports by Category</CardTitle>
-          <CardDescription>No data available</CardDescription>
+          <CardTitle>Rapporter per kategori</CardTitle>
+          <CardDescription>Ingen data tillgänglig</CardDescription>
         </CardHeader>
         <CardContent className="flex h-[300px] items-center justify-center text-muted-foreground">
-          No reports to display
+          Inga rapporter att visa
         </CardContent>
       </Card>
     );
   }
 
   // Sort data by report count descending
-  const sortedData = [...data].sort((a, b) => b.report_count - a.report_count);
+  const sortedData = [...data].sort((a, b) => b.rapport_antal - a.rapport_antal);
 
   // Build dynamic chart config using database colors
   const chartConfig: ChartConfig = sortedData.reduce(
     (acc, item, index) => {
       const key = `category_${index}`;
       acc[key] = {
-        label: item.category_name,
+        label: item.kategori_namn,
         color: item.color, // Use actual database color
       };
       return acc;
@@ -53,20 +53,20 @@ export function CategoryBreakdown({ data }: CategoryBreakdownProps) {
 
   // Transform data for recharts using database colors
   const chartData = sortedData.map((item, index) => ({
-    name: item.category_name,
-    value: item.report_count,
+    name: item.kategori_namn,
+    value: item.rapport_antal,
     fill: item.color, // Use actual database color
     configKey: `category_${index}`,
   }));
 
-  const totalReports = data.reduce((sum, item) => sum + item.report_count, 0);
+  const totalReports = data.reduce((sum, item) => sum + item.rapport_antal, 0);
 
   return (
     <Card className="flex flex-col">
       <CardHeader>
-        <CardTitle>Reports by Category</CardTitle>
+        <CardTitle>Rapporter per kategori</CardTitle>
         <CardDescription>
-          {totalReports} total reports across {data.length} categories
+          {totalReports} totalt antal rapporter över {data.length} kategorier
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">

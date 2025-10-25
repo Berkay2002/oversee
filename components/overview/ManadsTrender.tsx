@@ -17,33 +17,33 @@ import {
   ChartLegend,
   ChartLegendContent,
 } from '@/components/ui/chart';
-import { MonthlyTrendData } from '@/app/(authenticated)/oversikt/actions';
+import { ManadstrendData } from '@/app/(authenticated)/oversikt/actions';
 
-export interface MonthlyTrendsProps {
-  data: MonthlyTrendData[];
+export interface ManadsTrenderProps {
+  data: ManadstrendData[];
 }
 
 const chartConfig = {
-  report_count: {
-    label: 'Reports',
+  rapport_antal: {
+    label: 'Rapporter',
     color: 'hsl(var(--chart-1))',
   },
-  avg_days: {
-    label: 'Avg Days',
+  genomsnitt_dagar: {
+    label: 'Genomsnitt Dagar',
     color: 'hsl(var(--chart-2))',
   },
 } satisfies ChartConfig;
 
-export function MonthlyTrends({ data }: MonthlyTrendsProps) {
+export function ManadsTrender({ data }: ManadsTrenderProps) {
   if (!data || data.length === 0) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Monthly Trends</CardTitle>
-          <CardDescription>No data available</CardDescription>
+          <CardTitle>ManadsTrender</CardTitle>
+          <CardDescription>Ingen data tillgänglig</CardDescription>
         </CardHeader>
         <CardContent className="flex h-[300px] items-center justify-center text-muted-foreground">
-          No trend data to display
+          Ingen trenddata att visa
         </CardContent>
       </Card>
     );
@@ -52,9 +52,9 @@ export function MonthlyTrends({ data }: MonthlyTrendsProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Monthly Trends</CardTitle>
+        <CardTitle>ManadsTrender</CardTitle>
         <CardDescription>
-          Report count and average repair days tracked over time
+          Antal rapporter och genomsnittliga reparationsdagar spårade över tid
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -67,37 +67,37 @@ export function MonthlyTrends({ data }: MonthlyTrendsProps) {
             margin={{ top: 10, right: 12, left: 12, bottom: 0 }}
           >
             <defs>
-              <linearGradient id="fillReports" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="fillRapporter" x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="0%"
-                  stopColor="var(--color-report_count)"
+                  stopColor="var(--color-rapport_antal)"
                   stopOpacity={0.9}
                 />
                 <stop
                   offset="50%"
-                  stopColor="var(--color-report_count)"
+                  stopColor="var(--color-rapport_antal)"
                   stopOpacity={0.4}
                 />
                 <stop
                   offset="100%"
-                  stopColor="var(--color-report_count)"
+                  stopColor="var(--color-rapport_antal)"
                   stopOpacity={0.05}
                 />
               </linearGradient>
-              <linearGradient id="fillAvgDays" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="fillGenomsnittDagar" x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="0%"
-                  stopColor="var(--color-avg_days)"
+                  stopColor="var(--color-genomsnitt_dagar)"
                   stopOpacity={0.9}
                 />
                 <stop
                   offset="50%"
-                  stopColor="var(--color-avg_days)"
+                  stopColor="var(--color-genomsnitt_dagar)"
                   stopOpacity={0.4}
                 />
                 <stop
                   offset="100%"
-                  stopColor="var(--color-avg_days)"
+                  stopColor="var(--color-genomsnitt_dagar)"
                   stopOpacity={0.05}
                 />
               </linearGradient>
@@ -109,7 +109,7 @@ export function MonthlyTrends({ data }: MonthlyTrendsProps) {
               opacity={0.3}
             />
             <XAxis
-              dataKey="month"
+              dataKey="manad"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
@@ -141,20 +141,20 @@ export function MonthlyTrends({ data }: MonthlyTrendsProps) {
             />
             <ChartLegend content={<ChartLegendContent />} />
             <Area
-              dataKey="report_count"
+              dataKey="rapport_antal"
               type="monotone"
-              fill="url(#fillReports)"
-              stroke="var(--color-report_count)"
+              fill="url(#fillRapporter)"
+              stroke="var(--color-rapport_antal)"
               strokeWidth={2}
               stackId="a"
               className="transition-all hover:opacity-80"
               animationDuration={1000}
             />
             <Area
-              dataKey="avg_days"
+              dataKey="genomsnitt_dagar"
               type="monotone"
-              fill="url(#fillAvgDays)"
-              stroke="var(--color-avg_days)"
+              fill="url(#fillGenomsnittDagar)"
+              stroke="var(--color-genomsnitt_dagar)"
               strokeWidth={2}
               stackId="b"
               className="transition-all hover:opacity-80"

@@ -24,8 +24,8 @@ export interface TeknikerData {
   color?: string;
 }
 
-export interface MånadstrendData {
-  månad: string;
+export interface ManadstrendData {
+  manad: string;
   rapport_antal: number;
   genomsnitt_dagar: number;
 }
@@ -34,10 +34,10 @@ export interface ToppRegistreringData {
   registreringsnummer: string;
   antal: number;
   kategorier: string[];
-  kategoriFärger: Record<string, string>; // Map of category name to color
+  kategoriFarger: Record<string, string>; // Map of category name to color
 }
 
-export async function hämtaInstrumentpanelNyckeltal(): Promise<InstrumentpanelNyckeltal> {
+export async function hamtaInstrumentpanelNyckeltal(): Promise<InstrumentpanelNyckeltal> {
   const supabase = await createClient();
 
   // Get report statistics
@@ -78,7 +78,7 @@ export async function hämtaInstrumentpanelNyckeltal(): Promise<InstrumentpanelN
   };
 }
 
-export async function hämtaKategoriFördelning(): Promise<KategoriData[]> {
+export async function hamtaKategoriFordelning(): Promise<KategoriData[]> {
   const supabase = await createClient();
 
   const { data, error } = await supabase.rpc('get_category_breakdown');
@@ -133,7 +133,7 @@ export async function hämtaKategoriFördelning(): Promise<KategoriData[]> {
   return data || [];
 }
 
-export async function hämtaTeknikerPrestation(): Promise<TeknikerData[]> {
+export async function hamtaTeknikerPrestation(): Promise<TeknikerData[]> {
   const supabase = await createClient();
 
   // Fetch technicians with colors
@@ -182,7 +182,7 @@ export async function hämtaTeknikerPrestation(): Promise<TeknikerData[]> {
     .sort((a, b) => b.rapport_antal - a.rapport_antal);
 }
 
-export async function hämtaMånadstrender(): Promise<MånadstrendData[]> {
+export async function hamtaManadsTrender(): Promise<ManadstrendData[]> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -221,19 +221,19 @@ export async function hämtaMånadstrender(): Promise<MånadstrendData[]> {
 
   return Array.from(monthMap.values())
     .map((stats) => ({
-      månad: stats.month,
+      manad: stats.month,
       rapport_antal: stats.count,
       genomsnitt_dagar: Math.round((stats.totalDays / stats.count) * 10) / 10,
     }))
     .sort((a, b) => {
       // Sort chronologically
-      const dateA = new Date(a.månad);
-      const dateB = new Date(b.månad);
+      const dateA = new Date(a.manad);
+      const dateB = new Date(b.manad);
       return dateA.getTime() - dateB.getTime();
     });
 }
 
-export async function hämtaToppRegistreringar(): Promise<ToppRegistreringData[]> {
+export async function hamtaToppRegistreringar(): Promise<ToppRegistreringData[]> {
   const supabase = await createClient();
 
   // First, fetch all categories with colors
@@ -283,7 +283,7 @@ export async function hämtaToppRegistreringar(): Promise<ToppRegistreringData[]
       registreringsnummer: regNum,
       antal: stats.count,
       kategorier: Array.from(stats.categories),
-      kategoriFärger: categoryColorMap,
+      kategoriFarger: categoryColorMap,
     }))
     .sort((a, b) => b.antal - a.antal)
     .slice(0, 10); // Top 10

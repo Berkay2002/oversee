@@ -39,7 +39,7 @@ export function ToppProblem({ data }: ToppProblemProps) {
 
   // Helper function to convert hex color to inline styles with opacity
   const getCategoryBadgeStyle = (categoryName: string, item: ToppRegistreringData) => {
-    const hexColor = item.kategoriFärger[categoryName] || '#8884d8';
+    const hexColor = item.kategoriFarger[categoryName] || '#8884d8';
 
     // Convert hex to RGB for opacity control
     const r = parseInt(hexColor.slice(1, 3), 16);

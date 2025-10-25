@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { useMobile } from '@/hooks/use-mobile';
 
 const locales = {
   en: enUS,
@@ -91,7 +91,7 @@ export function DateRangePicker({
   disabled = false,
   className,
 }: DateRangePickerProps) {
-  const isMobile = useIsMobile();
+  const isMobile = useMobile();
   const [locale, setLocale] = React.useState<keyof typeof localizedStrings>('en');
   const [dateRange, setDateRange] = React.useState<DateRange | undefined>({
     from: startDate,

@@ -1,15 +1,15 @@
 import { Suspense } from 'react';
 import { NyckeltalKort } from '@/components/overview/NyckeltalKort';
-import { KategoriFördelning } from '@/components/overview/KategoriFördelning';
+import { KategoriFordelning } from '@/components/overview/KategoriFordelning';
 import { TeknikerPrestation } from '@/components/overview/TeknikerPrestation';
-import { MånadsTrender } from '@/components/overview/MånadsTrender';
+import { ManadsTrender } from '@/components/overview/ManadsTrender';
 import { ToppProblem } from '@/components/overview/ToppProblem';
 import {
-  hämtaInstrumentpanelNyckeltal,
-  hämtaKategoriFördelning,
-  hämtaTeknikerPrestation,
-  hämtaMånadstrender,
-  hämtaToppRegistreringar,
+  hamtaInstrumentpanelNyckeltal,
+  hamtaKategoriFordelning,
+  hamtaTeknikerPrestation,
+  hamtaManadsTrender,
+  hamtaToppRegistreringar,
 } from './actions';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -40,14 +40,14 @@ function DiagramSkelett() {
   );
 }
 
-export default async function ÖversiktSida() {
+export default async function OversiktSida() {
   // Fetch all dashboard data in parallel
   const [kpis, categories, technicians, trends, topIssues] = await Promise.all([
-    hämtaInstrumentpanelNyckeltal(),
-    hämtaKategoriFördelning(),
-    hämtaTeknikerPrestation(),
-    hämtaMånadstrender(),
-    hämtaToppRegistreringar(),
+    hamtaInstrumentpanelNyckeltal(),
+    hamtaKategoriFordelning(),
+    hamtaTeknikerPrestation(),
+    hamtaManadsTrender(),
+    hamtaToppRegistreringar(),
   ]);
 
   return (
@@ -91,7 +91,7 @@ export default async function ÖversiktSida() {
         </div>
 
         <Suspense fallback={<DiagramSkelett />}>
-          <MånadsTrender data={trends} />
+          <ManadsTrender data={trends} />
         </Suspense>
       </section>
 
@@ -107,7 +107,7 @@ export default async function ÖversiktSida() {
 
         <div className="grid gap-6 md:grid-cols-2">
           <Suspense fallback={<DiagramSkelett />}>
-            <KategoriFördelning data={categories} />
+            <KategoriFordelning data={categories} />
           </Suspense>
 
           <Suspense fallback={<DiagramSkelett />}>
