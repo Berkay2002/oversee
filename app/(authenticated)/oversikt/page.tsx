@@ -2,13 +2,13 @@ import { Suspense } from 'react';
 import { NyckeltalKort } from '@/components/overview/NyckeltalKort';
 import { KategoriFordelning } from '@/components/overview/KategoriFordelning';
 import { TeknikerPrestation } from '@/components/overview/TeknikerPrestation';
-import { ManadsTrender } from '@/components/overview/ManadsTrender';
+import { Dagstrender } from '@/components/overview/Dagstrender';
 import { ToppProblem } from '@/components/overview/ToppProblem';
 import {
   hamtaInstrumentpanelNyckeltal,
   hamtaKategoriFordelning,
   hamtaTeknikerPrestation,
-  hamtaManadsTrender,
+  hamtaDagstrender,
   hamtaToppRegistreringar,
 } from './actions';
 import { Card, CardContent } from '@/components/ui/card';
@@ -46,7 +46,7 @@ export default async function OversiktSida() {
     hamtaInstrumentpanelNyckeltal(),
     hamtaKategoriFordelning(),
     hamtaTeknikerPrestation(),
-    hamtaManadsTrender(),
+    hamtaDagstrender(),
     hamtaToppRegistreringar(),
   ]);
 
@@ -91,7 +91,7 @@ export default async function OversiktSida() {
         </div>
 
         <Suspense fallback={<DiagramSkelett />}>
-          <ManadsTrender data={trends} />
+          <Dagstrender data={trends} />
         </Suspense>
       </section>
 

@@ -24,8 +24,8 @@ export interface TeknikerData {
   color?: string;
 }
 
-export interface ManadstrendData {
-  manad: string;
+export interface DagstrendData {
+  dag: string;
   rapport_antal: number;
   genomsnitt_dagar: number;
 }
@@ -182,7 +182,7 @@ export async function hamtaTeknikerPrestation(): Promise<TeknikerData[]> {
     .sort((a, b) => b.rapport_antal - a.rapport_antal);
 }
 
-export async function hamtaManadsTrender(): Promise<ManadstrendData[]> {
+export async function hamtaDagstrender(): Promise<DagstrendData[]> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -192,43 +192,39 @@ export async function hamtaManadsTrender(): Promise<ManadstrendData[]> {
 
   if (error) throw new Error(error.message);
 
-  // Group by month
-  const monthMap = new Map<
+  // Group by day
+  const dayMap = new Map<
     string,
-    { count: number; totalDays: number; month: string }
+    { count: number; totalDays: number; day: string }
   >();
 
   data?.forEach((report) => {
     const date = new Date(report.created_at);
-    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-    const monthLabel = date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-    });
+    const dayKey = date.toISOString().split('T')[0]; // YYYY-MM-DD
 
-    const existing = monthMap.get(monthKey);
+    const existing = dayMap.get(dayKey);
     if (existing) {
       existing.count++;
       existing.totalDays += report.days_taken || 0;
     } else {
-      monthMap.set(monthKey, {
+      dayMap.set(dayKey, {
         count: 1,
         totalDays: report.days_taken || 0,
-        month: monthLabel,
+        day: dayKey,
       });
     }
   });
 
-  return Array.from(monthMap.values())
+  return Array.from(dayMap.values())
     .map((stats) => ({
-      manad: stats.month,
+      dag: stats.day,
       rapport_antal: stats.count,
       genomsnitt_dagar: Math.round((stats.totalDays / stats.count) * 10) / 10,
     }))
     .sort((a, b) => {
       // Sort chronologically
-      const dateA = new Date(a.manad);
-      const dateB = new Date(b.manad);
+      const dateA = new Date(a.dag);
+      const dateB = new Date(b.dag);
       return dateA.getTime() - dateB.getTime();
     });
 }

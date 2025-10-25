@@ -17,29 +17,32 @@ import {
   ChartLegend,
   ChartLegendContent,
 } from '@/components/ui/chart';
-import { ManadstrendData } from '@/app/(authenticated)/oversikt/actions';
+import { useMobile } from '@/hooks/use-mobile';
+import { DagstrendData } from '@/app/(authenticated)/oversikt/actions';
 
-export interface ManadsTrenderProps {
-  data: ManadstrendData[];
+export interface DagstrenderProps {
+  data: DagstrendData[];
 }
 
 const chartConfig = {
   rapport_antal: {
     label: 'Rapporter',
-    color: 'hsl(var(--chart-1))',
+    color: '#2563eb',
   },
   genomsnitt_dagar: {
     label: 'Genomsnitt Dagar',
-    color: 'hsl(var(--chart-2))',
+    color: '#93c5fd',
   },
 } satisfies ChartConfig;
 
-export function ManadsTrender({ data }: ManadsTrenderProps) {
+export function Dagstrender({ data }: DagstrenderProps) {
+  const isMobile = useMobile();
+
   if (!data || data.length === 0) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>ManadsTrender</CardTitle>
+          <CardTitle>Dags Trend</CardTitle>
           <CardDescription>Ingen data tillgänglig</CardDescription>
         </CardHeader>
         <CardContent className="flex h-[300px] items-center justify-center text-muted-foreground">
@@ -52,7 +55,7 @@ export function ManadsTrender({ data }: ManadsTrenderProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>ManadsTrender</CardTitle>
+        <CardTitle>Dags Trend</CardTitle>
         <CardDescription>
           Antal rapporter och genomsnittliga reparationsdagar spårade över tid
         </CardDescription>
@@ -64,7 +67,12 @@ export function ManadsTrender({ data }: ManadsTrenderProps) {
         >
           <AreaChart
             data={data}
-            margin={{ top: 10, right: 12, left: 12, bottom: 0 }}
+            margin={{
+              top: 10,
+              right: 12,
+              left: isMobile ? -16 : 12,
+              bottom: 0,
+            }}
           >
             <defs>
               <linearGradient id="fillRapporter" x1="0" y1="0" x2="0" y2="1">
@@ -109,15 +117,26 @@ export function ManadsTrender({ data }: ManadsTrenderProps) {
               opacity={0.3}
             />
             <XAxis
-              dataKey="manad"
+              dataKey="dag"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              minTickGap={32}
+              minTickGap={isMobile ? 10 : 32}
               stroke="hsl(var(--muted-foreground))"
               fontSize={12}
+              tickFormatter={(value) => {
+                const date = new Date(value);
+                if (isMobile) {
+                  return date.toLocaleDateString('sv-SE', {
+                    month: 'short',
+                    day: 'numeric',
+                  });
+                }
+                return date.toLocaleDateString('sv-SE');
+              }}
             />
             <YAxis
+              hide={isMobile}
               tickLine={false}
               axisLine={false}
               tickMargin={8}
