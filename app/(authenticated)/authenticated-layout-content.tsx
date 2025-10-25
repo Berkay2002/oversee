@@ -9,11 +9,13 @@ export default async function AuthenticatedLayoutContent({
   children: React.ReactNode;
 }) {
   const session = await getSession();
-  const userProfile = await getUserProfile();
 
   if (!session) {
     redirect("/login");
   }
+
+  // Pass userId to avoid redundant getUser() call
+  const userProfile = await getUserProfile(session.user.id);
 
   const userData = {
     name: session.user.email?.split("@")[0] || "User",

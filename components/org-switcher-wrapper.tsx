@@ -1,24 +1,17 @@
-import { createClient } from "@/lib/supabase/server";
 import { getUserOrganizations } from "@/lib/org/server";
 import { OrgSwitcher } from "./org-switcher";
 
 interface OrgSwitcherWrapperProps {
   currentOrgId: string;
+  userId: string;
 }
 
 export async function OrgSwitcherWrapper({
   currentOrgId,
+  userId,
 }: OrgSwitcherWrapperProps) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return null;
-  }
-
-  const memberships = await getUserOrganizations(user.id);
+  // Use the passed userId to avoid another auth request
+  const memberships = await getUserOrganizations(userId);
 
   const organizations = memberships.map((m) => ({
     id: m.org_id,

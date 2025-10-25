@@ -25,7 +25,7 @@ export default async function TechniciansPage({
           <Button size="sm">Ny tekniker</Button>
         </TechnicianForm>
       </div>
-      <DataTable columns={columns} data={technicians} orgId={orgId} />
+      <DataTable columns={columns} data={technicians}/>
     </div>
   );
 }

@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { loginSchema } from '@/lib/schemas/auth'
 
 // Default redirect paths
-const DEFAULT_LOGIN_REDIRECT = '/oversikt'
+const DEFAULT_LOGIN_REDIRECT = '/' // Will be handled by root page redirect logic
 const DEFAULT_LOGOUT_REDIRECT = '/login'
 
 export type SignInState = {

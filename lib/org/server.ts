@@ -6,7 +6,7 @@
  */
 
 import { createClient } from "@/lib/supabase/server";
-import { Database } from "@/types/supabase";
+import { Database } from "@/types/database";
 
 type OrgRole = Database["public"]["Enums"]["org_role"];
 
@@ -111,6 +111,7 @@ export async function getUserOrganizations(
     memberships?.map((m) => ({
       org_id: m.org_id,
       role: m.role,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       org_name: (m.organizations as any)?.name ?? "Unknown",
     })) ?? []
   );
@@ -182,7 +183,8 @@ export async function requireOrgRole(
     owner: 3,
   };
 
-  if (roleHierarchy[data.role] < roleHierarchy[requiredRole]) {
+  const userRole = data.role as OrgRole;
+  if (roleHierarchy[userRole] < roleHierarchy[requiredRole]) {
     throw new Error(`Requires ${requiredRole} role or higher`);
   }
 }

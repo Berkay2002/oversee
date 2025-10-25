@@ -4,7 +4,7 @@
  * Use these to check role-based permissions both server-side and client-side.
  */
 
-import type { Database } from "@/types/supabase";
+import type { Database } from "@/types/database";
 
 type OrgRole = Database["public"]["Enums"]["org_role"];
 

@@ -25,7 +25,7 @@ export default async function ReporterPage({
           <Button size="sm">Ny rapportör</Button>
         </ReporterForm>
       </div>
-      <DataTable columns={columns} data={data} orgId={orgId} />
+      <DataTable columns={columns} data={data} />
     </div>
   );
 }

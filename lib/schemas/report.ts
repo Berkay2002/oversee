@@ -38,4 +38,5 @@ export type Report = ReportFormData & {
   id: string;
   created_by_user_id: string;
   created_at: string;
+  org_id: string;
 };

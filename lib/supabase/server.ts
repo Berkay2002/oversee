@@ -34,19 +34,7 @@ export async function createClient() {
 export async function getSession() {
   const supabase = await createClient();
   try {
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
-    if (userError) {
-      console.error("Error getting user for session validation:", userError);
-      return null;
-    }
-    if (!user) {
-      return null; // No authenticated user
-    }
-
-    // If user is validated, then get the session
+    // getSession() is faster and doesn't count against rate limits as heavily
     const {
       data: { session },
       error: sessionError,
@@ -78,17 +66,24 @@ export async function getUser() {
   }
 }
 
-export async function getUserProfile() {
+export async function getUserProfile(userId?: string) {
   const supabase = await createClient()
-  const user = await getUser()
-  if (!user) {
-    return null
+
+  // If userId not provided, get it from session
+  let targetUserId = userId
+  if (!targetUserId) {
+    const session = await getSession()
+    if (!session?.user?.id) {
+      return null
+    }
+    targetUserId = session.user.id
   }
+
   try {
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
-      .eq('user_id', user.id)
+      .eq('user_id', targetUserId)
       .single()
     if (error) {
       console.error('Error getting user profile:', error)

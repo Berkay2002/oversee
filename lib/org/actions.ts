@@ -69,7 +69,7 @@ export async function switchOrganization(
  * Used in proxy.ts and layouts
  */
 export async function getActiveOrgId(): Promise<string | null> {
-  const supabase = await createSupabaseServer();
+  const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();

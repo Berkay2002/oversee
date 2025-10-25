@@ -57,6 +57,7 @@ export async function updateSession(request: NextRequest) {
 
       if (memberError || !membership) {
         // User is not a member, redirect to root (will pick a valid org)
+        console.log('Proxy: User not a member, redirecting to /', { memberError });
         const url = request.nextUrl.clone();
         url.pathname = '/';
         return NextResponse.redirect(url);
@@ -96,6 +97,11 @@ export async function updateSession(request: NextRequest) {
       if (activeOrgId) {
         const url = request.nextUrl.clone();
         url.pathname = `/org/${activeOrgId}${pathname}`;
+        return NextResponse.redirect(url);
+      } else {
+        // No org found, redirect to create organization
+        const url = request.nextUrl.clone();
+        url.pathname = '/create-organization';
         return NextResponse.redirect(url);
       }
     }

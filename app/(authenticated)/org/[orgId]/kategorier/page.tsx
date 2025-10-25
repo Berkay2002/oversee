@@ -25,7 +25,7 @@ export default async function CategoriesPage({
           <Button size="sm">Ny kategori</Button>
         </CategoryForm>
       </div>
-      <DataTable columns={columns} data={categories} orgId={orgId} />
+      <DataTable columns={columns} data={categories} />
     </div>
   );
 }

@@ -2,7 +2,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { Tables } from "@/types/supabase";
+import { Tables } from "@/types/database";
 import { revalidatePath, updateTag } from "next/cache";
 
 export const getReporters = async (

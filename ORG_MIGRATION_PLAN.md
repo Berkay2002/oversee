@@ -217,190 +217,89 @@ All tables updated with organization-scoped RLS policies using helper functions:
 
 ---
 
-## Phase 5: Update Reports Pages 🚧 IN PROGRESS
+## Phase 5: Update Reports Pages ✅ COMPLETED
 
-### 5.1 All Reports Page
-- [ ] Create `app/(authenticated)/org/[orgId]/alla-rapporter/page.tsx`
-- [ ] Copy from existing `app/(authenticated)/alla-rapporter/page.tsx`
-- [ ] Add `params: Promise<{ orgId: string }>` interface
-- [ ] Extract `orgId` from params
-- [ ] Pass `orgId` to all server actions
-- [ ] Update DataTable to use org-scoped actions
+### 5.1 All Reports Page ✅
+- [x] Create `app/(authenticated)/org/[orgId]/alla-rapporter/page.tsx`
+- [x] Copy from existing `app/(authenticated)/alla-rapporter/page.tsx`
+- [x] Add `params: Promise<{ orgId: string }>` interface
+- [x] Extract `orgId` from params
+- [x] Pass `orgId` to all server actions
+- [x] Update DataTable to use org-scoped actions
 
-### 5.2 Reports Server Actions
-- [ ] Create `app/(authenticated)/org/[orgId]/alla-rapporter/actions.ts`
-- [ ] Update `getReports(orgId, options)`:
-  - [ ] Add `orgId` parameter as first argument
-  - [ ] Filter by `.eq('org_id', orgId)`
-  - [ ] Keep all existing filters (search, technician, category)
-  - [ ] Keep pagination logic
-  - [ ] Update cache tag to `reports-${orgId}`
-- [ ] Update `updateReport(orgId, reportId, data)`:
-  - [ ] Add `orgId` parameter
-  - [ ] Validate report belongs to org before update
-  - [ ] Update with RLS enforcement
-  - [ ] Revalidate org-scoped cache
-- [ ] Update `deleteReport(orgId, reportId)`:
-  - [ ] Add `orgId` parameter
-  - [ ] Validate report belongs to org
-  - [ ] Delete with RLS enforcement
-  - [ ] Revalidate org-scoped cache
+### 5.2 Reports Server Actions ✅
+- [x] Create `app/(authenticated)/org/[orgId]/alla-rapporter/actions.ts`
+- [x] Update `getReports(orgId, options)`:
+  - [x] Add `orgId` parameter as first argument
+  - [x] Filter by `.eq('org_id', orgId)`
+  - [x] Keep all existing filters (search, technician, category)
+  - [x] Keep pagination logic
+  - [x] Update cache tag to `reports-${orgId}`
+- [x] Update `updateReport(orgId, reportId, data)`:
+  - [x] Add `orgId` parameter
+  - [x] Validate report belongs to org before update
+  - [x] Update with RLS enforcement
+  - [x] Revalidate org-scoped cache
+- [x] Update `deleteReport(orgId, reportId)`:
+  - [x] Add `orgId` parameter
+  - [x] Validate report belongs to org
+  - [x] Delete with RLS enforcement
+  - [x] Revalidate org-scoped cache
 
-### 5.3 Reports Components
-- [ ] Copy all component files from `alla-rapporter/` to org-scoped directory
-- [ ] Update imports in components to use org-scoped actions
-- [ ] Ensure DataTable passes orgId to all server actions
-- [ ] Update any hardcoded paths to use `/org/[orgId]/` prefix
+### 5.3 Reports Components ✅
+- [x] Copy all component files from `alla-rapporter/` to org-scoped directory
+- [x] Update imports in components to use org-scoped actions
+- [x] Ensure DataTable passes orgId to all server actions
+- [x] Update any hardcoded paths to use `/org/[orgId]/` prefix
+- [x] Update data-table-toolbar to use org-scoped getTechnicians and getCategories
+- [x] Update data-table-row-actions to use org-scoped deleteReport
 
----
+### 5.4 Technicians Pages ✅
+- [x] Create `app/(authenticated)/org/[orgId]/tekniker/page.tsx`
+- [x] Create `app/(authenticated)/org/[orgId]/tekniker/actions.ts`
+- [x] Update all CRUD operations to include orgId parameter
+- [x] Add org_id filtering and validation to all queries
+- [x] Update cache tags to be org-specific
 
-## Phase 6: Update Categories Pages 📋 PENDING
+### 5.5 Categories Pages ✅
+- [x] Create `app/(authenticated)/org/[orgId]/kategorier/page.tsx`
+- [x] Create `app/(authenticated)/org/[orgId]/kategorier/actions.ts`
+- [x] Update all CRUD operations to include orgId parameter
+- [x] Add org_id filtering to all queries
+- [x] Update cache tags to be org-specific
 
-### 6.1 Categories Page
-- [ ] Create `app/(authenticated)/org/[orgId]/kategorier/page.tsx`
-- [ ] Copy from existing `app/(authenticated)/kategorier/page.tsx`
-- [ ] Add `params` interface and extract `orgId`
-- [ ] Pass `orgId` to server actions
-- [ ] Update UI to use org-scoped actions
+### 5.6 Reporters Pages ✅
+- [x] Create `app/(authenticated)/org/[orgId]/reporter/page.tsx`
+- [x] Create `app/(authenticated)/org/[orgId]/reporter/actions.ts`
+- [x] Update all CRUD operations to include orgId parameter
+- [x] Add org_id filtering and validation to all queries
+- [x] Update cache tags to be org-specific
 
-### 6.2 Categories Server Actions
-- [ ] Create `app/(authenticated)/org/[orgId]/kategorier/actions.ts`
-- [ ] Update `getCategories(orgId, options)`:
-  - [ ] Add `orgId` parameter
-  - [ ] Filter by `org_id`
-  - [ ] Keep search functionality
-  - [ ] Update cache tag to `categories-${orgId}`
-- [ ] Update `createCategory(orgId, data)`:
-  - [ ] Add `orgId` parameter
-  - [ ] Remove `created_by_user_id` logic
-  - [ ] Use `v_categories` view for insert (auto-injects org_id)
-  - [ ] Or explicitly set `org_id` in insert
-  - [ ] Revalidate cache
-- [ ] Update `updateCategory(orgId, categoryId, data)`:
-  - [ ] Add `orgId` parameter
-  - [ ] Validate category belongs to org
-  - [ ] Update with validation
-  - [ ] Revalidate cache
-- [ ] Update `deleteCategory(orgId, categoryId)`:
-  - [ ] Add `orgId` parameter
-  - [ ] Validate category belongs to org
-  - [ ] Check for reports using this category
-  - [ ] Delete with RLS enforcement
-  - [ ] Revalidate cache
-
-### 6.3 Categories Components
-- [ ] Copy component files to org-scoped directory
-- [ ] Update imports and actions
-- [ ] Ensure forms pass orgId
+### 5.7 New Report Form ✅
+- [x] Create `app/(authenticated)/org/[orgId]/ny-rapport/page.tsx`
+- [x] Create `app/(authenticated)/org/[orgId]/ny-rapport/actions.ts`
+- [x] Update `createReport` to include orgId parameter
+- [x] Update `data-actions.ts` helper functions to filter by orgId
+- [x] Update form to fetch org-scoped data (categories, technicians, reporters)
+- [x] Update navigation paths to use org-scoped routes
 
 ---
 
-## Phase 7: Update Technicians Pages 📋 PENDING
+## Phase 6: Member Management 📋 PENDING
 
-### 7.1 Technicians Page
-- [ ] Create `app/(authenticated)/org/[orgId]/tekniker/page.tsx`
-- [ ] Copy from existing page
-- [ ] Add params interface
-- [ ] Pass orgId to actions
-
-### 7.2 Technicians Server Actions
-- [ ] Create `app/(authenticated)/org/[orgId]/tekniker/actions.ts`
-- [ ] Update `getTechnicians(orgId, options)`:
-  - [ ] Add `orgId` parameter
-  - [ ] Filter by `org_id`
-  - [ ] Update cache tag
-- [ ] Update `createTechnician(orgId, data)`:
-  - [ ] Remove `created_by_user_id` logic
-  - [ ] Use `v_technicians` view or explicit `org_id`
-  - [ ] Validate with Zod
-- [ ] Update `updateTechnician(orgId, technicianId, data)`:
-  - [ ] Add `orgId` parameter
-  - [ ] Validate ownership (belongs to org)
-- [ ] Update `deleteTechnician(orgId, technicianId)`:
-  - [ ] Add `orgId` parameter
-  - [ ] Validate ownership
-
-### 7.3 Technicians Components
-- [ ] Copy components to org-scoped directory
-- [ ] Update imports
-- [ ] Update forms to pass orgId
-
----
-
-## Phase 8: Update Reporters Pages 📋 PENDING
-
-### 8.1 Reporters Page
-- [ ] Create `app/(authenticated)/org/[orgId]/reporter/page.tsx`
-- [ ] Copy from existing page
-- [ ] Add params interface
-- [ ] Pass orgId to actions
-
-### 8.2 Reporters Server Actions
-- [ ] Create `app/(authenticated)/org/[orgId]/reporter/actions.ts`
-- [ ] Update `getReporters(orgId, options)`:
-  - [ ] Add `orgId` parameter
-  - [ ] Filter by `org_id`
-- [ ] Update `createReporter(orgId, data)`:
-  - [ ] Remove `created_by_user_id` logic
-  - [ ] Use `v_reporters` view or explicit `org_id`
-- [ ] Update `updateReporter(orgId, reporterId, data)`:
-  - [ ] Add `orgId` parameter
-  - [ ] Validate ownership
-- [ ] Update `deleteReporter(orgId, reporterId)`:
-  - [ ] Add `orgId` parameter
-  - [ ] Validate ownership
-
-### 8.3 Reporters Components
-- [ ] Copy components
-- [ ] Update imports
-- [ ] Update forms
-
----
-
-## Phase 9: Update New Report Form 📋 PENDING
-
-### 9.1 New Report Page
-- [ ] Create `app/(authenticated)/org/[orgId]/ny-rapport/page.tsx`
-- [ ] Copy from existing `ny-rapport/page.tsx`
-- [ ] Add params interface
-- [ ] Pass orgId to form and actions
-
-### 9.2 New Report Server Actions
-- [ ] Create `app/(authenticated)/org/[orgId]/ny-rapport/actions.ts`
-- [ ] Update `createReport(orgId, data)`:
-  - [ ] Add `orgId` parameter as first argument
-  - [ ] Use `v_reports` view for insert (auto-injects org_id)
-  - [ ] Or explicitly set `org_id` in insert data
-  - [ ] Validate category belongs to same org
-  - [ ] Revalidate reports and dashboard caches
-- [ ] Update any helper functions to filter by orgId:
-  - [ ] `getCategories(orgId)` - for dropdown
-  - [ ] `getTechnicians(orgId)` - for dropdown
-  - [ ] `getReporters(orgId)` - for dropdown
-
-### 9.3 Form Components
-- [ ] Copy form components
-- [ ] Update to fetch org-scoped data for dropdowns
-- [ ] Ensure category/technician/reporter dropdowns only show org data
-- [ ] Pass orgId through form submission
-
----
-
-## Phase 10: Member Management 📋 PENDING
-
-### 10.1 Settings Layout
+### 6.1 Settings Layout
 - [ ] Create `app/(authenticated)/org/[orgId]/settings/layout.tsx`
 - [ ] Add settings navigation (tabs or sidebar)
 - [ ] Links: Overview, Members, (future: Billing, etc.)
 
-### 10.2 Settings Overview Page
+### 6.2 Settings Overview Page
 - [ ] Create `app/(authenticated)/org/[orgId]/settings/page.tsx`
 - [ ] Display org details (name, created date, member count)
 - [ ] Edit org name form (admin/owner only)
 - [ ] Delete org button (owner only, with confirmation modal)
 - [ ] Use `updateOrganizationName` and `deleteOrganization` actions
 
-### 10.3 Members Management Page
+### 6.3 Members Management Page
 - [ ] Create `app/(authenticated)/org/[orgId]/settings/members/page.tsx`
 - [ ] List all organization members
 - [ ] Display user info (name, email) and role badge
@@ -409,7 +308,7 @@ All tables updated with organization-scoped RLS policies using helper functions:
 - [ ] Change role dropdown (owner only)
 - [ ] Invite member button (admin/owner)
 
-### 10.4 Members Server Actions
+### 6.4 Members Server Actions
 - [ ] Create `app/(authenticated)/org/[orgId]/settings/members/actions.ts`
 - [ ] Implement `getOrgMembers(orgId)`:
   - [ ] Join organization_members with profiles
@@ -434,7 +333,7 @@ All tables updated with organization-scoped RLS policies using helper functions:
   - [ ] Call `transfer_org_ownership` RPC function
   - [ ] Revalidate members page
 
-### 10.5 Invitation System
+### 6.5 Invitation System
 - [ ] Create `app/(authenticated)/org/[orgId]/settings/members/invite/actions.ts`
 - [ ] Implement `createInvitation(orgId, email, role)`:
   - [ ] Validate caller is admin/owner
@@ -452,7 +351,7 @@ All tables updated with organization-scoped RLS policies using helper functions:
   - [ ] Delete invitation
   - [ ] Revalidate invitations list
 
-### 10.6 Invitation Acceptance Page
+### 6.6 Invitation Acceptance Page
 - [ ] Create `app/invite/[token]/page.tsx` (public route)
 - [ ] Fetch invitation by token
 - [ ] Check if expired
@@ -466,7 +365,7 @@ All tables updated with organization-scoped RLS policies using helper functions:
   - [ ] Mark invitation as accepted
   - [ ] Redirect to `/org/[orgId]/oversikt`
 
-### 10.7 Invitation Acceptance Action
+### 6.7 Invitation Acceptance Action
 - [ ] Create `app/invite/[token]/actions.ts`
 - [ ] Implement `acceptInvitation(token)`:
   - [ ] Validate user is authenticated
@@ -479,9 +378,9 @@ All tables updated with organization-scoped RLS policies using helper functions:
 
 ---
 
-## Phase 11: Role-Based UI Permissions 📋 PENDING
+## Phase 7: Role-Based UI Permissions 📋 PENDING
 
-### 11.1 Client-Side Permission Hooks
+### 7.1 Client-Side Permission Hooks
 - [x] `useIsOrgAdmin()` - Already created in context.tsx
 - [x] `useIsOrgOwner()` - Already created in context.tsx
 - [ ] Use hooks in client components to conditionally render:
@@ -490,27 +389,27 @@ All tables updated with organization-scoped RLS policies using helper functions:
   - [ ] Settings links (admin/owner only)
   - [ ] Invite member button (admin/owner only)
 
-### 11.2 Reports Page Permissions
+### 7.2 Reports Page Permissions
 - [ ] Hide delete button if not admin/owner
 - [ ] Hide edit button if not admin/owner (or implement edit permission)
 - [ ] Show read-only view for members
 
-### 11.3 Categories Page Permissions
+### 7.3 Categories Page Permissions
 - [ ] Hide "Add Category" button if not admin/owner
 - [ ] Hide delete/edit actions if not admin/owner
 - [ ] Show read-only table for members
 
-### 11.4 Technicians Page Permissions
+### 7.4 Technicians Page Permissions
 - [ ] Hide "Add Technician" button if not admin/owner
 - [ ] Hide delete/edit actions if not admin/owner
 - [ ] Show read-only table for members
 
-### 11.5 Reporters Page Permissions
+### 7.5 Reporters Page Permissions
 - [ ] Hide "Add Reporter" button if not admin/owner
 - [ ] Hide delete/edit actions if not admin/owner
 - [ ] Show read-only table for members
 
-### 11.6 Settings Page Permissions
+### 7.6 Settings Page Permissions
 - [ ] Hide settings link in navigation if not admin/owner
 - [ ] Redirect if member tries to access /settings
 - [ ] Show different UI based on role:
@@ -518,7 +417,7 @@ All tables updated with organization-scoped RLS policies using helper functions:
   - [ ] Admin: Can edit org, manage members (except owner role changes)
   - [ ] Member: No access to settings
 
-### 11.7 Server-Side Permission Validation
+### 7.7 Server-Side Permission Validation
 - [ ] Add role checks to all server actions:
   - [ ] Use `requireOrgRole()` helper
   - [ ] Delete actions: require admin or owner
@@ -533,14 +432,14 @@ All tables updated with organization-scoped RLS policies using helper functions:
 
 ---
 
-## Phase 12: Update Sidebar Navigation 📋 PENDING
+## Phase 8: Update Sidebar Navigation 📋 PENDING
 
-### 12.1 Read Current Sidebar
+### 8.1 Read Current Sidebar
 - [ ] Examine `components/AppSidebar.tsx`
 - [ ] Identify all navigation links
 - [ ] Understand current structure
 
-### 12.2 Update Nav Links
+### 8.2 Update Nav Links
 - [ ] Add `orgId` parameter to AppSidebar component
 - [ ] Update all nav links to use `/org/${orgId}/` prefix:
   - [ ] Översikt → `/org/${orgId}/oversikt`
@@ -552,21 +451,21 @@ All tables updated with organization-scoped RLS policies using helper functions:
   - [ ] Settings → `/org/${orgId}/settings` (conditional, admin/owner only)
 - [ ] Keep /anvandare as global admin-only route (no org prefix)
 
-### 12.3 Update Layout Integration
+### 8.3 Update Layout Integration
 - [ ] Pass `orgId` to AppSidebar from org layout
 - [ ] Ensure sidebar highlights active route correctly
 - [ ] Test navigation between pages
 
-### 12.4 Add Org Name Display
+### 8.4 Add Org Name Display
 - [ ] Show current org name in sidebar header
 - [ ] (Optional) Add org avatar/logo
 - [ ] Style to differentiate from user profile
 
 ---
 
-## Phase 13: Testing & Validation ⚠️ PENDING
+## Phase 9: Testing & Validation ⚠️ PENDING
 
-### 13.1 Database RLS Testing
+### 9.1 Database RLS Testing
 - [ ] Test with owner role:
   - [ ] Can read all org data
   - [ ] Can update all org data
@@ -589,14 +488,14 @@ All tables updated with organization-scoped RLS policies using helper functions:
   - [ ] Cannot access settings
   - [ ] Cannot manage members
 
-### 13.2 Cross-Org Data Isolation
+### 9.2 Cross-Org Data Isolation
 - [ ] Create two separate orgs
 - [ ] Add test data to each org
 - [ ] Verify user in Org A cannot see Org B's data
 - [ ] Verify switching to Org B shows only Org B's data
 - [ ] Test direct URL access with wrong orgId (should redirect)
 
-### 13.3 Organization Switching
+### 9.3 Organization Switching
 - [ ] Create user with multiple orgs
 - [ ] Test switching via dropdown
 - [ ] Verify cookie is set correctly
@@ -604,7 +503,7 @@ All tables updated with organization-scoped RLS policies using helper functions:
 - [ ] Verify data refreshes for new org
 - [ ] Test persistence (refresh page, should stay in same org)
 
-### 13.4 Member Management
+### 9.4 Member Management
 - [ ] Test adding existing user to org
 - [ ] Test removing user from org
 - [ ] Test changing user role (owner → admin → member → admin → owner)
@@ -615,13 +514,13 @@ All tables updated with organization-scoped RLS policies using helper functions:
 - [ ] Test expired invitation (should fail)
 - [ ] Test already-accepted invitation (should fail)
 
-### 13.5 Role-Based UI
+### 9.5 Role-Based UI
 - [ ] Login as owner → verify all actions visible
 - [ ] Login as admin → verify owner-only actions hidden
 - [ ] Login as member → verify delete/edit buttons hidden
 - [ ] Test server-side validation (e.g., try deleting as member via API)
 
-### 13.6 CRUD Operations
+### 9.6 CRUD Operations
 - [ ] Test creating reports in org
 - [ ] Test updating reports
 - [ ] Test deleting reports (as admin/owner)
@@ -632,7 +531,7 @@ All tables updated with organization-scoped RLS policies using helper functions:
 - [ ] Verify all operations filter by org_id
 - [ ] Verify cache invalidation works per-org
 
-### 13.7 Edge Cases
+### 9.7 Edge Cases
 - [ ] User with no orgs:
   - [ ] Should redirect to /create-organization
   - [ ] After creating org, should redirect to /org/[orgId]/oversikt
@@ -649,7 +548,7 @@ All tables updated with organization-scoped RLS policies using helper functions:
   - [ ] `/org/fake-uuid-123/oversikt` → should redirect to root
   - [ ] Membership validation should fail
 
-### 13.8 Performance Testing
+### 9.8 Performance Testing
 - [ ] Test with 100+ reports in an org
 - [ ] Test with 10+ orgs for a user
 - [ ] Verify queries are indexed and fast
@@ -658,9 +557,9 @@ All tables updated with organization-scoped RLS policies using helper functions:
 
 ---
 
-## Phase 14: Cleanup & Documentation 📋 PENDING
+## Phase 10: Cleanup & Documentation 📋 PENDING
 
-### 14.1 Remove Legacy Routes
+### 10.1 Remove Legacy Routes
 - [ ] Delete `app/(authenticated)/oversikt/` (after verifying org version works)
 - [ ] Delete `app/(authenticated)/alla-rapporter/`
 - [ ] Delete `app/(authenticated)/kategorier/`
@@ -669,19 +568,19 @@ All tables updated with organization-scoped RLS policies using helper functions:
 - [ ] Delete `app/(authenticated)/ny-rapport/`
 - [ ] Keep `/anvandare` as global admin route
 
-### 14.2 Update Documentation
+### 10.2 Update Documentation
 - [ ] Update README.md with multi-tenant architecture
 - [ ] Document new routing structure
 - [ ] Document permission model (owner/admin/member)
 - [ ] Document org creation and invitation flow
 - [ ] Add screenshots/diagrams if helpful
 
-### 14.3 Update Environment Variables
+### 10.3 Update Environment Variables
 - [ ] Verify all required env vars are in `.env.example`
 - [ ] Document any new env vars needed
 - [ ] Verify `.env.local` has all required values
 
-### 14.4 Migration Guide for Users
+### 10.4 Migration Guide for Users
 - [ ] Create user-facing guide:
   - [ ] "What's changed" summary
   - [ ] How to create an organization
@@ -690,7 +589,7 @@ All tables updated with organization-scoped RLS policies using helper functions:
   - [ ] What roles mean (owner/admin/member)
 - [ ] (Optional) Create migration banner for existing users
 
-### 14.5 Code Cleanup
+### 10.5 Code Cleanup
 - [ ] Remove any commented-out code
 - [ ] Remove unused imports
 - [ ] Ensure consistent formatting
@@ -702,38 +601,45 @@ All tables updated with organization-scoped RLS policies using helper functions:
 ## Progress Tracking
 
 ### Overall Completion
-- **Completed Phases**: 4/14 (28.6%)
+- **Completed Phases**: 5/10 (50%)
   - ✅ Phase 1: Foundation & Core Infrastructure
   - ✅ Phase 2: Update Dashboard & Analytics
   - ✅ Phase 3: Organization Switcher
   - ✅ Phase 4: Organization Creation
+  - ✅ Phase 5: Update Reports Pages (ALL pages migrated!)
 
-- **In Progress**: 1/14 (7.1%)
-  - 🚧 Phase 5: Update Reports Pages
+- **In Progress**: 0/10 (0%)
 
-- **Pending**: 9/14 (64.3%)
-  - 📋 Phase 6-14
+- **Pending**: 5/10 (50%)
+  - 📋 Phase 6: Member Management
+  - 📋 Phase 7: Role-Based UI Permissions
+  - 📋 Phase 8: Update Sidebar Navigation
+  - 📋 Phase 9: Testing & Validation
+  - 📋 Phase 10: Cleanup & Documentation
 
 ### Task Completion
-- **Total Tasks**: ~200+
-- **Completed**: ~60+ (30%)
-- **In Progress**: ~3 (1.5%)
-- **Pending**: ~137+ (68.5%)
+- **Total Tasks**: ~180+
+- **Completed**: ~100+ (55.6%)
+- **In Progress**: 0 (0%)
+- **Pending**: ~80+ (44.4%)
 
 ### Recent Updates
-- ✅ Created database migration plan
-- ✅ Implemented all foundation utilities (lib/org/*)
-- ✅ Created org-scoped routing structure
-- ✅ Updated proxy.ts with org validation and redirects
-- ✅ Created organization switcher component
-- ✅ Created organization creation page
-- ✅ Migrated dashboard/oversikt page to org-scoped version
+- ✅ **Phase 5 COMPLETED**: Migrated all reports-related pages to org-scoped routes
+- ✅ Created org-scoped alla-rapporter (all reports) page with full CRUD operations
+- ✅ Created org-scoped tekniker (technicians) page with full CRUD operations
+- ✅ Created org-scoped kategorier (categories) page with full CRUD operations
+- ✅ Created org-scoped reporter (reporters) page with full CRUD operations
+- ✅ Created org-scoped ny-rapport (new report) page with org-filtered dropdowns
+- ✅ All server actions updated with orgId parameter and org_id filtering
+- ✅ All cache tags made org-specific for proper invalidation
+- ✅ All components reuse existing shared components from /components
 
 ### Next Priority
-1. 🎯 Complete Phase 5: Reports pages (highest user value)
-2. Update sidebar navigation (enables full app navigation)
-3. Implement member management (core multi-tenant feature)
-4. Add role-based permissions (security requirement)
+1. 🎯 Phase 8: Update sidebar navigation (enables full app navigation)
+2. Phase 6: Implement member management (core multi-tenant feature)
+3. Phase 7: Add role-based permissions (security requirement)
+4. Phase 9: Comprehensive testing
+5. Phase 10: Cleanup legacy routes
 
 ---
 
@@ -795,4 +701,4 @@ export function Component() {
 ---
 
 **Last Updated**: 2025-01-25
-**Migration Status**: In Progress (Phase 5)
+**Migration Status**: 50% Complete (5/10 phases done, Phase 5 just completed!)
