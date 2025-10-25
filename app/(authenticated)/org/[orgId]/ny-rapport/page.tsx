@@ -5,7 +5,7 @@ import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { reportSchema, ReportFormData } from '@/lib/schemas/report';
-import { createReport } from './actions';
+import { createReport } from '@/lib/actions/report';
 import { getCategories, getTechnicians, getReporters, type Category, type Technician, type Reporter } from './data-actions';
 import { useRouter, useParams } from 'next/navigation';
 import { toast } from 'sonner';

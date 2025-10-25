@@ -20,18 +20,37 @@ export function Calendar12({
   className,
 }: Calendar12Props) {
   const isMobile = useMobile()
+  const cardRef = React.useRef<HTMLDivElement>(null)
+  const [isNarrow, setIsNarrow] = React.useState(false)
+
+  React.useEffect(() => {
+    const cardElement = cardRef.current
+    if (!cardElement) return
+
+    const resizeObserver = new ResizeObserver(() => {
+      setIsNarrow(cardElement.offsetWidth < 520)
+    })
+
+    resizeObserver.observe(cardElement)
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [])
+
+  const numberOfMonths = isMobile || isNarrow ? 1 : 2
 
   return (
-    <Card className={className}>
-      <CardContent className="flex justify-center p-0">
+    <Card className={className} ref={cardRef}>
+      <CardContent className="p-0">
         <Calendar
           mode="range"
           selected={dateRange}
           onSelect={onDateRangeChange}
           defaultMonth={dateRange?.from}
-          numberOfMonths={isMobile ? 1 : 2}
+          numberOfMonths={numberOfMonths}
           locale={sv}
-          className="bg-transparent p-3"
+          className="w-full bg-transparent"
           buttonVariant="outline"
         />
       </CardContent>

@@ -1,4 +1,4 @@
-import { getReports } from './actions';
+import { getReports } from '@/lib/actions/report';
 import { AllaRapporter } from './alla-rapporter';
 
 type SearchParams = {

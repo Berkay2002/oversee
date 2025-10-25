@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Tables } from "@/types/database"
 import { RoleForm } from "./role-form"
-import { updateUserRole } from "@/app/(authenticated)/anvandare/actions"
+import { updateUserRole } from "@/lib/actions/user"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 
 interface DataTableRowActionsProps<TData> {

@@ -14,8 +14,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Tables } from "@/types/database"
 import { ReporterForm } from "./reporter-form"
-import { deleteReporter, updateReporter } from "@/app/(authenticated)/reporter/actions"
+import { deleteReporter, updateReporter } from "@/lib/actions/reporter"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { useOrg } from "@/lib/org/context"
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
@@ -25,6 +26,7 @@ export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const reporter = row.original as Tables<'reporters'>
+  const { activeOrg } = useOrg()
 
   return (
     <DropdownMenu>
@@ -41,7 +43,7 @@ export function DataTableRowActions<TData>({
       <DropdownMenuContent align="end" className="w-[160px]">
         <ReporterForm
           reporter={reporter}
-          onSave={(values) => updateReporter(reporter.id, values)}
+          onSave={(values) => updateReporter(activeOrg.id, reporter.id, values)}
         >
           <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
             Redigera
@@ -65,7 +67,7 @@ export function DataTableRowActions<TData>({
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Avbryt</AlertDialogCancel>
-              <AlertDialogAction onClick={() => deleteReporter(reporter.id)}>
+              <AlertDialogAction onClick={() => deleteReporter(activeOrg.id, reporter.id)}>
                 Fortsätt
               </AlertDialogAction>
             </AlertDialogFooter>

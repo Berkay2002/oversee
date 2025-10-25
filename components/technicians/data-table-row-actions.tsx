@@ -14,8 +14,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Tables } from "@/types/database"
 import { TechnicianForm } from "./technician-form"
-import { deleteTechnician, updateTechnician } from "@/app/(authenticated)/tekniker/actions"
+import { deleteTechnician, updateTechnician } from "@/lib/actions/technician"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { useOrg } from "@/lib/org/context"
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
@@ -25,6 +26,7 @@ export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const technician = row.original as Tables<'technicians'>
+  const { activeOrg } = useOrg()
 
   return (
     <DropdownMenu>
@@ -41,7 +43,7 @@ export function DataTableRowActions<TData>({
       <DropdownMenuContent align="end" className="w-[160px]">
         <TechnicianForm
           technician={technician}
-          onSave={(values) => updateTechnician(technician.id, values)}
+          onSave={(values) => updateTechnician(activeOrg.id, technician.id, values)}
         >
           <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
             Redigera
@@ -65,7 +67,7 @@ export function DataTableRowActions<TData>({
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Avbryt</AlertDialogCancel>
-              <AlertDialogAction onClick={() => deleteTechnician(technician.id)}>
+              <AlertDialogAction onClick={() => deleteTechnician(activeOrg.id, technician.id)}>
                 Fortsätt
               </AlertDialogAction>
             </AlertDialogFooter>

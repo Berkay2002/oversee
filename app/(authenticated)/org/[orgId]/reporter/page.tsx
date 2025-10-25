@@ -1,7 +1,7 @@
-import { getReporters, createReporter } from "./actions";
+import { getReporters } from "@/lib/actions/reporter";
 import { columns } from "@/components/reporters/columns";
 import { DataTable } from "@/components/reporters/data-table";
-import { ReporterForm } from "@/components/reporters/reporter-form";
+import { ReporterFormWrapper } from "@/lib/wrappers/reporter-form-wrapper";
 import { Button } from "@/components/ui/button";
 
 interface PageProps {
@@ -21,9 +21,9 @@ export default async function ReporterPage({
     <div className="container mx-auto py-10 px-4 md:px-0">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">Rapportörer</h1>
-        <ReporterForm onSave={(values) => createReporter(orgId, values)}>
+        <ReporterFormWrapper orgId={orgId}>
           <Button size="sm">Ny rapportör</Button>
-        </ReporterForm>
+        </ReporterFormWrapper>
       </div>
       <DataTable columns={columns} data={data} />
     </div>

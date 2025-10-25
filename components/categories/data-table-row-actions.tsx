@@ -14,8 +14,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Tables } from "@/types/database"
 import { CategoryForm } from "./category-form"
-import { deleteCategory, updateCategory } from "@/app/(authenticated)/kategorier/actions"
+import { deleteCategory, updateCategory } from "@/lib/actions/category"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { useOrg } from "@/lib/org/context"
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
@@ -25,6 +26,7 @@ export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const category = row.original as Tables<'categories'>
+  const { activeOrg } = useOrg()
 
   return (
     <DropdownMenu>
@@ -41,7 +43,7 @@ export function DataTableRowActions<TData>({
       <DropdownMenuContent align="end" className="w-[160px]">
         <CategoryForm
           category={category}
-          onSave={(values) => updateCategory(category.id, values)}
+          onSave={(values) => updateCategory(activeOrg.id, category.id, values)}
         >
           <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
             Redigera
@@ -65,7 +67,7 @@ export function DataTableRowActions<TData>({
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Avbryt</AlertDialogCancel>
-              <AlertDialogAction onClick={() => deleteCategory(category.id)}>
+              <AlertDialogAction onClick={() => deleteCategory(activeOrg.id, category.id)}>
                 Fortsätt
               </AlertDialogAction>
             </AlertDialogFooter>

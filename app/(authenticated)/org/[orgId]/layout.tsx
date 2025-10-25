@@ -2,8 +2,6 @@ import { getActiveOrgForUser } from "@/lib/org/server";
 import { getSession } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { OrgProvider } from "@/lib/org/context";
-import { OrgSwitcherWrapper } from "@/components/org-switcher-wrapper";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 
 interface OrgLayoutProps {
   children: React.ReactNode;
@@ -33,10 +31,6 @@ export default async function OrgLayout({ children, params }: OrgLayoutProps) {
 
   return (
     <OrgProvider activeOrg={activeOrg}>
-      <header className="flex h-16 shrink-0 items-center justify-between gap-2 border-b px-4">
-        <SidebarTrigger />
-        <OrgSwitcherWrapper currentOrgId={orgId} userId={session.user.id} />
-      </header>
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
     </OrgProvider>
   );
