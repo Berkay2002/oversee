@@ -17,18 +17,20 @@ import {
   createVehicleCase,
   updateVehicleCase,
   markVehicleCaseKlar,
+  deleteVehicleCase,
   getVehicleCaseAudits,
   getVehicleCaseAnalytics,
   type VehicleCaseView,
   type VehicleCaseFilters,
 } from '@/lib/actions/vehicle';
-import { useOrg } from '@/lib/org/context';
+import { useOrg, useIsOrgAdmin } from '@/lib/org/context';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function BilkollenPage() {
   const { activeOrg } = useOrg();
   const orgId = activeOrg.id;
+  const isOrgAdmin = useIsOrgAdmin();
 
   // State for tabs
   const [activeTab, setActiveTab] = React.useState<'ongoing' | 'archive'>('ongoing');
@@ -222,6 +224,38 @@ export default function BilkollenPage() {
     setArchivedCount(archived.count);
   };
 
+  const handleDeleteCase = React.useCallback(async (caseId: string) => {
+    const caseToDelete =
+      ongoingCases.find((c) => c.id === caseId) ||
+      archivedCases.find((c) => c.id === caseId);
+
+    if (!caseToDelete) return;
+
+    const confirmed = window.confirm(
+      `Är du säker på att du vill ta bort ärendet för ${caseToDelete.registration_number}?`
+    );
+
+    if (!confirmed) return;
+
+    const result = await deleteVehicleCase(orgId, caseId);
+    if (result.error) {
+      toast.error(result.error);
+      return;
+    }
+
+    toast.success('Fordonet har tagits bort');
+
+    // Refresh both views
+    const [ongoing, archived] = await Promise.all([
+      getVehicleCases(orgId, false, filters),
+      getVehicleCases(orgId, true, filters),
+    ]);
+    setOngoingCases(ongoing.data);
+    setOngoingCount(ongoing.count);
+    setArchivedCases(archived.data);
+    setArchivedCount(archived.count);
+  }, [orgId, ongoingCases, archivedCases, filters]);
+
   const handleViewDetails = React.useCallback(async (caseId: string) => {
     const caseToView = archivedCases.find((c) => c.id === caseId);
     if (!caseToView) return;
@@ -269,10 +303,12 @@ export default function BilkollenPage() {
       onUpdate: handleUpdateCase,
       onMarkKlar: handleMarkKlar,
       onViewDetails: () => {},
+      onDelete: handleDeleteCase,
       isArchive: false,
+      isOrgAdmin,
     };
     return createColumns(meta);
-  }, [orgId, locations, members, handleUpdateCase, handleMarkKlar]);
+  }, [orgId, locations, members, handleUpdateCase, handleMarkKlar, handleDeleteCase, isOrgAdmin]);
 
   const archiveColumns = React.useMemo(() => {
     const meta: VehicleCaseColumnMeta = {
@@ -282,10 +318,12 @@ export default function BilkollenPage() {
       onUpdate: () => Promise.resolve(),
       onMarkKlar: () => {},
       onViewDetails: handleViewDetails,
+      onDelete: handleDeleteCase,
       isArchive: true,
+      isOrgAdmin,
     };
     return createColumns(meta);
-  }, [orgId, locations, members, handleViewDetails]);
+  }, [orgId, locations, members, handleViewDetails, handleDeleteCase, isOrgAdmin]);
 
   const ongoingPageCount = Math.ceil(ongoingCount / pageSize);
   const archivePageCount = Math.ceil(archivedCount / pageSize);

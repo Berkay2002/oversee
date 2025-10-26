@@ -11,8 +11,14 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Check } from 'lucide-react';
+import { Check, MoreHorizontal } from 'lucide-react';
 import type { VehicleCaseView } from '@/lib/actions/vehicle';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export type VehicleCaseColumnMeta = {
   orgId: string;
@@ -26,7 +32,9 @@ export type VehicleCaseColumnMeta = {
   ) => Promise<void>;
   onMarkKlar: (caseId: string) => void;
   onViewDetails: (caseId: string) => void;
+  onDelete: (caseId: string) => void;
   isArchive: boolean;
+  isOrgAdmin: boolean;
 };
 
 // Badge variants for status display
@@ -286,6 +294,33 @@ export const createColumns = (
           >
             Visa detaljer
           </Button>
+        );
+      },
+    });
+  }
+
+  if (meta.isOrgAdmin) {
+    columns.push({
+      id: 'delete',
+      header: '',
+      cell: ({ row }) => {
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                onClick={() => meta.onDelete(row.original.id)}
+                className="text-red-500"
+              >
+                Ta bort
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         );
       },
     });

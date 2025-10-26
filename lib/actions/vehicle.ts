@@ -461,3 +461,46 @@ export async function createVehicleCaseAudit(
 
   return { success: true };
 }
+
+/**
+ * Delete a vehicle case
+ */
+export async function deleteVehicleCase(orgId: string, caseId: string) {
+  const supabase = await createClient();
+
+  // Get current user
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return { error: 'Användaren är inte autentiserad' };
+  }
+
+  // Validate case belongs to org
+  const { data: existingCase } = await supabase
+    .from('vehicle_cases')
+    .select('org_id')
+    .eq('id', caseId)
+    .single();
+
+  if (!existingCase || existingCase.org_id !== orgId) {
+    return { error: 'Fordonet hittades inte eller åtkomst nekad' };
+  }
+
+  // Delete the case
+  const { error } = await supabase
+    .from('vehicle_cases')
+    .delete()
+    .eq('id', caseId)
+    .eq('org_id', orgId);
+
+  if (error) {
+    console.error('Error deleting vehicle case:', JSON.stringify(error, null, 2));
+    return { error: `Fel vid borttagning: ${error.message}` };
+  }
+
+  // Revalidate cache
+  updateTag(`vehicle-cases-${orgId}`);
+
+  return { success: true };
+}

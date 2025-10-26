@@ -27,7 +27,9 @@ type VehicleCaseMobileCardProps = {
   ) => Promise<void>;
   onMarkKlar?: (caseId: string) => void;
   onViewDetails?: (caseId: string) => void;
+  onDelete: (caseId: string) => void;
   isArchive: boolean;
+  isOrgAdmin: boolean;
 };
 
 export function VehicleCaseMobileCard({
@@ -37,7 +39,9 @@ export function VehicleCaseMobileCard({
   onUpdate,
   onMarkKlar,
   onViewDetails,
+  onDelete,
   isArchive,
+  isOrgAdmin,
 }: VehicleCaseMobileCardProps) {
   const getInsuranceStatusBadge = (status: 'pending' | 'approved' | 'rejected') => {
     const variants = {
@@ -278,6 +282,17 @@ export function VehicleCaseMobileCard({
             >
               <Eye className="h-4 w-4" />
               Visa detaljer
+            </Button>
+          )}
+
+          {isOrgAdmin && (
+            <Button
+              size="lg"
+              variant="destructive"
+              onClick={() => onDelete(vehicleCase.id)}
+              className="w-full"
+            >
+              Ta bort
             </Button>
           )}
         </div>

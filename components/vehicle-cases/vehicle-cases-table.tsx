@@ -88,7 +88,9 @@ export function VehicleCasesTable<TData, TValue>({
                 onUpdate={meta.onUpdate}
                 onMarkKlar={meta.isArchive ? undefined : meta.onMarkKlar}
                 onViewDetails={meta.isArchive ? meta.onViewDetails : undefined}
+                onDelete={meta.onDelete}
                 isArchive={meta.isArchive}
+                isOrgAdmin={meta.isOrgAdmin}
               />
             ))}
           </div>
