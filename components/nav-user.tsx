@@ -38,7 +38,7 @@ export function NavUser({
     avatar?: string
   }
 }) {
-  const { isMobile } = useSidebar()
+  const { isMobile, setOpenMobile } = useSidebar()
 
   if (!user) {
     return null
@@ -53,6 +53,13 @@ export function NavUser({
         .toUpperCase()
         .slice(0, 2)
     : user.email.slice(0, 2).toUpperCase()
+
+  const handleLogout = async () => {
+    if (isMobile) {
+      setOpenMobile(false)
+    }
+    await signOut()
+  }
 
   return (
     <SidebarMenu>
@@ -108,11 +115,7 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onSelect={async () => {
-                await signOut()
-              }}
-            >
+            <DropdownMenuItem onSelect={handleLogout}>
               <LogOut />
               Log out
             </DropdownMenuItem>

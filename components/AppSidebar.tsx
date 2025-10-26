@@ -27,6 +27,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
 
 const data = {
@@ -36,11 +37,8 @@ const data = {
       url: "/oversikt",
       icon: LayoutDashboard,
     },
-    {
-      title: "Bilkollen",
-      url: "/bilkollen",
-      icon: Car,
-    },
+  ],
+  navReports: [
     {
       title: "Ny Rapport",
       url: "/ny-rapport",
@@ -52,19 +50,19 @@ const data = {
       icon: FileText,
     },
   ],
+  navBilkollen: [
+    {
+      title: "Fordon",
+      url: "/bilkollen",
+      icon: Car,
+    },
+    {
+      title: "Platser",
+      url: "/platser",
+      icon: MapPin,
+    },
+  ],
   navManagement: [
-    {
-      title: "Användare",
-      url: "/anvandare",
-      icon: Users,
-      adminOnly: true,
-    },
-    {
-      title: "Join Requests",
-      url: "/join-requests",
-      icon: UserCheck,
-      adminOnly: true,
-    },
     {
       title: "Kategorier",
       url: "/kategorier",
@@ -75,15 +73,17 @@ const data = {
       url: "/tekniker",
       icon: Wrench,
     },
+  ],
+  navAdmin: [
     {
-      title: "Reporter",
-      url: "/reporter",
-      icon: UserCheck,
+      title: "Användare",
+      url: "/anvandare",
+      icon: Users,
     },
     {
-      title: "Platser",
-      url: "/platser",
-      icon: MapPin,
+      title: "Join Requests",
+      url: "/join-requests",
+      icon: UserCheck,
     },
   ],
   navSecondary: [
@@ -112,6 +112,7 @@ export function AppSidebar({
   }
 }) {
   const pathname = usePathname()
+  const { isMobile, setOpenMobile } = useSidebar()
 
   // Extract orgId from pathname (e.g., /org/[orgId]/page -> [orgId])
   const orgIdMatch = pathname.match(/^\/org\/([^\/]+)/)
@@ -125,10 +126,11 @@ export function AppSidebar({
     return url
   }
 
-  const navManagement =
-    user?.role === "admin"
-      ? data.navManagement
-      : data.navManagement.filter((item) => !item.adminOnly)
+  const handleHeaderClick = () => {
+    if (isMobile) {
+      setOpenMobile(false)
+    }
+  }
 
   // Transform all URLs
   const navMainWithOrgId = data.navMain.map(item => ({
@@ -136,12 +138,29 @@ export function AppSidebar({
     url: transformUrl(item.url)
   }))
 
-  const navManagementWithOrgId = navManagement.map(item => ({
+  const navReportsWithOrgId = data.navReports.map(item => ({
+    ...item,
+    url: transformUrl(item.url)
+  }))
+
+  const navBilkollenWithOrgId = data.navBilkollen.map(item => ({
+    ...item,
+    url: transformUrl(item.url)
+  }))
+
+  const navManagementWithOrgId = data.navManagement.map(item => ({
+    ...item,
+    url: transformUrl(item.url)
+  }))
+
+  const navAdminWithOrgId = data.navAdmin.map(item => ({
     ...item,
     url: transformUrl(item.url)
   }))
 
   const homeUrl = orgId ? `/org/${orgId}/oversikt` : "/oversikt"
+
+  const isAdmin = user?.role === "admin"
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -153,7 +172,7 @@ export function AppSidebar({
               size="lg"
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
-              <a href={homeUrl}>
+              <a href={homeUrl} onClick={handleHeaderClick}>
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
                   <Wrench className="size-5" />
                 </div>
@@ -167,8 +186,11 @@ export function AppSidebar({
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={navMainWithOrgId} label="Navigation" />
+        <NavMain items={navMainWithOrgId} />
+        <NavMain items={navReportsWithOrgId} label="Rapporter" />
+        <NavMain items={navBilkollenWithOrgId} label="Bilkollen" />
         <NavMain items={navManagementWithOrgId} label="Hantering" />
+        {isAdmin && <NavMain items={navAdminWithOrgId} label="Administration" />}
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

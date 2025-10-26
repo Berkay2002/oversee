@@ -142,16 +142,20 @@ export default function PlatserPage() {
   }
 
   return (
-    <div className="container mx-auto py-10 px-4 md:px-0">
+    <div className="container mx-auto py-6 px-4 md:py-10 md:px-0">
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-3xl font-bold">Platser</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-2xl font-bold md:text-3xl">Platser</h1>
+            <p className="text-sm text-muted-foreground md:text-base">
               Hantera platser för din organisation
             </p>
           </div>
-          <Button onClick={() => setDialogOpen(true)} className="gap-2">
+          <Button
+            onClick={() => setDialogOpen(true)}
+            className="w-full gap-2 md:w-auto"
+            size="lg"
+          >
             <Plus className="h-4 w-4" />
             Lägg till plats
           </Button>

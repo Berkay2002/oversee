@@ -89,36 +89,36 @@ export function VehicleCaseDrawer({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-xl overflow-y-auto">
-        <SheetHeader>
-          <SheetTitle className="flex items-center gap-2">
-            <span className="font-mono">{vehicleCase.registration_number}</span>
+      <SheetContent className="w-full overflow-y-auto sm:max-w-xl">
+        <SheetHeader className="pb-4">
+          <SheetTitle className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <span className="font-mono text-xl">{vehicleCase.registration_number}</span>
             {vehicleCase.klar && (
-              <Badge variant="default">
+              <Badge variant="default" className="w-fit">
                 <CheckCircle2 className="mr-1 h-3 w-3" />
                 Klar
               </Badge>
             )}
           </SheetTitle>
-          <SheetDescription>
+          <SheetDescription className="text-base">
             Detaljerad information och historik för detta fordon
           </SheetDescription>
         </SheetHeader>
 
-        <div className="mt-6 space-y-6">
+        <div className="mt-4 space-y-4 pb-6 sm:mt-6 sm:space-y-6">
           {/* Case Summary */}
           <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Översikt</CardTitle>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base sm:text-lg">Översikt</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2 text-sm">
-              <div className="flex justify-between">
+            <CardContent className="space-y-3 text-sm sm:text-base">
+              <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
                 <span className="text-muted-foreground">Plats:</span>
                 <span className="font-medium">
                   {vehicleCase.dropoff_location_name || '-'}
                 </span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
                 <span className="text-muted-foreground">Kostnadstyp:</span>
                 <span className="font-medium capitalize">
                   {vehicleCase.funding_source === 'insurance'
@@ -128,7 +128,7 @@ export function VehicleCaseDrawer({
                     : 'Kund'}
                 </span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
                 <span className="text-muted-foreground">Försäkring:</span>
                 <span className="font-medium">
                   {vehicleCase.insurance_status === 'approved'
@@ -138,13 +138,13 @@ export function VehicleCaseDrawer({
                     : 'Väntar'}
                 </span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
                 <span className="text-muted-foreground">Foto besiktning:</span>
                 <span className="font-medium">
                   {vehicleCase.photo_inspection_done ? 'Klar' : 'Inte klar'}
                 </span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
                 <span className="text-muted-foreground">Handläggare:</span>
                 <span className="font-medium">
                   {vehicleCase.handler_user_name ||
@@ -152,23 +152,23 @@ export function VehicleCaseDrawer({
                     'Inte tilldelad'}
                 </span>
               </div>
-              <Separator className="my-2" />
-              <div className="flex justify-between">
+              <Separator className="my-3" />
+              <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
                 <span className="text-muted-foreground">Skapad:</span>
-                <span className="font-medium">
+                <span className="break-words font-medium">
                   {formatDate(vehicleCase.created_at)}
                 </span>
               </div>
               {vehicleCase.archived_at && (
                 <>
-                  <div className="flex justify-between">
+                  <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
                     <span className="text-muted-foreground">Arkiverad:</span>
-                    <span className="font-medium">
+                    <span className="break-words font-medium">
                       {formatDate(vehicleCase.archived_at)}
                     </span>
                   </div>
                   {vehicleCase.days_to_klar !== null && (
-                    <div className="flex justify-between">
+                    <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
                       <span className="text-muted-foreground">Tid till klar:</span>
                       <span className="font-medium">
                         {vehicleCase.days_to_klar.toFixed(1)}{' '}
@@ -184,10 +184,10 @@ export function VehicleCaseDrawer({
           {/* Milestones */}
           {analytics && (
             <Card>
-              <CardHeader>
-                <CardTitle className="text-base">Milstolpar</CardTitle>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base sm:text-lg">Milstolpar</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
+              <CardContent className="space-y-4">
                 {isLoading ? (
                   <>
                     <Skeleton className="h-12 w-full" />
@@ -263,8 +263,8 @@ export function VehicleCaseDrawer({
 
           {/* Audit Timeline */}
           <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Ändringshistorik</CardTitle>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base sm:text-lg">Ändringshistorik</CardTitle>
             </CardHeader>
             <CardContent>
               {isLoading ? (
