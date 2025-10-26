@@ -410,10 +410,10 @@ export default function BilkollenPage() {
         }}>
           <TabsList>
             <TabsTrigger value="ongoing">
-              Pågående ({ongoingCount})
+              Pågående
             </TabsTrigger>
             <TabsTrigger value="archive">
-              Arkiv ({archivedCount})
+              Arkiv
             </TabsTrigger>
           </TabsList>
 
