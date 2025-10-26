@@ -144,16 +144,16 @@ export async function getOrgMembers(orgId: string) {
     throw new Error('Failed to fetch org members');
   }
 
-  // Transform the data - Supabase returns profiles as an array with inner join
+  // Transform the data - Supabase returns profiles as an object with inner join
   type MemberWithProfile = {
     user_id: string;
     role: string;
-    profiles: { name: string }[];
+    profiles: { name: string } | null;
   };
 
   return (data || []).map((member: MemberWithProfile) => ({
     user_id: member.user_id,
-    name: member.profiles?.[0]?.name || 'Unknown',
+    name: member.profiles?.name || 'Unknown',
     role: member.role,
   })) as OrgMember[];
 }

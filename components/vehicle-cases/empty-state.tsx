@@ -3,6 +3,8 @@
 import { Car, FileX, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import Link from 'next/link';
+import { useOrg } from '@/lib/org/context';
 
 type EmptyStateProps = {
   type: 'no-vehicles' | 'no-results' | 'no-locations';
@@ -11,6 +13,8 @@ type EmptyStateProps = {
 };
 
 export function EmptyState({ type, onAction, actionLabel }: EmptyStateProps) {
+  const { activeOrg } = useOrg();
+
   const variants = {
     'no-vehicles': {
       icon: Car,
@@ -30,7 +34,7 @@ export function EmptyState({ type, onAction, actionLabel }: EmptyStateProps) {
       title: 'Inga platser konfigurerade',
       description:
         'Du måste konfigurera minst en plats innan du kan lägga till fordon.',
-      actionLabel: undefined,
+      actionLabel: 'Gå till Platser',
     },
   };
 
@@ -47,11 +51,17 @@ export function EmptyState({ type, onAction, actionLabel }: EmptyStateProps) {
         <p className="mt-2 text-center text-sm text-muted-foreground max-w-sm">
           {variant.description}
         </p>
-        {onAction && (variant.actionLabel || actionLabel) && (
+        {type === 'no-locations' ? (
+          <Button asChild className="mt-6">
+            <Link href={`/org/${activeOrg.id}/platser`}>
+              {variant.actionLabel}
+            </Link>
+          </Button>
+        ) : onAction && (variant.actionLabel || actionLabel) ? (
           <Button onClick={onAction} className="mt-6">
             {actionLabel || variant.actionLabel}
           </Button>
-        )}
+        ) : null}
       </CardContent>
     </Card>
   );

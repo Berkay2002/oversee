@@ -12,6 +12,7 @@ import {
   Settings,
   HelpCircle,
   Car,
+  MapPin,
 } from "lucide-react"
 import { usePathname } from "next/navigation"
 
@@ -78,6 +79,11 @@ const data = {
       title: "Reporter",
       url: "/reporter",
       icon: UserCheck,
+    },
+    {
+      title: "Platser",
+      url: "/platser",
+      icon: MapPin,
     },
   ],
   navSecondary: [
