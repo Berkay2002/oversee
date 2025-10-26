@@ -263,3 +263,24 @@ export async function updateEmail(
 
   return { error: 'An unknown error occurred' }
 }
+
+export async function updatePassword(
+  _prevState: { error?: string; success?: boolean },
+  formData: FormData
+): Promise<{ error?: string; success?: boolean }> {
+  const supabase = await createClient()
+  const password = formData.get('password') as string
+  const confirmPassword = formData.get('confirmPassword') as string
+
+  if (password !== confirmPassword) {
+    return { error: 'Passwords do not match' }
+  }
+
+  const { error } = await supabase.auth.updateUser({ password })
+
+  if (error) {
+    return { error: 'Could not update password' }
+  }
+
+  return { success: true }
+}
