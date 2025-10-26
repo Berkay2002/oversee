@@ -85,38 +85,34 @@ export default function BilkollenPage() {
   } | null>(null);
   const [isDrawerLoading, setIsDrawerLoading] = React.useState(false);
 
-  // Compute filters
+  // Compute filters - use stable reference to prevent unnecessary re-fetches
   const filters: VehicleCaseFilters = React.useMemo(() => {
-    const f: VehicleCaseFilters = {
+    return {
       page: currentPage,
       pageSize,
+      ...(searchValue && { search: searchValue }),
+      ...(fundingSourceFilter !== 'all' && { funding_source: fundingSourceFilter as 'insurance' | 'internal' | 'customer' }),
+      ...(insuranceStatusFilter !== 'all' && { insurance_status: insuranceStatusFilter as 'pending' | 'approved' | 'rejected' }),
+      ...(locationFilter !== 'all' && { location: locationFilter }),
+      ...(handlerFilter !== 'all' && { handler_user_id: handlerFilter }),
     };
-    if (searchValue) f.search = searchValue;
-    if (fundingSourceFilter !== 'all') f.funding_source = fundingSourceFilter as 'insurance' | 'internal' | 'customer';
-    if (insuranceStatusFilter !== 'all') f.insurance_status = insuranceStatusFilter as 'pending' | 'approved' | 'rejected';
-    if (locationFilter !== 'all') f.location = locationFilter;
-    if (handlerFilter !== 'all') f.handler_user_id = handlerFilter;
-    return f;
   }, [searchValue, fundingSourceFilter, insuranceStatusFilter, locationFilter, handlerFilter, currentPage, pageSize]);
 
-  // Get current user and set default handler filter
-  React.useEffect(() => {
-    const fetchUser = async () => {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        setCurrentUserId(user.id);
-        setHandlerFilter(user.id); // Default to current user's cases
-      }
-    };
-    fetchUser();
-  }, []);
-
-  // Fetch initial data
+  // Fetch initial data and set up user in one go
   React.useEffect(() => {
     const fetchInitialData = async () => {
       setIsLoading(true);
       try {
+        // Get user first to set default filter
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (user) {
+          setCurrentUserId(user.id);
+          setHandlerFilter(user.id);
+        }
+
+        // Fetch locations and members in parallel
         const [locsData, membersData] = await Promise.all([
           getOrgLocations(orgId),
           getOrgMembers(orgId),
@@ -135,7 +131,11 @@ export default function BilkollenPage() {
   }, [orgId]);
 
   // Fetch cases based on active tab and filters
+  // Skip if user/locations/members haven't loaded yet
   React.useEffect(() => {
+    // Don't fetch cases until we have locations and members
+    if (locations.length === 0 || members.length === 0) return;
+
     const fetchCases = async () => {
       setIsLoading(true);
       try {
@@ -157,7 +157,7 @@ export default function BilkollenPage() {
     };
 
     fetchCases();
-  }, [orgId, activeTab, filters]);
+  }, [orgId, activeTab, filters, locations.length, members.length]);
 
   // Handlers
   const handleAddVehicle = async (registrationNumber: string) => {
@@ -339,7 +339,7 @@ export default function BilkollenPage() {
     (handlerFilter !== currentUserId && handlerFilter !== 'all')
   );
 
-  // Column definitions with memoization
+  // Column definitions with stable callbacks and memoization
   const ongoingColumns = React.useMemo(() => {
     const meta: VehicleCaseColumnMeta = {
       orgId,
@@ -356,13 +356,17 @@ export default function BilkollenPage() {
     return createColumns(meta);
   }, [orgId, locations, members, handleUpdateCase, handleMarkKlar, handleViewDetails, handleDeleteCase, handleRestoreCase, isOrgAdmin]);
 
+  // Memoize empty functions for archive view to prevent recreation
+  const noOpUpdate = React.useCallback(() => Promise.resolve(), []);
+  const noOpMarkKlar = React.useCallback(() => {}, []);
+
   const archiveColumns = React.useMemo(() => {
     const meta: VehicleCaseColumnMeta = {
       orgId,
       locations,
       members,
-      onUpdate: () => Promise.resolve(),
-      onMarkKlar: () => {},
+      onUpdate: noOpUpdate,
+      onMarkKlar: noOpMarkKlar,
       onViewDetails: handleViewDetails,
       onDelete: handleDeleteCase,
       onRestore: handleRestoreCase,
@@ -370,16 +374,20 @@ export default function BilkollenPage() {
       isOrgAdmin,
     };
     return createColumns(meta);
-  }, [orgId, locations, members, handleViewDetails, handleDeleteCase, handleRestoreCase, isOrgAdmin]);
+  }, [orgId, locations, members, noOpUpdate, noOpMarkKlar, handleViewDetails, handleDeleteCase, handleRestoreCase, isOrgAdmin]);
 
   const ongoingPageCount = Math.ceil(ongoingCount / pageSize);
   const archivePageCount = Math.ceil(archivedCount / pageSize);
 
-  if (isLoading && locations.length === 0) {
+  // Show initial loading skeleton only when no data is loaded yet
+  const isInitialLoading = isLoading && locations.length === 0;
+
+  if (isInitialLoading) {
     return (
       <div className="container mx-auto py-10 px-4 md:px-0">
         <div className="space-y-4">
           <Skeleton className="h-10 w-48" />
+          <Skeleton className="h-12 w-full" />
           <Skeleton className="h-96 w-full" />
         </div>
       </div>

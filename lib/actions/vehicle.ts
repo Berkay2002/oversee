@@ -693,6 +693,8 @@ export async function getVehicleCaseStatistics(
     byInsuranceStatus,
     perHandlerStats,
     casesPerWeek,
-    avgProcessingDays,
+  avgProcessingDays,
   };
 }
+
+export type VehicleCaseStatistics = Awaited<ReturnType<typeof getVehicleCaseStatistics>>;
