@@ -18,6 +18,7 @@ import {
   updateVehicleCase,
   markVehicleCaseKlar,
   deleteVehicleCase,
+  restoreVehicleCase,
   getVehicleCaseAudits,
   getVehicleCaseAnalytics,
   type VehicleCaseView,
@@ -26,6 +27,7 @@ import {
 import { useOrg, useIsOrgAdmin } from '@/lib/org/context';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
+import { createClient } from '@/lib/supabase/client';
 
 export default function BilkollenPage() {
   const { activeOrg } = useOrg();
@@ -40,6 +42,8 @@ export default function BilkollenPage() {
   const [fundingSourceFilter, setFundingSourceFilter] = React.useState('all');
   const [insuranceStatusFilter, setInsuranceStatusFilter] = React.useState('all');
   const [locationFilter, setLocationFilter] = React.useState('all');
+  const [handlerFilter, setHandlerFilter] = React.useState<string>('all');
+  const [currentUserId, setCurrentUserId] = React.useState<string | null>(null);
 
   // State for pagination
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -91,8 +95,22 @@ export default function BilkollenPage() {
     if (fundingSourceFilter !== 'all') f.funding_source = fundingSourceFilter as 'insurance' | 'internal' | 'customer';
     if (insuranceStatusFilter !== 'all') f.insurance_status = insuranceStatusFilter as 'pending' | 'approved' | 'rejected';
     if (locationFilter !== 'all') f.location = locationFilter;
+    if (handlerFilter !== 'all') f.handler_user_id = handlerFilter;
     return f;
-  }, [searchValue, fundingSourceFilter, insuranceStatusFilter, locationFilter, currentPage, pageSize]);
+  }, [searchValue, fundingSourceFilter, insuranceStatusFilter, locationFilter, handlerFilter, currentPage, pageSize]);
+
+  // Get current user and set default handler filter
+  React.useEffect(() => {
+    const fetchUser = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setCurrentUserId(user.id);
+        setHandlerFilter(user.id); // Default to current user's cases
+      }
+    };
+    fetchUser();
+  }, []);
 
   // Fetch initial data
   React.useEffect(() => {
@@ -279,11 +297,35 @@ export default function BilkollenPage() {
     }
   }, [archivedCases]);
 
+  const handleRestoreCase = React.useCallback(async (caseId: string) => {
+    const confirmed = window.confirm('Återställa detta ärende till pågående?');
+    if (!confirmed) return;
+
+    const result = await restoreVehicleCase(orgId, caseId);
+    if (result.error) {
+      toast.error(result.error);
+      return;
+    }
+
+    toast.success('Ärende återställt');
+
+    // Refresh both views
+    const [ongoing, archived] = await Promise.all([
+      getVehicleCases(orgId, false, filters),
+      getVehicleCases(orgId, true, filters),
+    ]);
+    setOngoingCases(ongoing.data);
+    setOngoingCount(ongoing.count);
+    setArchivedCases(archived.data);
+    setArchivedCount(archived.count);
+  }, [orgId, filters]);
+
   const handleClearFilters = () => {
     setSearchValue('');
     setFundingSourceFilter('all');
     setInsuranceStatusFilter('all');
     setLocationFilter('all');
+    setHandlerFilter(currentUserId || 'all'); // Reset to current user
     setCurrentPage(1);
   };
 
@@ -291,7 +333,8 @@ export default function BilkollenPage() {
     searchValue ||
     fundingSourceFilter !== 'all' ||
     insuranceStatusFilter !== 'all' ||
-    locationFilter !== 'all'
+    locationFilter !== 'all' ||
+    (handlerFilter !== currentUserId && handlerFilter !== 'all')
   );
 
   // Column definitions with memoization
@@ -304,11 +347,12 @@ export default function BilkollenPage() {
       onMarkKlar: handleMarkKlar,
       onViewDetails: () => {},
       onDelete: handleDeleteCase,
+      onRestore: handleRestoreCase,
       isArchive: false,
       isOrgAdmin,
     };
     return createColumns(meta);
-  }, [orgId, locations, members, handleUpdateCase, handleMarkKlar, handleDeleteCase, isOrgAdmin]);
+  }, [orgId, locations, members, handleUpdateCase, handleMarkKlar, handleDeleteCase, handleRestoreCase, isOrgAdmin]);
 
   const archiveColumns = React.useMemo(() => {
     const meta: VehicleCaseColumnMeta = {
@@ -319,11 +363,12 @@ export default function BilkollenPage() {
       onMarkKlar: () => {},
       onViewDetails: handleViewDetails,
       onDelete: handleDeleteCase,
+      onRestore: handleRestoreCase,
       isArchive: true,
       isOrgAdmin,
     };
     return createColumns(meta);
-  }, [orgId, locations, members, handleViewDetails, handleDeleteCase, isOrgAdmin]);
+  }, [orgId, locations, members, handleViewDetails, handleDeleteCase, handleRestoreCase, isOrgAdmin]);
 
   const ongoingPageCount = Math.ceil(ongoingCount / pageSize);
   const archivePageCount = Math.ceil(archivedCount / pageSize);
@@ -374,7 +419,10 @@ export default function BilkollenPage() {
                   onInsuranceStatusChange={setInsuranceStatusFilter}
                   locationFilter={locationFilter}
                   onLocationChange={setLocationFilter}
+                  handlerFilter={handlerFilter}
+                  onHandlerChange={setHandlerFilter}
                   locations={locations}
+                  members={members}
                   onAddVehicle={() => setAddDialogOpen(true)}
                   onClearFilters={handleClearFilters}
                   hasActiveFilters={hasActiveFilters}
@@ -419,7 +467,10 @@ export default function BilkollenPage() {
                   onInsuranceStatusChange={setInsuranceStatusFilter}
                   locationFilter={locationFilter}
                   onLocationChange={setLocationFilter}
+                  handlerFilter={handlerFilter}
+                  onHandlerChange={setHandlerFilter}
                   locations={locations}
+                  members={members}
                   onAddVehicle={() => setAddDialogOpen(true)}
                   onClearFilters={handleClearFilters}
                   hasActiveFilters={hasActiveFilters}

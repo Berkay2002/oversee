@@ -20,7 +20,8 @@ export async function getOrgMembers(orgId: string): Promise<OrgMember[]> {
       role,
       profiles (
         user_id,
-        name
+        name,
+        email
       )
     `
     )

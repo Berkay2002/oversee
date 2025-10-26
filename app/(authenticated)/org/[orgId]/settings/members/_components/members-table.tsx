@@ -18,7 +18,6 @@ interface MembersTableProps {
   canManage: boolean;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function MembersTable({ data, currentUserId, canManage }: MembersTableProps) {
   return (
     <div className="rounded-lg border">
@@ -26,7 +25,7 @@ export function MembersTable({ data, currentUserId, canManage }: MembersTablePro
         <TableHeader>
           <TableRow>
             <TableHead>Namn</TableHead>
-            <TableHead>Roll</TableHead>
+            {canManage && <TableHead>Roll</TableHead>}
             <TableHead className="text-right">Åtgärder</TableHead>
           </TableRow>
         </TableHeader>
@@ -50,9 +49,11 @@ export function MembersTable({ data, currentUserId, canManage }: MembersTablePro
                   </div>
                 </div>
               </TableCell>
-              <TableCell>
-                <Badge variant="outline">{member.role}</Badge>
-              </TableCell>
+              {canManage && (
+                <TableCell>
+                  <Badge variant="outline">{member.role}</Badge>
+                </TableCell>
+              )}
               <TableCell className="text-right">
                 {/* Actions dropdown will go here */}
               </TableCell>

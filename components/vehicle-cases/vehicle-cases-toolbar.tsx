@@ -20,7 +20,10 @@ type VehicleCasesToolbarProps = {
   onInsuranceStatusChange: (value: string) => void;
   locationFilter: string;
   onLocationChange: (value: string) => void;
+  handlerFilter: string;
+  onHandlerChange: (value: string) => void;
   locations: Array<{ id: string; name: string }>;
+  members: Array<{ user_id: string; name: string }>;
   onAddVehicle: () => void;
   onClearFilters: () => void;
   hasActiveFilters: boolean;
@@ -35,7 +38,10 @@ export function VehicleCasesToolbar({
   onInsuranceStatusChange,
   locationFilter,
   onLocationChange,
+  handlerFilter,
+  onHandlerChange,
   locations,
+  members,
   onAddVehicle,
   onClearFilters,
   hasActiveFilters,
@@ -100,6 +106,21 @@ export function VehicleCasesToolbar({
             {locations.map((location) => (
               <SelectItem key={location.id} value={location.id}>
                 {location.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {/* Handler Filter */}
+        <Select value={handlerFilter} onValueChange={onHandlerChange}>
+          <SelectTrigger className="h-11 w-full md:h-10 md:w-[180px]">
+            <SelectValue placeholder="Handläggare" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Alla handläggare</SelectItem>
+            {members.map((member) => (
+              <SelectItem key={member.user_id} value={member.user_id}>
+                {member.name}
               </SelectItem>
             ))}
           </SelectContent>

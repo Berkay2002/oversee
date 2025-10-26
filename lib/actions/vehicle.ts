@@ -24,6 +24,7 @@ export type VehicleCaseView = {
   dropoff_location_name: string | null;
   dropoff_location_is_default: boolean | null;
   photo_inspection_done: boolean;
+  raknad_pa: boolean;
   insurance_status: 'pending' | 'approved' | 'rejected';
   funding_source: 'insurance' | 'internal' | 'customer';
   handler_user_id: string | null;
@@ -39,6 +40,7 @@ export type VehicleCaseFilters = {
   funding_source?: 'insurance' | 'internal' | 'customer';
   insurance_status?: 'pending' | 'approved' | 'rejected';
   location?: string;
+  handler_user_id?: string;
   page?: number;
   pageSize?: number;
 };
@@ -90,6 +92,11 @@ export async function getVehicleCases(
   // Apply location filter
   if (filters.location) {
     query = query.eq('dropoff_location_id', filters.location);
+  }
+
+  // Apply handler filter
+  if (filters.handler_user_id) {
+    query = query.eq('handler_user_id', filters.handler_user_id);
   }
 
   // Pagination
@@ -243,7 +250,7 @@ export async function createVehicleCase(orgId: string, registrationNumber: strin
 
   const defaultLocationId = locations[0].id;
 
-  // Insert new case
+  // Insert new case with current user as handler
   const insertData: VehicleCaseInsert = {
     org_id: orgId,
     registration_number: cleanedRegNumber,
@@ -252,6 +259,7 @@ export async function createVehicleCase(orgId: string, registrationNumber: strin
     insurance_status: 'pending',
     photo_inspection_done: false,
     klar: false,
+    handler_user_id: user.id, // Auto-assign current user as handler
   };
 
   const { data, error } = await supabase
@@ -302,6 +310,14 @@ export async function updateVehicleCase(
 
   if (!existingCase || existingCase.org_id !== orgId) {
     return { error: 'Fordonet hittades inte eller åtkomst nekad' };
+  }
+
+  // Auto-set raknad_pa to true when insurance_status changes to 'approved'
+  if (
+    updates.insurance_status === 'approved' &&
+    existingCase.insurance_status !== 'approved'
+  ) {
+    updates.raknad_pa = true;
   }
 
   // Update the case
@@ -373,10 +389,7 @@ export async function markVehicleCaseKlar(orgId: string, caseId: string) {
   // Validation rules
   const errors: string[] = [];
 
-  if (!existingCase.photo_inspection_done) {
-    errors.push('Foto besiktning är inte klar');
-  }
-
+  // Only validate insurance approval for non-internal funding
   if (
     existingCase.funding_source !== 'internal' &&
     existingCase.insurance_status !== 'approved'
@@ -503,4 +516,183 @@ export async function deleteVehicleCase(orgId: string, caseId: string) {
   updateTag(`vehicle-cases-${orgId}`);
 
   return { success: true };
+}
+
+/**
+ * Restore an archived vehicle case back to ongoing
+ * Clears klar, archived_at, and archived_by fields
+ */
+export async function restoreVehicleCase(orgId: string, caseId: string) {
+  const supabase = await createClient();
+
+  // Get current user
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return { error: 'Användaren är inte autentiserad' };
+  }
+
+  // Validate case belongs to org and is archived
+  const { data: existingCase } = await supabase
+    .from('vehicle_cases')
+    .select('org_id, archived_at')
+    .eq('id', caseId)
+    .single();
+
+  if (!existingCase || existingCase.org_id !== orgId) {
+    return { error: 'Fordonet hittades inte eller åtkomst nekad' };
+  }
+
+  if (!existingCase.archived_at) {
+    return { error: 'Fordonet är inte arkiverat' };
+  }
+
+  // Call the database function to restore
+  const { error } = await supabase.rpc('restore_vehicle_case', {
+    p_case_id: caseId,
+    p_user_id: user.id,
+  });
+
+  if (error) {
+    console.error('Error restoring vehicle case:', JSON.stringify(error, null, 2));
+    return { error: `Fel vid återställning: ${error.message}` };
+  }
+
+  // Revalidate cache
+  updateTag(`vehicle-cases-${orgId}`);
+
+  return { success: true };
+}
+
+/**
+ * Get statistics and analytics for vehicle cases
+ * Can be filtered by handler or show org-wide stats
+ */
+export async function getVehicleCaseStatistics(
+  orgId: string,
+  handlerUserId?: string
+) {
+  const supabase = await createClient();
+
+  // Base query for all cases in the org
+  let query = supabase
+    .from('vehicle_cases')
+    .select('*')
+    .eq('org_id', orgId);
+
+  // Filter by handler if specified
+  if (handlerUserId) {
+    query = query.eq('handler_user_id', handlerUserId);
+  }
+
+  const { data: cases, error } = await query;
+
+  if (error) {
+    console.error('Error fetching vehicle case statistics:', JSON.stringify(error, null, 2));
+    throw new Error('Failed to fetch statistics');
+  }
+
+  // Calculate statistics
+  const totalCases = cases?.length || 0;
+  const ongoingCases = cases?.filter((c) => !c.archived_at).length || 0;
+  const archivedCases = cases?.filter((c) => c.archived_at).length || 0;
+
+  // By funding source
+  const byFundingSource = {
+    insurance: cases?.filter((c) => c.funding_source === 'insurance').length || 0,
+    internal: cases?.filter((c) => c.funding_source === 'internal').length || 0,
+    customer: cases?.filter((c) => c.funding_source === 'customer').length || 0,
+  };
+
+  // By insurance status (for insurance cases only)
+  const byInsuranceStatus = {
+    pending: cases?.filter((c) => c.insurance_status === 'pending').length || 0,
+    approved: cases?.filter((c) => c.insurance_status === 'approved').length || 0,
+    rejected: cases?.filter((c) => c.insurance_status === 'rejected').length || 0,
+  };
+
+  // Per-handler breakdown (only if not filtered by handler already)
+  let perHandlerStats: Array<{
+    handler_user_id: string | null;
+    handler_name: string | null;
+    total: number;
+    ongoing: number;
+    completed: number;
+  }> = [];
+
+  if (!handlerUserId) {
+    // Group by handler
+    const handlerMap = new Map<string | null, typeof cases>();
+    cases?.forEach((c) => {
+      const key = c.handler_user_id || null;
+      if (!handlerMap.has(key)) {
+        handlerMap.set(key, []);
+      }
+      handlerMap.get(key)?.push(c);
+    });
+
+    // Fetch handler names
+    const handlerIds = Array.from(handlerMap.keys()).filter((id) => id !== null) as string[];
+    const { data: profiles } = await supabase
+      .from('profiles')
+      .select('user_id, name')
+      .in('user_id', handlerIds);
+
+    const profileMap = new Map(profiles?.map((p) => [p.user_id, p.name]) || []);
+
+    // Build stats
+    perHandlerStats = Array.from(handlerMap.entries()).map(([handlerId, handlerCases]) => ({
+      handler_user_id: handlerId,
+      handler_name: handlerId ? profileMap.get(handlerId) || 'Unknown' : 'Ej tilldelad',
+      total: handlerCases.length,
+      ongoing: handlerCases.filter((c) => !c.archived_at).length,
+      completed: handlerCases.filter((c) => c.archived_at && c.klar).length,
+    }));
+  }
+
+  // Cases created per week (last 12 weeks)
+  const now = new Date();
+  const weeksAgo12 = new Date(now.getTime() - 12 * 7 * 24 * 60 * 60 * 1000);
+
+  const casesPerWeek: Array<{ week: string; count: number }> = [];
+  for (let i = 11; i >= 0; i--) {
+    const weekStart = new Date(now.getTime() - i * 7 * 24 * 60 * 60 * 1000);
+    const weekEnd = new Date(weekStart.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+    const weekCases = cases?.filter((c) => {
+      const createdAt = new Date(c.created_at);
+      return createdAt >= weekStart && createdAt < weekEnd;
+    }) || [];
+
+    casesPerWeek.push({
+      week: weekStart.toISOString().split('T')[0],
+      count: weekCases.length,
+    });
+  }
+
+  // Average processing time (for completed cases)
+  const completedCases = cases?.filter((c) => c.klar && c.archived_at) || [];
+  let avgProcessingDays = 0;
+
+  if (completedCases.length > 0) {
+    const totalDays = completedCases.reduce((sum, c) => {
+      const created = new Date(c.created_at);
+      const archived = new Date(c.archived_at!);
+      const days = Math.floor((archived.getTime() - created.getTime()) / (1000 * 60 * 60 * 24));
+      return sum + days;
+    }, 0);
+    avgProcessingDays = Math.round(totalDays / completedCases.length);
+  }
+
+  return {
+    totalCases,
+    ongoingCases,
+    archivedCases,
+    byFundingSource,
+    byInsuranceStatus,
+    perHandlerStats,
+    casesPerWeek,
+    avgProcessingDays,
+  };
 }

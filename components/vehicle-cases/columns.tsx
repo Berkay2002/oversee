@@ -32,6 +32,7 @@ export type VehicleCaseColumnMeta = {
   ) => Promise<void>;
   onMarkKlar: (caseId: string) => void;
   onViewDetails: (caseId: string) => void;
+  onRestore: (caseId: string) => void;
   onDelete: (caseId: string) => void;
   isArchive: boolean;
   isOrgAdmin: boolean;
@@ -68,6 +69,19 @@ export const createColumns = (
         return (
           <div className="font-mono font-semibold uppercase">{regNumber}</div>
         );
+      },
+    },
+    {
+      accessorKey: 'handler_user_name',
+      header: 'Handläggare',
+      cell: ({ row }) => {
+        const userName = row.original.handler_user_name;
+        const note = row.original.handler_note;
+
+        const displayValue = userName || note || 'Inte tilldelad';
+
+        // Handler is always read-only (set at creation and cannot be changed)
+        return <div className="text-sm">{displayValue}</div>;
       },
     },
     {
@@ -170,6 +184,35 @@ export const createColumns = (
       },
     },
     {
+      accessorKey: 'raknad_pa',
+      header: 'Räknad på',
+      cell: ({ row }) => {
+        const raknadPa = row.getValue('raknad_pa') as boolean;
+
+        if (meta.isArchive) {
+          return raknadPa ? (
+            <Check className="h-4 w-4 text-green-600" />
+          ) : (
+            <span className="text-muted-foreground">-</span>
+          );
+        }
+
+        return (
+          <Checkbox
+            checked={raknadPa}
+            onCheckedChange={(checked) =>
+              meta.onUpdate(
+                row.original.id,
+                'raknad_pa',
+                checked,
+                raknadPa
+              )
+            }
+          />
+        );
+      },
+    },
+    {
       accessorKey: 'insurance_status',
       header: 'Försäkring',
       cell: ({ row }) => {
@@ -186,9 +229,15 @@ export const createColumns = (
         return (
           <Select
             value={status}
-            onValueChange={(value) =>
-              meta.onUpdate(row.original.id, 'insurance_status', value, status)
-            }
+            onValueChange={async (value) => {
+              // Update insurance status
+              await meta.onUpdate(row.original.id, 'insurance_status', value, status);
+
+              // Auto-check "räknad på" when insurance is approved
+              if (value === 'approved' && !row.original.raknad_pa) {
+                await meta.onUpdate(row.original.id, 'raknad_pa', true, false);
+              }
+            }}
           >
             <SelectTrigger className="h-8 w-[160px]">
               <SelectValue />
@@ -203,44 +252,33 @@ export const createColumns = (
       },
     },
     {
-      accessorKey: 'handler_user_name',
-      header: 'Handläggare',
+      accessorKey: 'handler_note',
+      header: 'Anteckningar',
       cell: ({ row }) => {
-        const userName = row.original.handler_user_name;
         const note = row.original.handler_note;
-        const userId = row.original.handler_user_id;
-
-        const displayValue = userName || note || 'Inte tilldelad';
 
         if (meta.isArchive) {
-          return <div className="text-sm">{displayValue}</div>;
+          return <div className="text-sm text-muted-foreground">{note || '-'}</div>;
         }
 
-        // For now, show a select for user assignment
-        // TODO: Add ability to toggle between user select and free text input
         return (
-          <Select
-            value={userId || 'none'}
-            onValueChange={(value) => {
-              if (value === 'none') {
-                meta.onUpdate(row.original.id, 'handler_user_id', null, userId);
-              } else {
-                meta.onUpdate(row.original.id, 'handler_user_id', value, userId);
+          <input
+            type="text"
+            className="h-8 w-[200px] rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            placeholder="Lägg till anteckning..."
+            defaultValue={note || ''}
+            onBlur={(e) => {
+              const newValue = e.target.value.trim() || null;
+              if (newValue !== note) {
+                meta.onUpdate(row.original.id, 'handler_note', newValue, note);
               }
             }}
-          >
-            <SelectTrigger className="h-8 w-[180px]">
-              <SelectValue placeholder="Välj handläggare" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none">Inte tilldelad</SelectItem>
-              {meta.members.map((member) => (
-                <SelectItem key={member.user_id} value={member.user_id}>
-                  {member.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.currentTarget.blur();
+              }
+            }}
+          />
         );
       },
     },
@@ -299,9 +337,10 @@ export const createColumns = (
     });
   }
 
-  if (meta.isOrgAdmin) {
+  // Add actions dropdown for everyone (admins get delete, everyone gets restore)
+  if (meta.isOrgAdmin || meta.isArchive) {
     columns.push({
-      id: 'delete',
+      id: 'actions-menu',
       header: '',
       cell: ({ row }) => {
         return (
@@ -313,12 +352,21 @@ export const createColumns = (
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                onClick={() => meta.onDelete(row.original.id)}
-                className="text-red-500"
-              >
-                Ta bort
-              </DropdownMenuItem>
+              {meta.isArchive && (
+                <DropdownMenuItem
+                  onClick={() => meta.onRestore(row.original.id)}
+                >
+                  Återställ till pågående
+                </DropdownMenuItem>
+              )}
+              {meta.isOrgAdmin && (
+                <DropdownMenuItem
+                  onClick={() => meta.onDelete(row.original.id)}
+                  className="text-red-500"
+                >
+                  Ta bort
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         );

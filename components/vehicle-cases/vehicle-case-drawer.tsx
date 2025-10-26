@@ -237,16 +237,16 @@ export function VehicleCaseDrawer({
                     </div>
 
                     <div className="flex items-start gap-3">
-                      {analytics.klar_at ? (
+                      {analytics.klar_at || vehicleCase.archived_at ? (
                         <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
                       ) : (
                         <Circle className="h-5 w-5 text-muted-foreground mt-0.5" />
                       )}
                       <div className="flex-1">
                         <p className="font-medium text-sm">Markerad som klar</p>
-                        {analytics.klar_at ? (
+                        {analytics.klar_at || vehicleCase.archived_at ? (
                           <p className="text-xs text-muted-foreground">
-                            {formatDate(analytics.klar_at)}
+                            {formatDate(analytics.klar_at || vehicleCase.archived_at!)}
                           </p>
                         ) : (
                           <p className="text-xs text-muted-foreground">

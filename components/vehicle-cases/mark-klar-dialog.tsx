@@ -36,10 +36,7 @@ export function MarkKlarDialog({
 
     const errors: string[] = [];
 
-    if (!vehicleCase.photo_inspection_done) {
-      errors.push('Foto besiktning är inte klar');
-    }
-
+    // Only validate insurance approval for non-internal funding
     if (
       vehicleCase.funding_source !== 'internal' &&
       vehicleCase.insurance_status !== 'approved'

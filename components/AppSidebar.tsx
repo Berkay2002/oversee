@@ -15,6 +15,7 @@ import {
   MapPin,
   Sun,
   Moon,
+  BarChart3,
 } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { useTheme } from "next-themes"
@@ -45,6 +46,11 @@ const data = {
   ],
   navReports: [
     {
+      title: "Översikt",
+      url: "/rapporter-oversikt",
+      icon: BarChart3,
+    },
+    {
       title: "Ny Rapport",
       url: "/ny-rapport",
       icon: FilePlus,
@@ -56,6 +62,11 @@ const data = {
     },
   ],
   navBilkollen: [
+    {
+      title: "Översikt",
+      url: "/bilkollen-oversikt",
+      icon: BarChart3,
+    },
     {
       title: "Fordon",
       url: "/bilkollen",

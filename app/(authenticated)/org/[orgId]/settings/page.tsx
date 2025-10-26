@@ -40,7 +40,6 @@ export default async function SettingsPage({ params }: SettingsPageProps) {
   }
 
   const canEdit = activeOrg.role === "owner" || activeOrg.role === "admin";
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const canDelete = activeOrg.role === "owner";
   const createdAt = new Date(activeOrg.created_at);
   const formattedCreatedAt = new Intl.DateTimeFormat("sv-SE", {
@@ -96,7 +95,7 @@ export default async function SettingsPage({ params }: SettingsPageProps) {
           </CardContent>
         </Card>
 
-        <DeleteOrgForm orgId={activeOrg.id} orgName={activeOrg.name} />
+        {canDelete && <DeleteOrgForm orgId={activeOrg.id} orgName={activeOrg.name} />}
       </div>
     </div>
   );
