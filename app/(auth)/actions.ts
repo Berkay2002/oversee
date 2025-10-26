@@ -177,8 +177,10 @@ export async function requestPasswordReset(
     return { error: 'Please enter your email address' }
   }
 
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL || 'https://oversee-fawn.vercel.app'
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/reset-password`,
+    redirectTo: `${baseUrl}/reset-password`,
   })
 
   if (error) {
