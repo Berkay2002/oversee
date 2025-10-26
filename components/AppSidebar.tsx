@@ -11,7 +11,9 @@ import {
   UserCheck,
   Settings,
   HelpCircle,
+  Car,
 } from "lucide-react"
+import { usePathname } from "next/navigation"
 
 import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
@@ -32,6 +34,11 @@ const data = {
       title: "Översikt",
       url: "/oversikt",
       icon: LayoutDashboard,
+    },
+    {
+      title: "Bilkollen",
+      url: "/bilkollen",
+      icon: Car,
     },
     {
       title: "Ny Rapport",
@@ -98,10 +105,37 @@ export function AppSidebar({
     role?: string
   }
 }) {
+  const pathname = usePathname()
+
+  // Extract orgId from pathname (e.g., /org/[orgId]/page -> [orgId])
+  const orgIdMatch = pathname.match(/^\/org\/([^\/]+)/)
+  const orgId = orgIdMatch ? orgIdMatch[1] : null
+
+  // Transform URLs to include orgId if we're in an org context
+  const transformUrl = (url: string) => {
+    if (orgId && !url.startsWith('/org/')) {
+      return `/org/${orgId}${url}`
+    }
+    return url
+  }
+
   const navManagement =
     user?.role === "admin"
       ? data.navManagement
       : data.navManagement.filter((item) => !item.adminOnly)
+
+  // Transform all URLs
+  const navMainWithOrgId = data.navMain.map(item => ({
+    ...item,
+    url: transformUrl(item.url)
+  }))
+
+  const navManagementWithOrgId = navManagement.map(item => ({
+    ...item,
+    url: transformUrl(item.url)
+  }))
+
+  const homeUrl = orgId ? `/org/${orgId}/oversikt` : "/oversikt"
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -113,7 +147,7 @@ export function AppSidebar({
               size="lg"
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
-              <a href="/oversikt">
+              <a href={homeUrl}>
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
                   <Wrench className="size-5" />
                 </div>
@@ -127,8 +161,8 @@ export function AppSidebar({
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} label="Navigation" />
-        <NavMain items={navManagement} label="Hantering" />
+        <NavMain items={navMainWithOrgId} label="Navigation" />
+        <NavMain items={navManagementWithOrgId} label="Hantering" />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
