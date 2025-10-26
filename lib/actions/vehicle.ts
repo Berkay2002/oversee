@@ -651,10 +651,26 @@ export async function getVehicleCaseStatistics(
     }));
   }
 
-  // Cases created per week (last 12 weeks)
+  // Cases created per day (last 30 days)
   const now = new Date();
-  const weeksAgo12 = new Date(now.getTime() - 12 * 7 * 24 * 60 * 60 * 1000);
+  const casesPerDay: Array<{ date: string; count: number }> = [];
+  for (let i = 29; i >= 0; i--) {
+    const dayStart = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+    dayStart.setHours(0, 0, 0, 0);
+    const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000);
 
+    const dayCases = cases?.filter((c) => {
+      const createdAt = new Date(c.created_at);
+      return createdAt >= dayStart && createdAt < dayEnd;
+    }) || [];
+
+    casesPerDay.push({
+      date: dayStart.toISOString().split('T')[0],
+      count: dayCases.length,
+    });
+  }
+
+  // Cases created per week (last 12 weeks)
   const casesPerWeek: Array<{ week: string; count: number }> = [];
   for (let i = 11; i >= 0; i--) {
     const weekStart = new Date(now.getTime() - i * 7 * 24 * 60 * 60 * 1000);
@@ -668,6 +684,26 @@ export async function getVehicleCaseStatistics(
     casesPerWeek.push({
       week: weekStart.toISOString().split('T')[0],
       count: weekCases.length,
+    });
+  }
+
+  // Cases created per month (last 12 months)
+  const casesPerMonth: Array<{ month: string; count: number }> = [];
+  for (let i = 11; i >= 0; i--) {
+    const monthStart = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const monthEnd = new Date(now.getFullYear(), now.getMonth() - i + 1, 0, 23, 59, 59);
+
+    const monthCases = cases?.filter((c) => {
+      const createdAt = new Date(c.created_at);
+      return createdAt >= monthStart && createdAt <= monthEnd;
+    }) || [];
+
+    // Format as "YYYY-MM"
+    const monthLabel = `${monthStart.getFullYear()}-${String(monthStart.getMonth() + 1).padStart(2, '0')}`;
+
+    casesPerMonth.push({
+      month: monthLabel,
+      count: monthCases.length,
     });
   }
 
@@ -692,8 +728,10 @@ export async function getVehicleCaseStatistics(
     byFundingSource,
     byInsuranceStatus,
     perHandlerStats,
+    casesPerDay,
     casesPerWeek,
-  avgProcessingDays,
+    casesPerMonth,
+    avgProcessingDays,
   };
 }
 
