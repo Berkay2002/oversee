@@ -74,6 +74,12 @@ export async function signIn(
   })
 
   if (error) {
+    if (error.message === 'Email not confirmed') {
+      return {
+        error:
+          'Please confirm your email before logging in. Check your inbox for a confirmation link.',
+      }
+    }
     return {
       error: 'Fel e-postadress eller lösenord',
     }
@@ -160,6 +166,40 @@ export async function signUp(
   redirect('/onboarding')
 }
 
+export async function requestPasswordReset(
+  _prevState: { error?: string; success?: boolean },
+  formData: FormData
+): Promise<{ error?: string; success?: boolean }> {
+  const supabase = await createClient()
+  const email = formData.get('email') as string
+
+  if (!email) {
+    return { error: 'Please enter your email address' }
+  }
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/reset-password`,
+  })
+
+  if (error) {
+    console.error('Password Reset Error:', error)
+    if (error.message.includes('rate limit exceeded')) {
+      return {
+        error: 'Too many requests. Please wait a few minutes before trying again.',
+      }
+    }
+    if (error.message.includes('Error sending recovery email')) {
+      return {
+        error:
+          'Could not send password reset link. There might be an issue with the email service configuration.',
+      }
+    }
+    return { error: 'Could not send password reset link' }
+  }
+
+  return { success: true }
+}
+
 /**
  * Sign out the current user
  */
@@ -191,4 +231,33 @@ export async function getUser() {
   }
 
   return { user, error: null }
+}
+
+export async function updateEmail(
+  _prevState: { error?: string; success?: boolean },
+  formData: FormData
+): Promise<{ error?: string; success?: boolean }> {
+  const supabase = await createClient()
+  const newEmail = formData.get('email') as string
+
+  if (!newEmail) {
+    return { error: 'Please enter a new email address' }
+  }
+
+  const { data, error } = await supabase.auth.updateUser({ email: newEmail })
+
+  if (error) {
+    return { error: 'Could not update email address' }
+  }
+
+  if (data.user) {
+    // Supabase sends a confirmation email to both old and new addresses.
+    // The email change is not applied until the new email is confirmed.
+    return {
+      success: true,
+      error: 'A confirmation link has been sent to your new email address. Please verify the change.',
+    }
+  }
+
+  return { error: 'An unknown error occurred' }
 }

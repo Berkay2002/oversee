@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import {
   ChevronsUpDown,
   LogOut,
@@ -105,9 +106,11 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <User />
-                Account
+              <DropdownMenuItem asChild>
+                <Link href="/account">
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Account</span>
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Settings />
