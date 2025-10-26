@@ -16,6 +16,7 @@ import {
 } from "lucide-react"
 import { usePathname } from "next/navigation"
 
+import { cn } from "@/lib/utils"
 import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
@@ -120,7 +121,7 @@ export function AppSidebar({
   ...props
 }: AppSidebarProps) {
   const pathname = usePathname()
-  const { isMobile, setOpenMobile } = useSidebar()
+  const { isMobile, setOpenMobile, state } = useSidebar()
 
   // Extract orgId from pathname (e.g., /org/[orgId]/page -> [orgId])
   const orgIdMatch = pathname.match(/^\/org\/([^\/]+)/)
@@ -186,8 +187,18 @@ export function AppSidebar({
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
               <a href={homeUrl} onClick={handleHeaderClick}>
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                  <Wrench className="size-5" />
+                <div
+                  className={cn(
+                    "-ml-1 flex aspect-square items-center justify-center rounded-lg bg-primary text-primary-foreground transition-all",
+                    state === "collapsed" ? "size-6" : "size-8"
+                  )}
+                >
+                  <Wrench
+                    className={cn(
+                      "transition-all",
+                      state === "collapsed" ? "size-4" : "size-5"
+                    )}
+                  />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
