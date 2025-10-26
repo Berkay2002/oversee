@@ -34,9 +34,20 @@ export async function updateSession(request: NextRequest) {
 
   // IMPORTANT: DO NOT REMOVE auth.getUser()
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user = null;
+  try {
+    const { data, error } = await supabase.auth.getUser();
+
+    // Suppress expected auth errors (stale/missing tokens)
+    if (error && !['refresh_token_not_found', 'invalid_grant'].includes(error.code || '')) {
+      console.error('Unexpected auth error in proxy:', error);
+    }
+
+    user = data.user;
+  } catch (error) {
+    // Log unexpected errors only
+    console.error('Unexpected error in proxy auth:', error);
+  }
 
   if (user) {
     const pathname = request.nextUrl.pathname;
