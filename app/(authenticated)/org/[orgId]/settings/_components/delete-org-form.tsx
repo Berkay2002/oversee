@@ -16,6 +16,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { deleteOrganization } from "@/lib/org/actions";
 
@@ -27,6 +29,7 @@ interface DeleteOrgFormProps {
 export function DeleteOrgForm({ orgId, orgName }: DeleteOrgFormProps) {
   const [isPending, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState(false);
+  const [confirmation, setConfirmation] = useState("");
 
   const handleDelete = () => {
     startTransition(async () => {
@@ -44,14 +47,12 @@ export function DeleteOrgForm({ orgId, orgName }: DeleteOrgFormProps) {
 
   return (
     <Card className="border-destructive">
-      <CardHeader>
+      <div className="p-6">
         <CardTitle>Ta bort organisation</CardTitle>
-        <CardDescription>
+        <CardDescription className="mb-4 mt-1">
           Denna åtgärd kan inte ångras. Detta kommer permanent att ta bort
           organisationen och all dess data.
         </CardDescription>
-      </CardHeader>
-      <CardFooter className="border-t border-destructive bg-destructive/5 px-6 py-4">
         <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
           <AlertDialogTrigger asChild>
             <Button variant="destructive" disabled={isPending}>
@@ -67,11 +68,22 @@ export function DeleteOrgForm({ orgId, orgName }: DeleteOrgFormProps) {
                 våra servrar.
               </AlertDialogDescription>
             </AlertDialogHeader>
+            <div className="grid gap-2">
+              <Label htmlFor="org-name-confirmation">
+                Skriv <span className="font-semibold text-foreground">{orgName}</span> för att bekräfta.
+              </Label>
+              <Input
+                id="org-name-confirmation"
+                value={confirmation}
+                onChange={(e) => setConfirmation(e.target.value)}
+                disabled={isPending}
+              />
+            </div>
             <AlertDialogFooter>
               <AlertDialogCancel disabled={isPending}>Avbryt</AlertDialogCancel>
               <AlertDialogAction
                 onClick={handleDelete}
-                disabled={isPending}
+                disabled={isPending || confirmation !== orgName}
                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               >
                 {isPending ? "Tar bort..." : "Ja, ta bort"}
@@ -79,7 +91,7 @@ export function DeleteOrgForm({ orgId, orgName }: DeleteOrgFormProps) {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-      </CardFooter>
+      </div>
     </Card>
   );
 }

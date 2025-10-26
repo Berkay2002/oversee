@@ -43,6 +43,8 @@ export function OrgNameForm({ orgId, orgName, disabled }: OrgNameFormProps) {
     },
   });
 
+  const { isDirty } = form.formState;
+
   const onSubmit = (data: OrgNameFormValues) => {
     startTransition(async () => {
       try {
@@ -62,14 +64,14 @@ export function OrgNameForm({ orgId, orgName, disabled }: OrgNameFormProps) {
           Detta är namnet på din organisation.
         </CardDescription>
       </CardHeader>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CardContent>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex items-end gap-4">
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="grow">
                   <FormLabel>Namn</FormLabel>
                   <FormControl>
                     <Input {...field} disabled={disabled} />
@@ -78,14 +80,12 @@ export function OrgNameForm({ orgId, orgName, disabled }: OrgNameFormProps) {
                 </FormItem>
               )}
             />
-          </CardContent>
-          <CardFooter className="border-t px-6 py-4">
-            <Button type="submit" disabled={disabled || isPending}>
+            <Button type="submit" disabled={disabled || isPending || !isDirty}>
               {isPending ? "Sparar..." : "Spara"}
             </Button>
-          </CardFooter>
-        </form>
-      </Form>
+          </form>
+        </Form>
+      </CardContent>
     </Card>
   );
 }

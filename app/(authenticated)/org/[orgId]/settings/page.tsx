@@ -1,14 +1,5 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getActiveOrgForUser, type ActiveOrg } from "@/lib/org/server";
@@ -69,42 +60,43 @@ export default async function SettingsPage({ params }: SettingsPageProps) {
         </div>
       </header>
 
-      <div className="grid gap-6 lg:grid-cols-[2fr_1fr] lg:items-start">
-        <div className="space-y-6">
-          <Card>
-            <CardHeader className="gap-4 sm:flex sm:flex-row sm:items-center sm:justify-between">
-              <div className="space-y-1">
-                <CardTitle className="text-2xl font-semibold">{activeOrg.name}</CardTitle>
-                <CardDescription>
-                  Samlad information om organisationen och din åtkomstnivå.
-                </CardDescription>
-              </div>
-              <Badge variant="outline" className="w-fit rounded-md border-primary/40 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary">
-                {roleLabels[activeOrg.role]}
-              </Badge>
-            </CardHeader>
-            <CardContent className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-lg border border-border/60 bg-muted/20 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Organisationens ID</p>
-                <p className="mt-1 font-mono text-sm text-foreground">{activeOrg.id}</p>
-              </div>
-              <div className="rounded-lg border border-border/60 bg-muted/20 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Skapad</p>
-                <p className="mt-1 text-sm text-foreground">{formattedCreatedAt}</p>
-              </div>
-              <div className="sm:col-span-2 rounded-lg border border-border/60 bg-muted/20 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Din roll</p>
-                <p className="mt-1 text-sm text-foreground">{roleDescriptions[activeOrg.role]}</p>
-              </div>
-            </CardContent>
-          </Card>
+      <div className="grid gap-8">
+        <OrgNameForm orgId={activeOrg.id} orgName={activeOrg.name} disabled={!canEdit} />
 
-          <OrgNameForm orgId={activeOrg.id} orgName={activeOrg.name} disabled={!canEdit} />
-        </div>
+        <Card>
+          <CardHeader className="gap-4 sm:flex sm:flex-row sm:items-center sm:justify-between">
+            <div className="space-y-1">
+              <CardTitle>Organisation</CardTitle>
+              <CardDescription>
+                Samlad information om organisationen och din åtkomstnivå.
+              </CardDescription>
+            </div>
+            <Badge
+              variant="outline"
+              className="w-fit rounded-md border-primary/40 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary"
+            >
+              {roleLabels[activeOrg.role]}
+            </Badge>
+          </CardHeader>
+          <CardContent className="grid gap-4 sm:grid-cols-2">
+            <div className="rounded-lg border border-border/60 bg-muted/20 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Organisationens ID
+              </p>
+              <p className="mt-1 font-mono text-sm text-foreground">{activeOrg.id}</p>
+            </div>
+            <div className="rounded-lg border border-border/60 bg-muted/20 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Skapad</p>
+              <p className="mt-1 text-sm text-foreground">{formattedCreatedAt}</p>
+            </div>
+            <div className="sm:col-span-2 rounded-lg border border-border/60 bg-muted/20 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Din roll</p>
+              <p className="mt-1 text-sm text-foreground">{roleDescriptions[activeOrg.role]}</p>
+            </div>
+          </CardContent>
+        </Card>
 
-        <div className="space-y-6">
-          <DeleteOrgForm orgId={activeOrg.id} orgName={activeOrg.name} />
-        </div>
+        <DeleteOrgForm orgId={activeOrg.id} orgName={activeOrg.name} />
       </div>
     </div>
   );
