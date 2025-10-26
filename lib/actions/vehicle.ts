@@ -148,14 +148,19 @@ export async function getOrgMembers(orgId: string) {
   type MemberWithProfile = {
     user_id: string;
     role: string;
-    profiles: { name: string } | null;
+    profiles: { name: string } | { name: string }[] | null;
   };
 
-  return (data || []).map((member: MemberWithProfile) => ({
-    user_id: member.user_id,
-    name: member.profiles?.name || 'Unknown',
-    role: member.role,
-  })) as OrgMember[];
+  return (data || []).map((member: MemberWithProfile) => {
+    const profiles = member.profiles;
+    const profileName = Array.isArray(profiles) ? profiles[0]?.name : profiles?.name;
+
+    return {
+      user_id: member.user_id,
+      name: profileName || 'Unknown',
+      role: member.role,
+    };
+  }) as OrgMember[];
 }
 
 /**
