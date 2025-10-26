@@ -14,7 +14,7 @@ import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
 import { sv } from 'date-fns/locale';
-import { CheckCircle2, Circle, Clock } from 'lucide-react';
+import { CheckCircle2, Circle, Clock, FileText } from 'lucide-react';
 import type { VehicleCaseView } from '@/lib/actions/vehicle';
 
 type VehicleCaseDrawerProps = {
@@ -105,7 +105,7 @@ export function VehicleCaseDrawer({
           </SheetDescription>
         </SheetHeader>
 
-        <div className="mt-4 space-y-4 pb-6 sm:mt-6 sm:space-y-6">
+        <div className="mt-4 space-y-4 pb-6 px-4 sm:mt-6 sm:space-y-6">
           {/* Case Summary */}
           <Card>
             <CardHeader className="pb-3">
@@ -180,6 +180,23 @@ export function VehicleCaseDrawer({
               )}
             </CardContent>
           </Card>
+
+          {/* Handler Notes */}
+          {vehicleCase.handler_note && (
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                  <FileText className="h-4 w-4" />
+                  Anteckningar
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm sm:text-base whitespace-pre-wrap break-words">
+                  {vehicleCase.handler_note}
+                </p>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Milestones */}
           {analytics && (

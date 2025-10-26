@@ -261,7 +261,7 @@ export function VehicleCaseMobileCard({
             )}
           </div>
 
-          {/* Action Button */}
+          {/* Action Buttons */}
           {!isArchive && onMarkKlar && (
             <Button
               size="lg"
@@ -273,7 +273,7 @@ export function VehicleCaseMobileCard({
             </Button>
           )}
 
-          {isArchive && onViewDetails && (
+          {onViewDetails && (
             <Button
               size="lg"
               variant="outline"

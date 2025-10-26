@@ -275,7 +275,9 @@ export default function BilkollenPage() {
   }, [orgId, ongoingCases, archivedCases, filters]);
 
   const handleViewDetails = React.useCallback(async (caseId: string) => {
-    const caseToView = archivedCases.find((c) => c.id === caseId);
+    const caseToView =
+      ongoingCases.find((c) => c.id === caseId) ||
+      archivedCases.find((c) => c.id === caseId);
     if (!caseToView) return;
 
     setSelectedCaseForDrawer(caseToView);
@@ -295,7 +297,7 @@ export default function BilkollenPage() {
     } finally {
       setIsDrawerLoading(false);
     }
-  }, [archivedCases]);
+  }, [ongoingCases, archivedCases]);
 
   const handleRestoreCase = React.useCallback(async (caseId: string) => {
     const confirmed = window.confirm('Återställa detta ärende till pågående?');
@@ -345,14 +347,14 @@ export default function BilkollenPage() {
       members,
       onUpdate: handleUpdateCase,
       onMarkKlar: handleMarkKlar,
-      onViewDetails: () => {},
+      onViewDetails: handleViewDetails,
       onDelete: handleDeleteCase,
       onRestore: handleRestoreCase,
       isArchive: false,
       isOrgAdmin,
     };
     return createColumns(meta);
-  }, [orgId, locations, members, handleUpdateCase, handleMarkKlar, handleDeleteCase, handleRestoreCase, isOrgAdmin]);
+  }, [orgId, locations, members, handleUpdateCase, handleMarkKlar, handleViewDetails, handleDeleteCase, handleRestoreCase, isOrgAdmin]);
 
   const archiveColumns = React.useMemo(() => {
     const meta: VehicleCaseColumnMeta = {

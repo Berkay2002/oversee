@@ -17,18 +17,19 @@ import {
   Moon,
   BarChart3,
 } from "lucide-react"
+import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useTheme } from "next-themes"
 
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
 import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -235,20 +236,40 @@ export function AppSidebar({
         <NavMain items={navBilkollenWithOrgId} label="Bilkollen" />
         <NavMain items={navManagementWithOrgId} label="Hantering" />
         {isAdmin && <NavMain items={navAdminWithOrgId} label="Administration" />}
-        <NavSecondary items={navSecondaryWithOrgId} className="mt-auto" />
+        <div className="mt-auto">
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    size="sm"
+                    onClick={() =>
+                      setTheme(theme === "light" ? "dark" : "light")
+                    }
+                  >
+                    <Sun className="size-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                    <Moon className="absolute size-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                    <span>Theme</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                {navSecondaryWithOrgId.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild size="sm">
+                      <Link href={item.url} onClick={handleHeaderClick}>
+                        <item.icon className="size-4" />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </div>
       </SidebarContent>
       <SidebarFooter>
         <div className="flex items-center gap-2">
           <NavUser user={user} />
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-          >
-            <Sun className="size-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute size-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            <span className="sr-only">Toggle theme</span>
-          </Button>
         </div>
       </SidebarFooter>
     </Sidebar>

@@ -258,7 +258,11 @@ export const createColumns = (
         const note = row.original.handler_note;
 
         if (meta.isArchive) {
-          return <div className="text-sm text-muted-foreground">{note || '-'}</div>;
+          return (
+            <div className="max-w-[200px] truncate text-sm text-muted-foreground" title={note || undefined}>
+              {note || '-'}
+            </div>
+          );
         }
 
         return (
@@ -318,24 +322,24 @@ export const createColumns = (
         );
       },
     });
-
-    // Make rows clickable in archive view
-    columns.push({
-      id: 'view',
-      header: '',
-      cell: ({ row }) => {
-        return (
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => meta.onViewDetails(row.original.id)}
-          >
-            Visa detaljer
-          </Button>
-        );
-      },
-    });
   }
+
+  // Add "Visa detaljer" button for both active and archived views
+  columns.push({
+    id: 'view',
+    header: '',
+    cell: ({ row }) => {
+      return (
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={() => meta.onViewDetails(row.original.id)}
+        >
+          Visa detaljer
+        </Button>
+      );
+    },
+  });
 
   // Add actions dropdown for everyone (admins get delete, everyone gets restore)
   if (meta.isOrgAdmin || meta.isArchive) {
