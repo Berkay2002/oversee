@@ -100,23 +100,31 @@ const data = {
   ],
 }
 
-export function AppSidebar({
-  user,
-  ...props
-}: React.ComponentProps<typeof Sidebar> & {
+type SidebarProps = React.ComponentProps<typeof Sidebar>
+
+type AppSidebarProps = SidebarProps & {
   user?: {
     name: string
     email: string
     avatar?: string
     role?: string
   }
-}) {
+  orgId?: string
+  orgName?: string
+}
+
+export function AppSidebar({
+  user,
+  orgId: orgIdProp,
+  orgName,
+  ...props
+}: AppSidebarProps) {
   const pathname = usePathname()
   const { isMobile, setOpenMobile } = useSidebar()
 
   // Extract orgId from pathname (e.g., /org/[orgId]/page -> [orgId])
   const orgIdMatch = pathname.match(/^\/org\/([^\/]+)/)
-  const orgId = orgIdMatch ? orgIdMatch[1] : null
+  const orgId = orgIdProp ?? (orgIdMatch ? orgIdMatch[1] : null)
 
   // Transform URLs to include orgId if we're in an org context
   const transformUrl = (url: string) => {
@@ -158,6 +166,11 @@ export function AppSidebar({
     url: transformUrl(item.url)
   }))
 
+  const navSecondaryWithOrgId = data.navSecondary.map(item => ({
+    ...item,
+    url: item.url === "/settings" ? transformUrl(item.url) : item.url
+  }))
+
   const homeUrl = orgId ? `/org/${orgId}/oversikt` : "/oversikt"
 
   const isAdmin = user?.role === "admin"
@@ -177,8 +190,12 @@ export function AppSidebar({
                   <Wrench className="size-5" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Verkstads Insikt</span>
-                  <span className="truncate text-xs">Workshop Reports</span>
+                  <span className="truncate font-semibold">
+                    {orgName ?? "Verkstads Insikt"}
+                  </span>
+                  <span className="truncate text-xs">
+                    {orgName ? "Organisation" : "Workshop Reports"}
+                  </span>
                 </div>
               </a>
             </SidebarMenuButton>
@@ -191,7 +208,7 @@ export function AppSidebar({
         <NavMain items={navBilkollenWithOrgId} label="Bilkollen" />
         <NavMain items={navManagementWithOrgId} label="Hantering" />
         {isAdmin && <NavMain items={navAdminWithOrgId} label="Administration" />}
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavSecondary items={navSecondaryWithOrgId} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />

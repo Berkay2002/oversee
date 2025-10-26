@@ -1,6 +1,8 @@
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { getUser, getUserProfile } from "@/lib/supabase/server";
+import { getActiveOrgForUser } from "@/lib/org/server";
+import { getActiveOrgId } from "@/lib/org/actions";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 
@@ -17,6 +19,13 @@ export default async function AuthenticatedLayoutContent({
     redirect("/login");
   }
 
+  const orgId = await getActiveOrgId();
+  if (!orgId) {
+    redirect("/create-organization");
+  }
+
+  const activeOrg = await getActiveOrgForUser(orgId, user.id);
+
   // Pass userId to avoid redundant getUser() call
   const userProfile = await getUserProfile(user.id);
 
@@ -31,7 +40,7 @@ export default async function AuthenticatedLayoutContent({
 
   return (
     <SidebarProvider>
-      {showSidebar && <AppSidebar user={userData} />}
+      {showSidebar && <AppSidebar orgId={activeOrg.id} orgName={activeOrg.name} user={userData} />}
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
           {showSidebar && <SidebarTrigger />}

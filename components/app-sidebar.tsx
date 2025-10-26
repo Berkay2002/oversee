@@ -20,6 +20,7 @@ import {
   IconInnerShadowTop,
 } from "@tabler/icons-react"
 
+import { Enums } from "@/types/database";
 import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
@@ -151,28 +152,39 @@ const data = {
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+interface UserData {
+  name: string;
+  email: string;
+  avatar?: string;
+  role?: Enums<"user_role">;
+}
+
+export function AppSidebar({ orgId, orgName, user, ...props }: { orgId: string; orgName: string; user: UserData } & React.ComponentProps<typeof Sidebar>) {
+  const navMain = data.navMain.map(item => ({ ...item, url: item.url.replace("#", `/org/${orgId}`) }));
+  const navSecondary = data.navSecondary.map(item => ({ ...item, url: item.url.replace("#", `/org/${orgId}/settings`) }));
+  const documents = data.documents.map(item => ({ ...item, url: item.url.replace("#", `/org/${orgId}`) }));
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <a href="#">
+              <a href={`/org/${orgId}`}>
                 <IconInnerShadowTop />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <span className="text-base font-semibold">{orgName}</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavMain items={navMain} />
+        <NavDocuments items={documents} />
+        <NavSecondary items={navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   )

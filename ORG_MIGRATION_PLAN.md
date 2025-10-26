@@ -285,96 +285,96 @@ All tables updated with organization-scoped RLS policies using helper functions:
 
 ---
 
-## Phase 6: Member Management 📋 PENDING
+## Phase 6: Member Management ✅ COMPLETED
 
-### 6.1 Settings Layout
-- [ ] Create `app/(authenticated)/org/[orgId]/settings/layout.tsx`
-- [ ] Add settings navigation (tabs or sidebar)
-- [ ] Links: Overview, Members, (future: Billing, etc.)
+### 6.1 Settings Layout ✅
+- [x] Create `app/(authenticated)/org/[orgId]/settings/layout.tsx`
+- [x] Add settings navigation (tabs or sidebar)
+- [x] Links: Overview, Members, (future: Billing, etc.)
 
-### 6.2 Settings Overview Page
-- [ ] Create `app/(authenticated)/org/[orgId]/settings/page.tsx`
-- [ ] Display org details (name, created date, member count)
-- [ ] Edit org name form (admin/owner only)
-- [ ] Delete org button (owner only, with confirmation modal)
-- [ ] Use `updateOrganizationName` and `deleteOrganization` actions
+### 6.2 Settings Overview Page ✅
+- [x] Create `app/(authenticated)/org/[orgId]/settings/page.tsx`
+- [x] Display org details (name, created date, member count)
+- [x] Edit org name form (admin/owner only)
+- [x] Delete org button (owner only, with confirmation modal)
+- [x] Use `updateOrganizationName` and `deleteOrganization` actions
 
-### 6.3 Members Management Page
-- [ ] Create `app/(authenticated)/org/[orgId]/settings/members/page.tsx`
-- [ ] List all organization members
-- [ ] Display user info (name, email) and role badge
-- [ ] Show "You" indicator for current user
-- [ ] Remove member button (admin/owner, prevent removing last owner)
-- [ ] Change role dropdown (owner only)
-- [ ] Invite member button (admin/owner)
+### 6.3 Members Management Page ✅
+- [x] Create `app/(authenticated)/org/[orgId]/settings/members/page.tsx`
+- [x] List all organization members
+- [x] Display user info (name, email) and role badge
+- [x] Show "You" indicator for current user
+- [x] Remove member button (admin/owner, prevent removing last owner)
+- [x] Change role dropdown (owner only)
+- [x] Invite member button (admin/owner)
 
-### 6.4 Members Server Actions
-- [ ] Create `app/(authenticated)/org/[orgId]/settings/members/actions.ts`
-- [ ] Implement `getOrgMembers(orgId)`:
-  - [ ] Join organization_members with profiles
-  - [ ] Return user details (name, email) + role
-  - [ ] Order by role (owner, admin, member) then name
-- [ ] Implement `addUserToOrg(orgId, userId, role)`:
-  - [ ] Validate caller is admin/owner
-  - [ ] Call `add_user_to_org` RPC function
-  - [ ] Revalidate members page
-- [ ] Implement `removeUserFromOrg(orgId, userId)`:
-  - [ ] Validate caller is admin/owner
-  - [ ] Prevent removing last owner
-  - [ ] Call `remove_user_from_org` RPC function
-  - [ ] Revalidate members page
-- [ ] Implement `updateMemberRole(orgId, userId, newRole)`:
-  - [ ] Validate caller is owner
-  - [ ] Prevent demoting last owner
-  - [ ] Call `add_user_to_org` with new role (upsert behavior)
-  - [ ] Revalidate members page
-- [ ] Implement `transferOwnership(orgId, newOwnerId)`:
-  - [ ] Validate caller is owner
-  - [ ] Call `transfer_org_ownership` RPC function
-  - [ ] Revalidate members page
+### 6.4 Members Server Actions ✅
+- [x] Create `app/(authenticated)/org/[orgId]/settings/members/actions.ts`
+- [x] Implement `getOrgMembers(orgId)`:
+  - [x] Join organization_members with profiles
+  - [x] Return user details (name, email) + role
+  - [x] Order by role (owner, admin, member) then name
+- [x] Implement `addUserToOrg(orgId, userId, role)`:
+  - [x] Validate caller is admin/owner
+  - [x] Call `add_user_to_org` RPC function
+  - [x] Revalidate members page
+- [x] Implement `removeUserFromOrg(orgId, userId)`:
+  - [x] Validate caller is admin/owner
+  - [x] Prevent removing last owner
+  - [x] Call `remove_user_from_org` RPC function
+  - [x] Revalidate members page
+- [x] Implement `updateMemberRole(orgId, userId, newRole)`:
+  - [x] Validate caller is owner
+  - [x] Prevent demoting last owner
+  - [x] Call `add_user_to_org` with new role (upsert behavior)
+  - [x] Revalidate members page
+- [x] Implement `transferOwnership(orgId, newOwnerId)`:
+  - [x] Validate caller is owner
+  - [x] Call `transfer_org_ownership` RPC function
+  - [x] Revalidate members page
 
-### 6.5 Invitation System
-- [ ] Create `app/(authenticated)/org/[orgId]/settings/members/invite/actions.ts`
-- [ ] Implement `createInvitation(orgId, email, role)`:
-  - [ ] Validate caller is admin/owner
-  - [ ] Generate secure random token (crypto.randomUUID())
-  - [ ] Set expiry (e.g., 7 days from now)
-  - [ ] Insert into org_invitations table
-  - [ ] Return invitation link: `/invite/[token]`
-  - [ ] (Optional) Send email with invitation link
-- [ ] Implement `listPendingInvitations(orgId)`:
-  - [ ] Filter where accepted_at IS NULL
-  - [ ] Filter where expires_at > NOW()
-  - [ ] Order by created_at DESC
-- [ ] Implement `cancelInvitation(invitationId)`:
-  - [ ] Validate caller is admin/owner
-  - [ ] Delete invitation
-  - [ ] Revalidate invitations list
+### 6.5 Invitation System ✅
+- [x] Create `app/(authenticated)/org/[orgId]/settings/members/invite/actions.ts`
+- [x] Implement `createInvitation(orgId, email, role)`:
+  - [x] Validate caller is admin/owner
+  - [x] Generate secure random token (crypto.randomUUID())
+  - [x] Set expiry (e.g., 7 days from now)
+  - [x] Insert into org_invitations table
+  - [x] Return invitation link: `/invite/[token]`
+  - [x] (Optional) Send email with invitation link
+- [x] Implement `listPendingInvitations(orgId)`:
+  - [x] Filter where accepted_at IS NULL
+  - [x] Filter where expires_at > NOW()
+  - [x] Order by created_at DESC
+- [x] Implement `cancelInvitation(invitationId)`:
+  - [x] Validate caller is admin/owner
+  - [x] Delete invitation
+  - [x] Revalidate invitations list
 
-### 6.6 Invitation Acceptance Page
-- [ ] Create `app/invite/[token]/page.tsx` (public route)
-- [ ] Fetch invitation by token
-- [ ] Check if expired
-- [ ] Check if already accepted
-- [ ] If not authenticated:
-  - [ ] Show message to sign up/login first
-  - [ ] Redirect to login with returnUrl
-- [ ] If authenticated:
-  - [ ] Call `acceptInvitation(token)` action
-  - [ ] Add user to org with specified role
-  - [ ] Mark invitation as accepted
-  - [ ] Redirect to `/org/[orgId]/oversikt`
+### 6.6 Invitation Acceptance Page ✅
+- [x] Create `app/invite/[token]/page.tsx` (public route)
+- [x] Fetch invitation by token
+- [x] Check if expired
+- [x] Check if already accepted
+- [x] If not authenticated:
+  - [x] Show message to sign up/login first
+  - [x] Redirect to login with returnUrl
+- [x] If authenticated:
+  - [x] Call `acceptInvitation(token)` action
+  - [x] Add user to org with specified role
+  - [x] Mark invitation as accepted
+  - [x] Redirect to `/org/[orgId]/oversikt`
 
-### 6.7 Invitation Acceptance Action
-- [ ] Create `app/invite/[token]/actions.ts`
-- [ ] Implement `acceptInvitation(token)`:
-  - [ ] Validate user is authenticated
-  - [ ] Fetch invitation by token
-  - [ ] Validate not expired
-  - [ ] Validate not already accepted
-  - [ ] Call `add_user_to_org(org_id, user.id, role)`
-  - [ ] Update invitation: set accepted_at and accepted_by
-  - [ ] Return success + orgId for redirect
+### 6.7 Invitation Acceptance Action ✅
+- [x] Create `app/invite/[token]/actions.ts`
+- [x] Implement `acceptInvitation(token)`:
+  - [x] Validate user is authenticated
+  - [x] Fetch invitation by token
+  - [x] Validate not expired
+  - [x] Validate not already accepted
+  - [x] Call `add_user_to_org(org_id, user.id, role)`
+  - [x] Update invitation: set accepted_at and accepted_by
+  - [x] Return success + orgId for redirect
 
 ---
 
@@ -432,34 +432,34 @@ All tables updated with organization-scoped RLS policies using helper functions:
 
 ---
 
-## Phase 8: Update Sidebar Navigation 📋 PENDING
+## Phase 8: Update Sidebar Navigation ✅ COMPLETED
 
-### 8.1 Read Current Sidebar
-- [ ] Examine `components/AppSidebar.tsx`
-- [ ] Identify all navigation links
-- [ ] Understand current structure
+### 8.1 Read Current Sidebar ✅
+- [x] Examine `components/AppSidebar.tsx`
+- [x] Identify all navigation links
+- [x] Understand current structure
 
-### 8.2 Update Nav Links
-- [ ] Add `orgId` parameter to AppSidebar component
-- [ ] Update all nav links to use `/org/${orgId}/` prefix:
-  - [ ] Översikt → `/org/${orgId}/oversikt`
-  - [ ] Alla Rapporter → `/org/${orgId}/alla-rapporter`
-  - [ ] Ny Rapport → `/org/${orgId}/ny-rapport`
-  - [ ] Kategorier → `/org/${orgId}/kategorier`
-  - [ ] Tekniker → `/org/${orgId}/tekniker`
-  - [ ] Reporter → `/org/${orgId}/reporter`
-  - [ ] Settings → `/org/${orgId}/settings` (conditional, admin/owner only)
-- [ ] Keep /anvandare as global admin-only route (no org prefix)
+### 8.2 Update Nav Links ✅
+- [x] Add `orgId` parameter to AppSidebar component
+- [x] Update all nav links to use `/org/${orgId}/` prefix:
+  - [x] Översikt → `/org/${orgId}/oversikt`
+  - [x] Alla Rapporter → `/org/${orgId}/alla-rapporter`
+  - [x] Ny Rapport → `/org/${orgId}/ny-rapport`
+  - [x] Kategorier → `/org/${orgId}/kategorier`
+  - [x] Tekniker → `/org/${orgId}/tekniker`
+  - [x] Reporter → `/org/${orgId}/reporter`
+  - [x] Settings → `/org/${orgId}/settings` (conditional, admin/owner only)
+- [x] Keep /anvandare as global admin-only route (no org prefix)
 
-### 8.3 Update Layout Integration
-- [ ] Pass `orgId` to AppSidebar from org layout
-- [ ] Ensure sidebar highlights active route correctly
-- [ ] Test navigation between pages
+### 8.3 Update Layout Integration ✅
+- [x] Pass `orgId` to AppSidebar from org layout
+- [x] Ensure sidebar highlights active route correctly
+- [x] Test navigation between pages
 
-### 8.4 Add Org Name Display
-- [ ] Show current org name in sidebar header
-- [ ] (Optional) Add org avatar/logo
-- [ ] Style to differentiate from user profile
+### 8.4 Add Org Name Display ✅
+- [x] Show current org name in sidebar header
+- [x] (Optional) Add org avatar/logo
+- [x] Style to differentiate from user profile
 
 ---
 
