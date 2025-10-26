@@ -30,6 +30,18 @@ export interface DagstrendData {
   genomsnitt_dagar: number;
 }
 
+export interface VeckotrendData {
+  vecka: string;
+  rapport_antal: number;
+  genomsnitt_dagar: number;
+}
+
+export interface ManadstrendData {
+  manad: string;
+  rapport_antal: number;
+  genomsnitt_dagar: number;
+}
+
 export interface ToppRegistreringData {
   registreringsnummer: string;
   antal: number;
@@ -201,26 +213,41 @@ export async function hamtaDagstrender(orgId: string): Promise<DagstrendData[]> 
 
   if (error) throw new Error(error.message);
 
-  // Group by day
+  // Group by day (last 30 days)
+  const now = new Date();
   const dayMap = new Map<
     string,
     { count: number; totalDays: number; day: string }
   >();
 
-  data?.forEach((report) => {
-    const date = new Date(report.created_at);
-    const dayKey = date.toISOString().split('T')[0]; // YYYY-MM-DD
-
-    const existing = dayMap.get(dayKey);
-    if (existing) {
-      existing.count++;
-      existing.totalDays += report.days_taken || 0;
-    } else {
+  // Initialize last 30 weekdays with zero values
+  let daysAdded = 0;
+  for (let i = 0; daysAdded < 30; i++) {
+    const dayStart = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+    const dayOfWeek = dayStart.getDay();
+    if (dayOfWeek !== 0 && dayOfWeek !== 6) { // Sunday is 0, Saturday is 6
+      dayStart.setHours(0, 0, 0, 0);
+      const dayKey = `${dayStart.getFullYear()}-${String(dayStart.getMonth() + 1).padStart(2, '0')}-${String(dayStart.getDate()).padStart(2, '0')}`;
       dayMap.set(dayKey, {
-        count: 1,
-        totalDays: report.days_taken || 0,
+        count: 0,
+        totalDays: 0,
         day: dayKey,
       });
+      daysAdded++;
+    }
+  }
+
+  data?.forEach((report) => {
+    const date = new Date(report.created_at);
+    const dayOfWeek = date.getDay();
+    if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+      const dayKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+
+      const existing = dayMap.get(dayKey);
+      if (existing) {
+        existing.count++;
+        existing.totalDays += report.days_taken || 0;
+      }
     }
   });
 
@@ -228,13 +255,131 @@ export async function hamtaDagstrender(orgId: string): Promise<DagstrendData[]> 
     .map((stats) => ({
       dag: stats.day,
       rapport_antal: stats.count,
-      genomsnitt_dagar: Math.round((stats.totalDays / stats.count) * 10) / 10,
+      genomsnitt_dagar: stats.count > 0 ? Math.round((stats.totalDays / stats.count) * 10) / 10 : 0,
     }))
     .sort((a, b) => {
-      // Sort chronologically
       const dateA = new Date(a.dag);
       const dateB = new Date(b.dag);
       return dateA.getTime() - dateB.getTime();
+    });
+}
+
+export async function hamtaVeckotrender(orgId: string): Promise<VeckotrendData[]> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('reports')
+    .select('created_at, days_taken')
+    .eq('org_id', orgId)
+    .order('created_at', { ascending: true });
+
+  if (error) throw new Error(error.message);
+
+  // Group by week (last 12 weeks)
+  const now = new Date();
+  const weekMap = new Map<
+    string,
+    { count: number; totalDays: number; week: string }
+  >();
+
+  // Initialize last 12 weeks (starting on Mondays)
+  for (let i = 11; i >= 0; i--) {
+    const date = new Date(now.getTime() - i * 7 * 24 * 60 * 60 * 1000);
+    const day = date.getDay();
+    const diff = date.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is Sunday
+    const weekStart = new Date(date.setDate(diff));
+    weekStart.setHours(0, 0, 0, 0);
+
+    const weekKey = `${weekStart.getFullYear()}-${String(weekStart.getMonth() + 1).padStart(2, '0')}-${String(weekStart.getDate()).padStart(2, '0')}`;
+    if (!weekMap.has(weekKey)) {
+      weekMap.set(weekKey, {
+        count: 0,
+        totalDays: 0,
+        week: weekKey,
+      });
+    }
+  }
+
+  data?.forEach((report) => {
+    const date = new Date(report.created_at);
+    const dayOfWeek = date.getDay();
+
+    if (dayOfWeek >= 1 && dayOfWeek <= 5) { // Monday to Friday
+      const day = date.getDay();
+      const diff = date.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is Sunday
+      const weekStart = new Date(new Date(date).setDate(diff));
+      weekStart.setHours(0, 0, 0, 0);
+      const weekKey = `${weekStart.getFullYear()}-${String(weekStart.getMonth() + 1).padStart(2, '0')}-${String(weekStart.getDate()).padStart(2, '0')}`;
+
+      const existing = weekMap.get(weekKey);
+      if (existing) {
+        existing.count++;
+        existing.totalDays += report.days_taken || 0;
+      }
+    }
+  });
+
+  return Array.from(weekMap.values())
+    .map((stats) => ({
+      vecka: stats.week,
+      rapport_antal: stats.count,
+      genomsnitt_dagar: stats.count > 0 ? Math.round((stats.totalDays / stats.count) * 10) / 10 : 0,
+    }))
+    .sort((a, b) => {
+      const dateA = new Date(a.vecka);
+      const dateB = new Date(b.vecka);
+      return dateA.getTime() - dateB.getTime();
+    });
+}
+
+export async function hamtaManadstrender(orgId: string): Promise<ManadstrendData[]> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('reports')
+    .select('created_at, days_taken')
+    .eq('org_id', orgId)
+    .order('created_at', { ascending: true });
+
+  if (error) throw new Error(error.message);
+
+  // Group by month (last 12 months)
+  const now = new Date();
+  const monthMap = new Map<
+    string,
+    { count: number; totalDays: number; month: string }
+  >();
+
+  // Initialize last 12 months
+  for (let i = 11; i >= 0; i--) {
+    const monthStart = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const monthKey = `${monthStart.getFullYear()}-${String(monthStart.getMonth() + 1).padStart(2, '0')}`;
+    monthMap.set(monthKey, {
+      count: 0,
+      totalDays: 0,
+      month: monthKey,
+    });
+  }
+
+  data?.forEach((report) => {
+    const date = new Date(report.created_at);
+    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+
+    const existing = monthMap.get(monthKey);
+    if (existing) {
+      existing.count++;
+      existing.totalDays += report.days_taken || 0;
+    }
+  });
+
+  return Array.from(monthMap.values())
+    .map((stats) => ({
+      manad: stats.month,
+      rapport_antal: stats.count,
+      genomsnitt_dagar: stats.count > 0 ? Math.round((stats.totalDays / stats.count) * 10) / 10 : 0,
+    }))
+    .sort((a, b) => {
+      return a.manad.localeCompare(b.manad);
     });
 }
 

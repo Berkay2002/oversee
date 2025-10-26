@@ -48,7 +48,7 @@ const data = {
   navReports: [
     {
       title: "Översikt",
-      url: "/rapporter-oversikt",
+      url: "/oversikt",
       icon: BarChart3,
     },
     {

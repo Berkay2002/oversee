@@ -651,41 +651,70 @@ export async function getVehicleCaseStatistics(
     }));
   }
 
-  // Cases created per day (last 30 days)
+  // Cases created per day (last 30 weekdays)
   const now = new Date();
   const casesPerDay: Array<{ date: string; count: number }> = [];
-  for (let i = 29; i >= 0; i--) {
+  let daysAdded = 0;
+  for (let i = 0; daysAdded < 30; i++) {
     const dayStart = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
-    dayStart.setHours(0, 0, 0, 0);
-    const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000);
+    const dayOfWeek = dayStart.getDay();
 
-    const dayCases = cases?.filter((c) => {
-      const createdAt = new Date(c.created_at);
-      return createdAt >= dayStart && createdAt < dayEnd;
-    }) || [];
+    if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+      dayStart.setHours(0, 0, 0, 0);
+      const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000);
 
-    casesPerDay.push({
-      date: dayStart.toISOString().split('T')[0],
-      count: dayCases.length,
-    });
+      const dayCases = cases?.filter((c) => {
+        const createdAt = new Date(c.created_at);
+        return createdAt >= dayStart && createdAt < dayEnd;
+      }) || [];
+
+      casesPerDay.push({
+        date: `${dayStart.getFullYear()}-${String(dayStart.getMonth() + 1).padStart(2, '0')}-${String(dayStart.getDate()).padStart(2, '0')}`,
+        count: dayCases.length,
+      });
+      daysAdded++;
+    }
   }
+  casesPerDay.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-  // Cases created per week (last 12 weeks)
+  // Cases created per week (last 12 weeks, weekdays only)
   const casesPerWeek: Array<{ week: string; count: number }> = [];
+  const weekMap = new Map<string, number>();
+
+  // Initialize last 12 weeks (starting on Mondays)
   for (let i = 11; i >= 0; i--) {
-    const weekStart = new Date(now.getTime() - i * 7 * 24 * 60 * 60 * 1000);
-    const weekEnd = new Date(weekStart.getTime() + 7 * 24 * 60 * 60 * 1000);
-
-    const weekCases = cases?.filter((c) => {
-      const createdAt = new Date(c.created_at);
-      return createdAt >= weekStart && createdAt < weekEnd;
-    }) || [];
-
-    casesPerWeek.push({
-      week: weekStart.toISOString().split('T')[0],
-      count: weekCases.length,
-    });
+    const date = new Date(now.getTime() - i * 7 * 24 * 60 * 60 * 1000);
+    const day = date.getDay();
+    const diff = date.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is Sunday
+    const weekStart = new Date(date.setDate(diff));
+    weekStart.setHours(0, 0, 0, 0);
+    const weekKey = `${weekStart.getFullYear()}-${String(weekStart.getMonth() + 1).padStart(2, '0')}-${String(weekStart.getDate()).padStart(2, '0')}`;
+    if (!weekMap.has(weekKey)) {
+      weekMap.set(weekKey, 0);
+    }
   }
+
+  cases?.forEach((c) => {
+    const createdAt = new Date(c.created_at);
+    const dayOfWeek = createdAt.getDay();
+    if (dayOfWeek >= 1 && dayOfWeek <= 5) { // Monday to Friday
+      const day = createdAt.getDay();
+      const diff = createdAt.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is Sunday
+      const weekStart = new Date(new Date(c.created_at).setDate(diff));
+      weekStart.setHours(0, 0, 0, 0);
+      const weekKey = `${weekStart.getFullYear()}-${String(weekStart.getMonth() + 1).padStart(2, '0')}-${String(weekStart.getDate()).padStart(2, '0')}`;
+
+      if (weekMap.has(weekKey)) {
+        weekMap.set(weekKey, (weekMap.get(weekKey) || 0) + 1);
+      }
+    }
+  });
+
+  weekMap.forEach((count, week) => {
+    casesPerWeek.push({ week, count });
+  });
+
+  casesPerWeek.sort((a, b) => new Date(a.week).getTime() - new Date(b.week).getTime());
 
   // Cases created per month (last 12 months)
   const casesPerMonth: Array<{ month: string; count: number }> = [];

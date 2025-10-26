@@ -9,6 +9,8 @@ import {
   hamtaKategoriFordelning,
   hamtaTeknikerPrestation,
   hamtaDagstrender,
+  hamtaVeckotrender,
+  hamtaManadstrender,
   hamtaToppRegistreringar,
 } from '@/lib/actions/dashboard';
 import { Card, CardContent } from '@/components/ui/card';
@@ -48,11 +50,13 @@ export default async function OversiktSida({ params }: OversiktSidaProps) {
   const { orgId } = await params;
 
   // Fetch all dashboard data in parallel
-  const [kpis, categories, technicians, trends, topIssues] = await Promise.all([
+  const [kpis, categories, technicians, dailyTrends, weeklyTrends, monthlyTrends, topIssues] = await Promise.all([
     hamtaInstrumentpanelNyckeltal(orgId),
     hamtaKategoriFordelning(orgId),
     hamtaTeknikerPrestation(orgId),
     hamtaDagstrender(orgId),
+    hamtaVeckotrender(orgId),
+    hamtaManadstrender(orgId),
     hamtaToppRegistreringar(orgId),
   ]);
 
@@ -97,7 +101,7 @@ export default async function OversiktSida({ params }: OversiktSidaProps) {
         </div>
 
         <Suspense fallback={<DiagramSkelett />}>
-          <Dagstrender data={trends} />
+          <Dagstrender dailyData={dailyTrends} weeklyData={weeklyTrends} monthlyData={monthlyTrends} />
         </Suspense>
       </section>
 
