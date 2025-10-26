@@ -1,5 +1,5 @@
 import { getActiveOrgForUser } from "@/lib/org/server";
-import { getSession } from "@/lib/supabase/server";
+import { getUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { OrgProvider } from "@/lib/org/context";
 
@@ -11,17 +11,17 @@ interface OrgLayoutProps {
 export default async function OrgLayout({ children, params }: OrgLayoutProps) {
   const { orgId } = await params;
 
-  // Get session (faster than getUser and reuses session from parent layout)
-  const session = await getSession();
+  // Get authenticated user
+  const user = await getUser();
 
-  if (!session?.user) {
+  if (!user) {
     redirect("/login");
   }
 
   // Validate org membership and get role
   let activeOrg;
   try {
-    activeOrg = await getActiveOrgForUser(orgId, session.user.id);
+    activeOrg = await getActiveOrgForUser(orgId, user.id);
   } catch (error) {
     console.error("Invalid org access:", error);
     // User is not a member of this org, redirect to root

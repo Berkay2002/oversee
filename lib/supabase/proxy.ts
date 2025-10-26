@@ -38,15 +38,16 @@ export async function updateSession(request: NextRequest) {
   try {
     const { data, error } = await supabase.auth.getUser();
 
-    // Suppress expected auth errors (stale/missing tokens)
-    if (error && !['refresh_token_not_found', 'invalid_grant'].includes(error.code || '')) {
+    // Suppress expected auth errors (stale/missing tokens, or no session)
+    // These are normal when users haven't logged in or session expired
+    const expectedErrorCodes = ['refresh_token_not_found', 'invalid_grant', undefined];
+    if (error && !expectedErrorCodes.includes(error.code)) {
       console.error('Unexpected auth error in proxy:', error);
     }
 
     user = data.user;
-  } catch (error) {
-    // Log unexpected errors only
-    console.error('Unexpected error in proxy auth:', error);
+  } catch {
+    // Silently handle - expected when no auth session exists
   }
 
   if (user) {

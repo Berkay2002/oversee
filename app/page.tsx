@@ -1,17 +1,17 @@
 import { redirect } from "next/navigation"
-import { getSession, getUserProfile } from "@/lib/supabase/server"
+import { getUser, getUserProfile } from "@/lib/supabase/server"
 import { getUserOrganizations } from "@/lib/org/server"
 
 export default async function Home() {
-  const session = await getSession()
+  const user = await getUser()
 
   // Redirect non-authenticated users to login
-  if (!session) {
+  if (!user) {
     redirect("/login")
   }
 
   // Get user's profile to find default org
-  const profile = await getUserProfile(session.user.id)
+  const profile = await getUserProfile(user.id)
 
   if (profile?.default_org_id) {
     // Redirect to default org
@@ -19,7 +19,7 @@ export default async function Home() {
   }
 
   // Try to find any org the user is a member of
-  const orgs = await getUserOrganizations(session.user.id)
+  const orgs = await getUserOrganizations(user.id)
 
   if (orgs.length > 0) {
     // Redirect to first org

@@ -30,26 +30,6 @@ export async function createClient() {
   )
 }
 
-// Helper function to get the current session
-export async function getSession() {
-  const supabase = await createClient();
-  try {
-    // getSession() is faster and doesn't count against rate limits as heavily
-    const {
-      data: { session },
-      error: sessionError,
-    } = await supabase.auth.getSession();
-    if (sessionError) {
-      console.error("Error getting session:", sessionError);
-      return null;
-    }
-    return session;
-  } catch (error) {
-    console.error("Error getting session:", error);
-    return null;
-  }
-}
-
 // Helper function to get the current user
 export async function getUser() {
   const supabase = await createClient()
@@ -69,14 +49,14 @@ export async function getUser() {
 export async function getUserProfile(userId?: string) {
   const supabase = await createClient()
 
-  // If userId not provided, get it from session
+  // If userId not provided, get it from current user
   let targetUserId = userId
   if (!targetUserId) {
-    const session = await getSession()
-    if (!session?.user?.id) {
+    const user = await getUser()
+    if (!user?.id) {
       return null
     }
-    targetUserId = session.user.id
+    targetUserId = user.id
   }
 
   try {
