@@ -38,13 +38,6 @@ import {
 } from "@/components/ui/sidebar"
 
 const data = {
-  navMain: [
-    {
-      title: "Översikt",
-      url: "/oversikt",
-      icon: LayoutDashboard,
-    },
-  ],
   navReports: [
     {
       title: "Översikt",
@@ -159,10 +152,6 @@ export function AppSidebar({
   }
 
   // Transform all URLs
-  const navMainWithOrgId = data.navMain.map(item => ({
-    ...item,
-    url: transformUrl(item.url)
-  }))
 
   const navReportsWithOrgId = data.navReports.map(item => ({
     ...item,
