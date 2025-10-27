@@ -1,32 +1,22 @@
+import type { ReactNode } from "react";
+import type { User } from "@supabase/supabase-js";
+
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { getUser, getUserProfile } from "@/lib/supabase/server";
-import { getActiveOrgForUser } from "@/lib/org/server";
-import { getActiveOrgId } from "@/lib/org/actions";
-import { redirect } from "next/navigation";
-import { headers } from "next/headers";
+import type { ActiveOrg } from "@/lib/org/server";
+import { getUserProfile } from "@/lib/supabase/server";
+
+interface AuthenticatedLayoutContentProps {
+  children: ReactNode;
+  user: User;
+  activeOrg: ActiveOrg;
+}
 
 export default async function AuthenticatedLayoutContent({
   children,
-}: {
-  children: React.ReactNode;
-}) {
-  const user = await getUser();
-  const headersList = await headers();
-  const pathname = headersList.get("x-next-pathname") || "";
-
-  if (!user) {
-    redirect("/login");
-  }
-
-  const orgId = await getActiveOrgId();
-  if (!orgId) {
-    redirect("/create-organization");
-  }
-
-  const activeOrg = await getActiveOrgForUser(orgId, user.id);
-
-  // Pass userId to avoid redundant getUser() call
+  user,
+  activeOrg,
+}: AuthenticatedLayoutContentProps) {
   const userProfile = await getUserProfile(user.id);
 
   const userData = {
@@ -36,14 +26,12 @@ export default async function AuthenticatedLayoutContent({
     role: userProfile?.role,
   };
 
-  const showSidebar = !pathname.startsWith("/onboarding") && !pathname.startsWith("/create-organization");
-
   return (
     <SidebarProvider>
-      {showSidebar && <AppSidebar orgId={activeOrg.id} orgName={activeOrg.name} user={userData} />}
+      <AppSidebar orgId={activeOrg.id} orgName={activeOrg.name} user={userData} />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-          {showSidebar && <SidebarTrigger />}
+          <SidebarTrigger />
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
           {children}
