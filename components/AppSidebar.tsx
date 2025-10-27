@@ -220,7 +220,6 @@ export function AppSidebar({
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={navMainWithOrgId} />
         <NavMain items={navReportsWithOrgId} label="Rapporter" />
         <NavMain items={navBilkollenWithOrgId} label="Bilkollen" />
         <NavMain items={navManagementWithOrgId} label="Hantering" />
