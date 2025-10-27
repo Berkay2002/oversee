@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useLayoutEffect, useRef } from 'react';
 import {
   Pie,
   PieChart as RechartsPieChart,
@@ -26,8 +26,6 @@ export interface PieChartCustomProps {
   chartData: PieSlice[];
   totalValue: number;
 }
-
-import { useLayoutEffect, useRef } from 'react';
 
 // Custom hook to measure element size
 function useElementSize<T extends HTMLElement>() {
@@ -71,17 +69,18 @@ export function PieChartCustom({
   return (
     <div className="flex flex-col 3xl:flex-row 3xl:items-stretch 3xl:gap-6">
       {/* Chart column */}
-      <CardContent
-        ref={chartContainerRef}
-        className="pb-0 3xl:flex-1 3xl:flex 3xl:items-center 3xl:justify-center"
-      >
-        <ChartContainer
-          config={chartConfig}
+      <CardContent className="pb-0 3xl:flex-1 3xl:flex 3xl:items-center 3xl:justify-center">
+        <div
+          ref={chartContainerRef}
           className={`
             mx-auto aspect-square max-h-[250px]
             3xl:max-h-[500px] w-full
           `}
         >
+          <ChartContainer
+            config={chartConfig}
+            className="h-full w-full"
+          >
           {/* Hover group wrapper controls motion */}
           <div
             className="
@@ -131,7 +130,8 @@ export function PieChartCustom({
               </RechartsPieChart>
             </ResponsiveContainer>
           </div>
-        </ChartContainer>
+          </ChartContainer>
+        </div>
       </CardContent>
 
       {/* Legend column */}
