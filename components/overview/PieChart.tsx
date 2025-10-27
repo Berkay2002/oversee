@@ -67,7 +67,7 @@ export function PieChartCustom({
   const innerRadius = Math.max(0, radius * 0.5); // 50% of available radius
 
   return (
-    <div className="flex flex-col 3xl:flex-row 3xl:items-center 3xl:gap-6">
+    <div className="flex flex-1 flex-col 3xl:flex-row 3xl:items-center 3xl:gap-6">
       {/* Chart column */}
       <CardContent className="pb-0 3xl:flex-1 3xl:flex 3xl:justify-center">
         <div
