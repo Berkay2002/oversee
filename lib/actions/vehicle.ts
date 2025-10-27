@@ -35,6 +35,10 @@ export type VehicleCaseView = {
   archived_by: string | null;
 };
 
+type VehicleCaseViewRow = Omit<VehicleCaseView, 'raknad_pa'> & {
+  raknad_pa?: boolean | null;
+};
+
 export type VehicleCaseFilters = {
   search?: string;
   funding_source?: 'insurance' | 'internal' | 'customer';
@@ -111,7 +115,35 @@ export async function getVehicleCases(
     throw new Error('Failed to fetch vehicle cases');
   }
 
-  return { data: (data || []) as VehicleCaseView[], count: count ?? 0 };
+  const rawData = (data || []) as VehicleCaseViewRow[];
+
+  let cases: VehicleCaseView[] = rawData.map((vehicleCase) => ({
+    ...vehicleCase,
+    raknad_pa: Boolean(vehicleCase.raknad_pa),
+  }));
+
+  const caseIds = Array.from(new Set(cases.map((vehicleCase) => vehicleCase.id))).filter(
+    (id): id is string => Boolean(id)
+  );
+
+  if (caseIds.length > 0) {
+    const { data: raknadPaRows, error: raknadPaError } = await supabase
+      .from('vehicle_cases')
+      .select('id, raknad_pa')
+      .in('id', caseIds);
+
+    if (raknadPaError) {
+      console.error('Error fetching raknad_pa values:', JSON.stringify(raknadPaError, null, 2));
+    } else if (raknadPaRows) {
+      const raknadPaMap = new Map(raknadPaRows.map((row) => [row.id, row.raknad_pa]));
+      cases = cases.map((vehicleCase) => ({
+        ...vehicleCase,
+        raknad_pa: raknadPaMap.get(vehicleCase.id) ?? vehicleCase.raknad_pa ?? false,
+      }));
+    }
+  }
+
+  return { data: cases, count: count ?? 0 };
 }
 
 /**
@@ -304,7 +336,7 @@ export async function updateVehicleCase(
   // Validate case belongs to org
   const { data: existingCase } = await supabase
     .from('vehicle_cases')
-    .select('org_id, *')
+    .select('org_id, insurance_status, raknad_pa')
     .eq('id', caseId)
     .single();
 
@@ -313,17 +345,24 @@ export async function updateVehicleCase(
   }
 
   // Auto-set raknad_pa to true when insurance_status changes to 'approved'
-  if (
+  const shouldAutoSetRaknadPa =
     updates.insurance_status === 'approved' &&
-    existingCase.insurance_status !== 'approved'
-  ) {
-    updates.raknad_pa = true;
+    existingCase.insurance_status !== 'approved';
+
+  const safeUpdates: Partial<VehicleCaseUpdate> = {
+    ...updates,
+  };
+
+  if (shouldAutoSetRaknadPa) {
+    safeUpdates.raknad_pa = true;
+  } else if (updates.raknad_pa === undefined) {
+    safeUpdates.raknad_pa = existingCase.raknad_pa;
   }
 
   // Update the case
   const { data, error } = await supabase
     .from('vehicle_cases')
-    .update(updates)
+    .update(safeUpdates)
     .eq('id', caseId)
     .eq('org_id', orgId)
     .select()
@@ -361,7 +400,7 @@ export async function updateVehicleCase(
 
 /**
  * Mark a vehicle case as "klar" (complete)
- * Validates business rules before archiving
+ * Ensures the case exists and is not already archived
  */
 export async function markVehicleCaseKlar(orgId: string, caseId: string) {
   const supabase = await createClient();
@@ -386,19 +425,8 @@ export async function markVehicleCaseKlar(orgId: string, caseId: string) {
     return { error: 'Fordonet hittades inte eller åtkomst nekad' };
   }
 
-  // Validation rules
-  const errors: string[] = [];
-
-  // Only validate insurance approval for non-internal funding
-  if (
-    existingCase.funding_source !== 'internal' &&
-    existingCase.insurance_status !== 'approved'
-  ) {
-    errors.push('Försäkring är inte godkänd ännu');
-  }
-
-  if (errors.length > 0) {
-    return { error: errors.join(', '), validationErrors: errors };
+  if (existingCase.archived_at) {
+    return { error: 'Fordonet är redan arkiverat' };
   }
 
   // Mark as klar

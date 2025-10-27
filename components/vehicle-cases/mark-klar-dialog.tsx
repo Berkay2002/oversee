@@ -30,27 +30,17 @@ export function MarkKlarDialog({
 }: MarkKlarDialogProps) {
   const [isLoading, setIsLoading] = React.useState(false);
 
-  // Validation checks
-  const validationErrors = React.useMemo(() => {
-    if (!vehicleCase) return [];
+  const showInsuranceReminder = React.useMemo(() => {
+    if (!vehicleCase) return false;
 
-    const errors: string[] = [];
-
-    // Only validate insurance approval for non-internal funding
-    if (
+    return (
       vehicleCase.funding_source !== 'internal' &&
       vehicleCase.insurance_status !== 'approved'
-    ) {
-      errors.push('Försäkring är inte godkänd ännu');
-    }
-
-    return errors;
+    );
   }, [vehicleCase]);
 
-  const canProceed = validationErrors.length === 0;
-
   const handleConfirm = async () => {
-    if (!canProceed) return;
+    if (!vehicleCase) return;
 
     setIsLoading(true);
     try {
@@ -85,28 +75,19 @@ export function MarkKlarDialog({
           </AlertDialogDescription>
         </AlertDialogHeader>
 
-        {/* Show validation errors if any */}
-        {validationErrors.length > 0 && (
-          <Alert variant="destructive">
-            <AlertTriangle className="h-4 w-4" />
+        {/* Inform about pending insurance but allow proceeding */}
+        {showInsuranceReminder ? (
+          <Alert>
+            <AlertTriangle className="h-4 w-4 text-amber-500" />
             <AlertDescription>
-              <p className="font-semibold mb-2">
-                Följande problem måste åtgärdas först:
-              </p>
-              <ul className="list-disc list-inside space-y-1">
-                {validationErrors.map((error, index) => (
-                  <li key={index}>{error}</li>
-                ))}
-              </ul>
+              Försäkringen är inte godkänd ännu. Du kan ändå markera ärendet som
+              klart.
             </AlertDescription>
           </Alert>
-        )}
-
-        {/* Success message if all checks pass */}
-        {canProceed && (
+        ) : (
           <Alert>
             <AlertDescription>
-              Alla kontroller är godkända. Fordonet kan markeras som klart.
+              Fordonet markeras som klart och flyttas till arkivet.
             </AlertDescription>
           </Alert>
         )}
@@ -115,10 +96,10 @@ export function MarkKlarDialog({
           <AlertDialogCancel disabled={isLoading}>Avbryt</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleConfirm}
-            disabled={!canProceed || isLoading}
+            disabled={isLoading}
           >
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {canProceed ? 'Markera klar' : 'Kan inte markera klar'}
+            Markera klar
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

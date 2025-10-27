@@ -174,7 +174,7 @@ export function VehicleCaseMobileCard({
                   onUpdate(
                     vehicleCase.id,
                     'photo_inspection_done',
-                    checked,
+                    checked === true,
                     vehicleCase.photo_inspection_done
                   )
                 }
