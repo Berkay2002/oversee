@@ -1,22 +1,17 @@
-import { Suspense } from "react";
-import AuthenticatedLayoutContent from "./authenticated-layout-content";
-import { headers } from "next/headers";
+import type { ReactNode } from "react";
+import { redirect } from "next/navigation";
+
+import { getUser } from "@/lib/supabase/server";
 
 export default async function AuthenticatedLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
-  const headersList = await headers();
-  const pathname = headersList.get("x-next-pathname") || "";
-  const showSidebar = !pathname.startsWith("/onboarding") && !pathname.startsWith("/create-organization");
+  const user = await getUser();
 
-  if (showSidebar) {
-    return (
-      <Suspense fallback={<div>Loading...</div>}>
-        <AuthenticatedLayoutContent>{children}</AuthenticatedLayoutContent>
-      </Suspense>
-    );
+  if (!user) {
+    redirect("/login");
   }
 
   return <>{children}</>;
