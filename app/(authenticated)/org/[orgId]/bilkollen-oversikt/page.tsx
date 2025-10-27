@@ -24,7 +24,6 @@ import { BilkollenInsuranceStatus } from '@/components/bilkollen/BilkollenInsura
 import { BilkollenHandlerStats } from '@/components/bilkollen/BilkollenHandlerStats';
 import { BilkollenSLASection } from '@/components/bilkollen/BilkollenSLASection';
 import { BilkollenWIPSection } from '@/components/bilkollen/BilkollenWIPSection';
-import { BilkollenInsuranceSection } from '@/components/bilkollen/BilkollenInsuranceSection';
 
 export default function BilkollenOversiktPage() {
   const { activeOrg } = useOrg();
@@ -145,12 +144,12 @@ export default function BilkollenOversiktPage() {
         />
       </section>
 
-      {/* Breakdown Section */}
+      {/* Insurance Section */}
       <section className="space-y-6">
         <div className="flex items-center gap-3">
           <div className="h-px flex-1 bg-linear-to-r from-border to-transparent" />
           <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-            Fördelning
+            Försäkring & Betalning
           </h2>
           <div className="h-px flex-1 bg-linear-to-l from-border to-transparent" />
         </div>
@@ -182,20 +181,14 @@ export default function BilkollenOversiktPage() {
           </h2>
           <div className="h-px flex-1 bg-linear-to-l from-border to-transparent" />
         </div>
-        <BilkollenWIPSection orgId={orgId} />
-        <BilkollenHandlerStats data={statistics.perHandlerStats} />
-      </section>
-
-      {/* Insurance Section */}
-      <section className="space-y-6">
-        <div className="flex items-center gap-3">
-          <div className="h-px flex-1 bg-linear-to-r from-border to-transparent" />
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-            Försäkring & Betalning
-          </h2>
-          <div className="h-px flex-1 bg-linear-to-l from-border to-transparent" />
-        </div>
-        <BilkollenInsuranceSection orgId={orgId} />
+        <BilkollenWIPSection
+          orgId={orgId}
+          allHandlerIds={members.map((m) => m.user_id)}
+        />
+        <BilkollenHandlerStats
+          data={statistics.perHandlerStats}
+          allHandlerIds={members.map((m) => m.user_id)}
+        />
       </section>
     </div>
   );

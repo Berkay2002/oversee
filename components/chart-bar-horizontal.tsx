@@ -1,6 +1,6 @@
 "use client"
 
-import { Bar, BarChart, XAxis, YAxis } from "recharts"
+import { Bar, BarChart, XAxis, YAxis, Cell } from "recharts"
 import {
   ChartConfig,
   ChartContainer,
@@ -14,7 +14,11 @@ interface ChartBarHorizontalProps<T> {
   categoryKey: keyof T;
 }
 
-export function ChartBarHorizontal<T>({ data, dataKey, categoryKey }: ChartBarHorizontalProps<T>) {
+export function ChartBarHorizontal<T extends { fill?: string }>({
+  data,
+  dataKey,
+  categoryKey,
+}: ChartBarHorizontalProps<T>) {
   const chartConfig = {
     [dataKey as string]: {
       label: "Value",
@@ -44,7 +48,14 @@ export function ChartBarHorizontal<T>({ data, dataKey, categoryKey }: ChartBarHo
           cursor={false}
           content={<ChartTooltipContent indicator="line" />}
         />
-        <Bar dataKey={dataKey as string} fill={chartConfig[dataKey as string].color} radius={4} />
+        <Bar dataKey={dataKey as string} radius={4}>
+          {data.map((entry, index) => (
+            <Cell
+              key={`cell-${index}`}
+              fill={entry.fill || chartConfig[dataKey as string].color}
+            />
+          ))}
+        </Bar>
       </BarChart>
     </ChartContainer>
   )

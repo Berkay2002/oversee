@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Cell } from 'recharts';
 import {
   Card,
   CardContent,
@@ -14,10 +14,9 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
 } from '@/components/ui/chart';
 import { useMobile } from '@/hooks/use-mobile';
+import { INSURANCE_STATUS_COLORS } from '@/lib/colors';
 
 export interface InsuranceStatusData {
   pending: number;
@@ -30,19 +29,29 @@ export interface BilkollenInsuranceStatusProps {
 }
 
 const chartConfig = {
-  value: {
-    label: 'Antal',
-    color: 'hsl(var(--primary))',
+  pending: {
+    label: 'Väntande',
+    color: INSURANCE_STATUS_COLORS.pending,
+  },
+  approved: {
+    label: 'Godkänd',
+    color: INSURANCE_STATUS_COLORS.approved,
+  },
+  rejected: {
+    label: 'Nekad',
+    color: INSURANCE_STATUS_COLORS.rejected,
   },
 } satisfies ChartConfig;
 
-export function BilkollenInsuranceStatus({ data }: BilkollenInsuranceStatusProps) {
+export function BilkollenInsuranceStatus({
+  data,
+}: BilkollenInsuranceStatusProps) {
   const isMobile = useMobile();
 
   const chartData = [
-    { name: 'Väntande', value: data.pending },
-    { name: 'Godkänd', value: data.approved },
-    { name: 'Nekad', value: data.rejected },
+    { name: 'Väntande', value: data.pending, fill: chartConfig.pending.color },
+    { name: 'Godkänd', value: data.approved, fill: chartConfig.approved.color },
+    { name: 'Nekad', value: data.rejected, fill: chartConfig.rejected.color },
   ].filter((item) => item.value > 0);
 
   if (chartData.length === 0) {
@@ -98,14 +107,20 @@ export function BilkollenInsuranceStatus({ data }: BilkollenInsuranceStatusProps
               stroke="hsl(var(--muted-foreground))"
               fontSize={12}
             />
-            <ChartTooltip content={<ChartTooltipContent />} />
-            <ChartLegend content={<ChartLegendContent />} />
-            <Bar
-              dataKey="value"
-              fill="var(--color-value)"
-              radius={[4, 4, 0, 0]}
-              className="transition-all hover:opacity-80"
+            <ChartTooltip
+              content={
+                <ChartTooltipContent
+                  labelKey="name"
+                  nameKey="value"
+                  indicator="dot"
+                />
+              }
             />
+            <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+              {chartData.map((entry) => (
+                <Cell key={`cell-${entry.name}`} fill={entry.fill} />
+              ))}
+            </Bar>
           </BarChart>
         </ChartContainer>
       </CardContent>

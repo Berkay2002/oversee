@@ -2,26 +2,35 @@
 
 import { PieChartCustom, PieSlice } from '@/components/overview/PieChart';
 import { ChartConfig } from '@/components/ui/chart';
+import { SLA_STATUS_COLORS } from '@/lib/colors';
 
 interface ChartData {
   slaCompliancePercent: number;
 }
 
 const chartConfig = {
-  inomSLA: {
+  'Inom SLA': {
     label: 'Inom SLA',
-    color: 'hsl(var(--primary))',
+    color: SLA_STATUS_COLORS['Inom SLA'],
   },
-  overSLA: {
+  'Över SLA': {
     label: 'Över SLA',
-    color: 'hsl(var(--muted))',
+    color: SLA_STATUS_COLORS['Över SLA'],
   },
 } satisfies ChartConfig;
 
 export function BilkollenSLAComplianceChart({ data }: { data: ChartData }) {
   const chartData: PieSlice[] = [
-    { name: 'Inom SLA', value: data.slaCompliancePercent, fill: chartConfig.inomSLA.color },
-    { name: 'Över SLA', value: 100 - data.slaCompliancePercent, fill: chartConfig.overSLA.color },
+    {
+      name: 'Inom SLA',
+      value: data.slaCompliancePercent,
+      fill: chartConfig['Inom SLA'].color,
+    },
+    {
+      name: 'Över SLA',
+      value: 100 - data.slaCompliancePercent,
+      fill: chartConfig['Över SLA'].color,
+    },
   ];
 
   const totalValue = chartData.reduce((acc, curr) => acc + curr.value, 0);

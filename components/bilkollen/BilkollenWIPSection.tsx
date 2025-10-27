@@ -7,11 +7,21 @@ import { BilkollenAgingBucketsChart } from './BilkollenAgingBucketsChart';
 
 interface WipData {
   totalOpenCases: number;
-  casesPerHandler: { handlerUserId: string; handlerName: string; openCount: number }[];
+  casesPerHandler: {
+    handlerUserId: string;
+    handlerName: string;
+    openCount: number;
+  }[];
   agingBuckets: { bucket: string; count: number }[];
 }
 
-export function BilkollenWIPSection({ orgId }: { orgId: string }) {
+export function BilkollenWIPSection({
+  orgId,
+  allHandlerIds,
+}: {
+  orgId: string;
+  allHandlerIds: string[];
+}) {
   const [data, setData] = useState<WipData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -48,7 +58,10 @@ export function BilkollenWIPSection({ orgId }: { orgId: string }) {
             <CardTitle>Aktiva ärenden per handläggare</CardTitle>
           </CardHeader>
           <CardContent>
-            <BilkollenWIPLoadChart data={data.casesPerHandler} />
+            <BilkollenWIPLoadChart
+              data={data.casesPerHandler}
+              allHandlerIds={allHandlerIds}
+            />
           </CardContent>
         </Card>
         <Card>

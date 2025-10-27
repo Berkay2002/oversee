@@ -2,6 +2,7 @@
 
 import { PieChartCustom, PieSlice } from '@/components/overview/PieChart';
 import { ChartConfig } from '@/components/ui/chart';
+import { FUNDING_SOURCE_COLORS } from '@/lib/colors';
 
 interface ChartData {
   fundingSource: 'insurance' | 'internal' | 'customer';
@@ -11,15 +12,15 @@ interface ChartData {
 const chartConfig = {
   insurance: {
     label: 'Försäkring',
-    color: 'hsl(var(--primary))',
+    color: FUNDING_SOURCE_COLORS.insurance,
   },
   internal: {
     label: 'Internt',
-    color: 'hsl(var(--secondary))',
+    color: FUNDING_SOURCE_COLORS.internal,
   },
   customer: {
     label: 'Kund',
-    color: 'hsl(var(--muted))',
+    color: FUNDING_SOURCE_COLORS.customer,
   },
 } satisfies ChartConfig;
 

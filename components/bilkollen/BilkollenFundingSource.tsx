@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/card';
 import { ChartConfig } from '@/components/ui/chart';
 import { PieChartCustom, PieSlice } from '../overview/PieChart';
+import { FUNDING_SOURCE_COLORS } from '@/lib/colors';
 
 export interface FundingSourceData {
   insurance: number;
@@ -21,20 +22,18 @@ export interface BilkollenFundingSourceProps {
   data: FundingSourceData;
 }
 
-const COLORS = ['#2563eb', '#10b981', '#f59e0b'];
-
 const chartConfig = {
   insurance: {
     label: 'Försäkring',
-  color: 'hsl(var(--chart-1))',
+    color: FUNDING_SOURCE_COLORS.insurance,
   },
   internal: {
     label: 'Internt',
-    color: 'hsl(var(--chart-2))',
+    color: FUNDING_SOURCE_COLORS.internal,
   },
   customer: {
     label: 'Kund',
-    color: 'hsl(var(--chart-3))',
+    color: FUNDING_SOURCE_COLORS.customer,
   },
 } satisfies ChartConfig;
 

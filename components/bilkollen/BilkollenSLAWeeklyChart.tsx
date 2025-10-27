@@ -1,11 +1,13 @@
 'use client';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CartesianGrid, Line, LineChart, XAxis, YAxis, Tooltip } from 'recharts';
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
+import { getColorByIndex } from '@/lib/colors';
 
 interface ChartData {
   weekStart: string;
@@ -13,7 +15,7 @@ interface ChartData {
 }
 
 export function BilkollenSLAWeeklyChart({ data }: { data: ChartData[] }) {
-  const chartData = data.map(item => ({
+  const chartData = data.map((item) => ({
     ...item,
     weekStart: new Date(item.weekStart).toLocaleDateString('sv-SE', {
       month: 'short',
@@ -52,7 +54,7 @@ export function BilkollenSLAWeeklyChart({ data }: { data: ChartData[] }) {
         <Line
           dataKey="avgDays"
           type="monotone"
-          stroke="hsl(var(--primary))"
+          stroke={getColorByIndex(0)}
           strokeWidth={2}
           dot={false}
         />
