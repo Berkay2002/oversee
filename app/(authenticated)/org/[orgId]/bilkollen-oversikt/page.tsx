@@ -22,6 +22,9 @@ import { BilkollenWeeklyTrend } from '@/components/bilkollen/BilkollenWeeklyTren
 import { BilkollenFundingSource } from '@/components/bilkollen/BilkollenFundingSource';
 import { BilkollenInsuranceStatus } from '@/components/bilkollen/BilkollenInsuranceStatus';
 import { BilkollenHandlerStats } from '@/components/bilkollen/BilkollenHandlerStats';
+import { BilkollenSLASection } from '@/components/bilkollen/BilkollenSLASection';
+import { BilkollenWIPSection } from '@/components/bilkollen/BilkollenWIPSection';
+import { BilkollenInsuranceSection } from '@/components/bilkollen/BilkollenInsuranceSection';
 
 export default function BilkollenOversiktPage() {
   const { activeOrg } = useOrg();
@@ -158,17 +161,41 @@ export default function BilkollenOversiktPage() {
         </div>
       </section>
 
-      {/* Details Section */}
+      {/* SLA Section */}
       <section className="space-y-6">
         <div className="flex items-center gap-3">
           <div className="h-px flex-1 bg-linear-to-r from-border to-transparent" />
           <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-            Detaljer
+            Servicehastighet (SLA)
           </h2>
           <div className="h-px flex-1 bg-linear-to-l from-border to-transparent" />
         </div>
+        <BilkollenSLASection orgId={orgId} />
+      </section>
 
+      {/* WIP Section */}
+      <section className="space-y-6">
+        <div className="flex items-center gap-3">
+          <div className="h-px flex-1 bg-linear-to-r from-border to-transparent" />
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Belastning just nu (WIP)
+          </h2>
+          <div className="h-px flex-1 bg-linear-to-l from-border to-transparent" />
+        </div>
+        <BilkollenWIPSection orgId={orgId} />
         <BilkollenHandlerStats data={statistics.perHandlerStats} />
+      </section>
+
+      {/* Insurance Section */}
+      <section className="space-y-6">
+        <div className="flex items-center gap-3">
+          <div className="h-px flex-1 bg-linear-to-r from-border to-transparent" />
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Försäkring & Betalning
+          </h2>
+          <div className="h-px flex-1 bg-linear-to-l from-border to-transparent" />
+        </div>
+        <BilkollenInsuranceSection orgId={orgId} />
       </section>
     </div>
   );

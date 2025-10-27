@@ -26,15 +26,15 @@ const COLORS = ['#2563eb', '#10b981', '#f59e0b'];
 const chartConfig = {
   insurance: {
     label: 'Försäkring',
-    color: '#2563eb',
+  color: 'hsl(var(--chart-1))',
   },
   internal: {
     label: 'Internt',
-    color: '#10b981',
+    color: 'hsl(var(--chart-2))',
   },
   customer: {
     label: 'Kund',
-    color: '#f59e0b',
+    color: 'hsl(var(--chart-3))',
   },
 } satisfies ChartConfig;
 

@@ -32,7 +32,7 @@ export interface BilkollenInsuranceStatusProps {
 const chartConfig = {
   value: {
     label: 'Antal',
-    color: '#2563eb',
+    color: 'hsl(var(--primary))',
   },
 } satisfies ChartConfig;
 
