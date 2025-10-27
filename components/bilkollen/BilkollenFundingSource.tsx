@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import { Pie, PieChart, Cell } from 'recharts';
 import {
   Card,
   CardContent,
@@ -9,14 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
-} from '@/components/ui/chart';
+import { ChartConfig } from '@/components/ui/chart';
+import { PieChartCustom, PieSlice } from '../overview/PieChart';
 
 export interface FundingSourceData {
   insurance: number;
@@ -46,11 +39,17 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function BilkollenFundingSource({ data }: BilkollenFundingSourceProps) {
-  const chartData = [
-    { name: 'Försäkring', value: data.insurance, key: 'insurance' },
-    { name: 'Internt', value: data.internal, key: 'internal' },
-    { name: 'Kund', value: data.customer, key: 'customer' },
+  const chartData: PieSlice[] = [
+    {
+      name: 'Försäkring',
+      value: data.insurance,
+      fill: chartConfig.insurance.color,
+    },
+    { name: 'Internt', value: data.internal, fill: chartConfig.internal.color },
+    { name: 'Kund', value: data.customer, fill: chartConfig.customer.color },
   ].filter((item) => item.value > 0);
+
+  const totalValue = data.insurance + data.internal + data.customer;
 
   if (chartData.length === 0) {
     return (
@@ -67,36 +66,16 @@ export function BilkollenFundingSource({ data }: BilkollenFundingSourceProps) {
   }
 
   return (
-    <Card>
+    <Card className="flex flex-col w-full">
       <CardHeader>
         <CardTitle>Kostnadstyp</CardTitle>
         <CardDescription>Fördelning av finansieringskällor</CardDescription>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig} className="h-[300px] w-full">
-          <PieChart>
-            <Pie
-              data={chartData}
-              cx="50%"
-              cy="50%"
-              labelLine={false}
-              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-              outerRadius={80}
-              fill="#8884d8"
-              dataKey="value"
-            >
-              {chartData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={chartConfig[entry.key as keyof typeof chartConfig]?.color || COLORS[index % COLORS.length]}
-                />
-              ))}
-            </Pie>
-            <ChartTooltip content={<ChartTooltipContent />} />
-            <ChartLegend content={<ChartLegendContent />} />
-          </PieChart>
-        </ChartContainer>
-      </CardContent>
+      <PieChartCustom
+        chartConfig={chartConfig}
+        chartData={chartData}
+        totalValue={totalValue}
+      />
     </Card>
   );
 }
