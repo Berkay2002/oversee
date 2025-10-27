@@ -1,6 +1,6 @@
 'use client';
 
-import { ChartBarHorizontal } from '@/components/chart-bar-horizontal';
+import { ChartBarVertical } from '@/components/chart-bar-vertical';
 import { getHandlerColor } from '@/lib/colors';
 
 interface ChartData {
@@ -22,7 +22,7 @@ export function BilkollenWIPLoadChart({
   }));
 
   return (
-    <ChartBarHorizontal
+    <ChartBarVertical
       data={chartData}
       dataKey="openCount"
       categoryKey="handlerName"
