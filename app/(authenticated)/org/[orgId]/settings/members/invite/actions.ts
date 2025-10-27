@@ -42,8 +42,10 @@ export async function createInvitation(orgId: string, email: string, role: "admi
     const supabaseAdmin = createAdminClient();
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
+    // The redirectTo should go through auth callback which verifies the token
+    // and then redirects to the actual invitation page
     await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
-      redirectTo: `${siteUrl}/invite/${token}`,
+      redirectTo: `${siteUrl}/auth/callback?next=/invite/${token}`,
     });
   } catch (emailError) {
     console.error("Failed to send invitation email:", emailError);
@@ -85,8 +87,10 @@ export async function resendInvitation(invitationId: string, orgId: string) {
     const supabaseAdmin = createAdminClient();
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
+    // The redirectTo should go through auth callback which verifies the token
+    // and then redirects to the actual invitation page
     await supabaseAdmin.auth.admin.inviteUserByEmail(invitation.email, {
-      redirectTo: `${siteUrl}/invite/${invitation.token}`,
+      redirectTo: `${siteUrl}/auth/callback?next=/invite/${invitation.token}`,
     });
   } catch (emailError) {
     console.error("Failed to resend invitation email:", emailError);

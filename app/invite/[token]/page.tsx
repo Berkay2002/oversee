@@ -105,9 +105,40 @@ export default async function InvitePage({ params }: InvitePageProps) {
 
   const user = await getUser();
 
-  // Not authenticated - redirect to signup with pre-filled email
+  // Not authenticated - this shouldn't happen if they came through the email link
+  // but handle it gracefully
   if (!user) {
-    return redirect(`/sign-in?email=${encodeURIComponent(invitation.email)}&returnTo=/invite/${token}`);
+    return (
+      <div className="flex items-center justify-center min-h-screen p-4">
+        <Card className="w-full max-w-md border-destructive">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-destructive" />
+              <CardTitle>Autentisering krävs</CardTitle>
+            </div>
+            <CardDescription>
+              Du måste vara inloggad för att acceptera denna inbjudan.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              Om du just klickade på inbjudningslänken i e-postmeddelandet, vänligen försök igen.
+              Om problemet kvarstår, kontakta en administratör för att få en ny inbjudan.
+            </p>
+          </CardContent>
+          <CardFooter className="flex gap-2">
+            <Button asChild className="flex-1">
+              <a href={`/login?email=${encodeURIComponent(invitation.email)}&returnTo=/invite/${token}`}>
+                Logga in
+              </a>
+            </Button>
+            <Button variant="outline" asChild>
+              <a href="/">Avbryt</a>
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    );
   }
 
   // Check if email matches (security check)
