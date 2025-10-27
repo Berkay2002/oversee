@@ -20,7 +20,7 @@ export async function inviteUser({ email }: { email: string }) {
 export const getUsersByOrg = async (
   orgId: string,
   search?: string,
-): Promise<(Database["public"]["Tables"]["profiles"]["Row"] & { role: Database["public"]["Enums"]["org_role"] })[]> => {
+): Promise<(Omit<Database["public"]["Tables"]["profiles"]["Row"], "role"> & { role: Database["public"]["Enums"]["org_role"] })[]> => {
   if (!orgId) {
     return [];
   }
@@ -51,8 +51,9 @@ export const getUsersByOrg = async (
       throw new Error("Invalid profile data structure");
     }
     const profile = member.profiles as Database["public"]["Tables"]["profiles"]["Row"];
+    const { role: _profileRole, ...profileWithoutRole } = profile;
     return {
-      ...profile,
+      ...profileWithoutRole,
       role: member.role,
     };
   });

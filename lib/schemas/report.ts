@@ -34,9 +34,10 @@ export const reportSchema = z.object({
 
 export type ReportFormData = z.infer<typeof reportSchema>;
 
-export type Report = ReportFormData & {
+// Database report type (excludes form-only fields that are stripped before insertion)
+export type Report = Omit<ReportFormData, 'technician_id' | 'reporter_id' | 'custom_reporter_name' | 'start_date' | 'end_date' | 'category_id'> & {
   id: string;
-  created_by_user_id: string;
   created_at: string;
   org_id: string;
+  category_id: string | null;  // nullable in database
 };

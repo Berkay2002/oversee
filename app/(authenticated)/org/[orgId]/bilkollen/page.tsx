@@ -78,7 +78,7 @@ export default function BilkollenPage() {
     profiles: { name: string } | null;
   }> | null>(null);
   const [analytics, setAnalytics] = React.useState<{
-    case_id: string;
+    case_id: string | null;
     insurance_approved_at: string | null;
     photo_done_at: string | null;
     klar_at: string | null;
