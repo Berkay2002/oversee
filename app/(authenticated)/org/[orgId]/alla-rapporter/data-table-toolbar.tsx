@@ -7,7 +7,7 @@ import { useDebouncedCallback } from "use-debounce"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { DataTableViewOptions } from "./data-table-view-options"
+import { DataTableViewOptions } from "@/components/shared/data-table"
 import { getTechnicians } from "@/lib/actions/technician"
 import { getCategories } from "@/lib/actions/category"
 import { useEffect, useState } from "react"

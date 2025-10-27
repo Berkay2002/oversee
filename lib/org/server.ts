@@ -24,6 +24,16 @@ export interface OrgMembership {
 }
 
 /**
+ * Helper to safely extract name from Supabase nested query result
+ * Supabase may return nested objects as arrays or single objects
+ */
+function getNameFromNestedResult(nested: { name: string } | { name: string }[] | null): string {
+  if (!nested) return "Unknown";
+  if (Array.isArray(nested)) return nested[0]?.name ?? "Unknown";
+  return nested.name ?? "Unknown";
+}
+
+/**
  * Get the active organization for a user, validating membership
  * @throws Error if user is not a member of the organization
  */
@@ -146,8 +156,7 @@ export async function getUserOrganizations(
     memberships?.map((m) => ({
       org_id: m.org_id,
       role: m.role,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      org_name: (m.organizations as any)?.name ?? "Unknown",
+      org_name: (Array.isArray(m.organizations) ? m.organizations[0] : m.organizations)?.name ?? "Unknown",
     })) ?? []
   );
 }
@@ -253,8 +262,7 @@ export async function getJoinRequests(
   return (
     data?.map((r) => ({
       id: r.id,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      user_name: (r.profiles as any)?.name ?? "Unknown",
+      user_name: (Array.isArray(r.profiles) ? r.profiles[0] : r.profiles)?.name ?? "Unknown",
     })) ?? []
   );
 }

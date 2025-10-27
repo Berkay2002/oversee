@@ -1,58 +1,58 @@
-"use client"
+"use client";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { Table } from "@tanstack/react-table"
+import { Table } from "@tanstack/react-table";
 import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-} from "lucide-react"
+} from "lucide-react";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 
 interface DataTablePaginationProps<TData> {
-  table: Table<TData>
-  totalReports: number
+  table: Table<TData>;
+  /**
+   * Optional labels for internationalization
+   * Defaults to Swedish labels
+   */
+  labels?: {
+    rowsPerPage?: string;
+    page?: string;
+    of?: string;
+    selected?: string;
+  };
 }
 
 export function DataTablePagination<TData>({
   table,
-  totalReports,
+  labels = {
+    rowsPerPage: "Rader",
+    page: "Sida",
+    of: "av",
+    selected: "valda",
+  },
 }: DataTablePaginationProps<TData>) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-
-  const createQueryString = (name: string, value: string) => {
-    const params = new URLSearchParams(searchParams.toString())
-    params.set(name, value)
-    return params.toString()
-  }
-
   return (
     <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 px-2 sm:justify-between">
       <div className="text-muted-foreground text-sm">
-        {table.getFilteredSelectedRowModel().rows.length} / {totalReports}{" "}
-        valda.
+        {table.getFilteredSelectedRowModel().rows.length} /{" "}
+        {table.getFilteredRowModel().rows.length} {labels.selected}.
       </div>
       <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 lg:gap-8">
         <div className="flex items-center space-x-2">
-          <p className="text-sm font-medium">Rader</p>
+          <p className="text-sm font-medium">{labels.rowsPerPage}</p>
           <Select
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={(value) => {
-              const params = new URLSearchParams(searchParams.toString())
-              params.set("pageSize", value)
-              params.set("page", "1")
-              router.push(`${pathname}?${params.toString()}`)
+              table.setPageSize(Number(value));
             }}
           >
             <SelectTrigger className="h-8 w-[70px]">
@@ -68,7 +68,7 @@ export function DataTablePagination<TData>({
           </Select>
         </div>
         <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-          Sida {table.getState().pagination.pageIndex + 1} av{" "}
+          {labels.page} {table.getState().pagination.pageIndex + 1} {labels.of}{" "}
           {table.getPageCount()}
         </div>
         <div className="flex items-center space-x-2">
@@ -76,67 +76,44 @@ export function DataTablePagination<TData>({
             variant="outline"
             size="icon"
             className="hidden size-8 lg:flex"
-            onClick={() =>
-              router.push(`${pathname}?${createQueryString("page", "1")}`)
-            }
+            onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
           >
-            <span className="sr-only">Gå till första sidan</span>
+            <span className="sr-only">Go to first page</span>
             <ChevronsLeft />
           </Button>
           <Button
             variant="outline"
             size="icon"
             className="size-8"
-            onClick={() =>
-              router.push(
-                `${pathname}?${createQueryString(
-                  "page",
-                  `${table.getState().pagination.pageIndex}`
-                )}`
-              )
-            }
+            onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            <span className="sr-only">Gå till föregående sida</span>
+            <span className="sr-only">Go to previous page</span>
             <ChevronLeft />
           </Button>
           <Button
             variant="outline"
             size="icon"
             className="size-8"
-            onClick={() =>
-              router.push(
-                `${pathname}?${createQueryString(
-                  "page",
-                  `${table.getState().pagination.pageIndex + 2}`
-                )}`
-              )
-            }
+            onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            <span className="sr-only">Gå till nästa sida</span>
+            <span className="sr-only">Go to next page</span>
             <ChevronRight />
           </Button>
           <Button
             variant="outline"
             size="icon"
             className="hidden size-8 lg:flex"
-            onClick={() =>
-              router.push(
-                `${pathname}?${createQueryString(
-                  "page",
-                  `${table.getPageCount()}`
-                )}`
-              )
-            }
+            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
           >
-            <span className="sr-only">Gå till sista sidan</span>
+            <span className="sr-only">Go to last page</span>
             <ChevronsRight />
           </Button>
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,10 +1,10 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
-import { DataTableColumnHeader } from "@/components/categories/data-table-column-header";
+import { DataTableColumnHeader } from "@/components/shared/data-table";
 import { DataTableRowActions } from "./data-table-row-actions";
-import { Tables } from "@/types/database";
+import type { Tables } from "@/types/database";
 
 export const columns: ColumnDef<Tables<"reports">>[] = [
   //

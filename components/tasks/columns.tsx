@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 
 import { labels, priorities, statuses } from "./demo-data/data"
 import { Task } from "./demo-data/schema"
-import { DataTableColumnHeader } from "./data-table-column-header"
+import { DataTableColumnHeader } from "@/components/shared/data-table"
 import { DataTableRowActions } from "./data-table-row-actions"
 
 export const columns: ColumnDef<Task>[] = [

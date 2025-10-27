@@ -7,7 +7,7 @@ import { useDebouncedCallback } from "use-debounce"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { DataTableViewOptions } from "./data-table-view-options"
+import { DataTableViewOptions } from "@/components/shared/data-table"
 import { useMobile } from "@/hooks/use-mobile"
 
 interface DataTableToolbarProps<TData> {
