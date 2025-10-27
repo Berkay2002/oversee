@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useTheme } from "next-themes";
 import { useMemo } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { fetcher } from "@/lib/utils";
@@ -15,6 +16,64 @@ import {
   SANKEY_NODE_COLORS,
   getColorByIndex,
 } from "@/lib/colors";
+
+// Helper functions for color manipulation
+const hexToRgb = (hex: string) => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : null;
+};
+
+const rgbToHsl = (r: number, g: number, b: number) => {
+  r /= 255;
+  g /= 255;
+  b /= 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let h = 0,
+    s = 0;
+  const l = (max + min) / 2;
+
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0);
+        break;
+      case g:
+        h = (b - r) / d + 2;
+        break;
+      case b:
+        h = (r - g) / d + 4;
+        break;
+    }
+    h /= 6;
+  }
+
+  return { h: h * 360, s: s * 100, l: l * 100 };
+};
+
+const adjustColorForTheme = (hexColor: string, theme: string | undefined) => {
+  const rgb = hexToRgb(hexColor);
+  if (!rgb) return hexColor; // fallback to original color
+
+  const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+
+  if (theme === "light") {
+    hsl.l = Math.max(0, hsl.l - 10); // Darken for light theme
+  } else {
+    // Assuming dark theme
+    hsl.l = Math.min(100, hsl.l + 20); // Lighten for dark theme
+  }
+
+  return `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+};
 
 type SankeyNode = {
   id: string;
@@ -40,6 +99,7 @@ type BilkollenCaseFlowSankeyProps = {
 export function BilkollenCaseFlowSankey({
   orgId,
 }: BilkollenCaseFlowSankeyProps) {
+  const { theme } = useTheme();
   const { data } = useSuspenseQuery<SankeyData>({
     queryKey: ["flow", orgId],
     queryFn: () => fetcher(`/api/analytics/flow?orgId=${orgId}`),
@@ -113,21 +173,48 @@ export function BilkollenCaseFlowSankey({
                     width={width}
                     height={height}
                     fill={payload.color}
-                    stroke="#fff"
+                    stroke={theme === "dark" ? "hsl(0 0% 9%)" : "hsl(0 0% 100%)"}
                   />
                   <text
                     x={isOut ? x - 6 : x + width + 6}
                     y={y + height / 2}
                     textAnchor={isOut ? "end" : "start"}
                     dominantBaseline="middle"
-                    fill="#666"
+                    fill={
+                      theme === "dark"
+                        ? "hsl(0 0% 98%)"
+                        : "hsl(240 10% 3.9%)"
+                    }
                   >
                     {payload.name}
                   </text>
                 </g>
               );
             }}
-            link={{ stroke: "#B3B3B3", strokeOpacity: 0.5 }}
+            link={({
+              sourceX,
+              sourceY,
+              sourceControlX,
+              targetX,
+              targetY,
+              targetControlX,
+              linkWidth,
+              payload,
+            }) => {
+              const strokeColor = adjustColorForTheme(
+                payload.source.color,
+                theme
+              );
+              return (
+                <path
+                  d={`M${sourceX},${sourceY}C${sourceControlX},${sourceY} ${targetControlX},${targetY} ${targetX},${targetY}`}
+                  fill="none"
+                  stroke={strokeColor}
+                  strokeOpacity={0.7}
+                  strokeWidth={linkWidth}
+                />
+              );
+            }}
           >
             <Tooltip />
           </Sankey>

@@ -12,6 +12,10 @@ const COLOR_PALETTE = [
   '#10b981', // emerald-500
   '#06b6d4', // cyan-500
   '#d946ef', // fuchsia-500
+  '#84cc16', // lime-500
+  '#f59e0b', // amber-500
+  '#0ea5e9', // sky-500
+  '#f43f5e', // rose-500
 ];
 
 /**
@@ -69,8 +73,8 @@ export const getColorByIndex = (index: number): string => {
  */
 export const SANKEY_NODE_COLORS: Record<string, string> = {
   // Locations
-  'Södertälje': '#14b8a6', // teal-500
-  'Nacka': '#3b82f6',      // blue-500
+  'Södertälje': '#84cc16', // lime-500
+  'Nacka': '#f43f5e',      // rose-500
 
   // Funding
   'Försäkring': '#3b82f6',   // violet-500
