@@ -223,9 +223,12 @@ export async function getActiveOrgId(): Promise<string | null> {
     try {
       await getActiveOrgForUser(activeOrgId, user.id);
       return activeOrgId;
-    } catch {
-      // Cookie org is invalid, clear it
-      cookieStore.delete("activeOrgId");
+    } catch (error) {
+      console.warn(
+        "Invalid activeOrgId cookie detected, ignoring for user",
+        user.id,
+        error
+      );
     }
   }
 
