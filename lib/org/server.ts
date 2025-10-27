@@ -6,9 +6,12 @@
  */
 
 import { createClient } from "@/lib/supabase/server";
-import { Database } from "@/types/database";
+import type { Database } from "@/types/database";
 
 type OrgRole = Database["public"]["Enums"]["org_role"];
+type RequestStatus = Database["public"]["Enums"]["request_status"];
+
+const PENDING_STATUS: RequestStatus = "pending";
 
 export interface ActiveOrg {
   id: string;
@@ -208,7 +211,7 @@ export async function getJoinRequests(
     `
     )
     .eq("org_id", orgId)
-    .eq("status", "pending");
+    .eq("status", PENDING_STATUS);
 
   if (error) {
     console.error("Error fetching join requests:", error);
