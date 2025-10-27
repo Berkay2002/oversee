@@ -640,7 +640,7 @@ export async function getVehicleCaseStatistics(
     rejected: cases?.filter((c) => c.insurance_status === 'rejected').length || 0,
   };
 
-  // Per-handler breakdown (only if not filtered by handler already)
+  // Per-handler breakdown
   let perHandlerStats: Array<{
     handler_user_id: string | null;
     handler_name: string | null;
@@ -649,35 +649,36 @@ export async function getVehicleCaseStatistics(
     completed: number;
   }> = [];
 
-  if (!handlerUserId) {
-    // Group by handler
-    const handlerMap = new Map<string | null, typeof cases>();
-    cases?.forEach((c) => {
-      const key = c.handler_user_id || null;
-      if (!handlerMap.has(key)) {
-        handlerMap.set(key, []);
-      }
-      handlerMap.get(key)?.push(c);
-    });
+  // Group by handler
+  const handlerMap = new Map<string | null, typeof cases>();
+  cases?.forEach((c) => {
+    const key = c.handler_user_id || null;
+    if (!handlerMap.has(key)) {
+      handlerMap.set(key, []);
+    }
+    handlerMap.get(key)?.push(c);
+  });
 
-    // Fetch handler names
-    const handlerIds = Array.from(handlerMap.keys()).filter((id) => id !== null) as string[];
+  // Fetch handler names
+  const handlerIds = Array.from(handlerMap.keys()).filter((id) => id !== null) as string[];
+  let profileMap = new Map<string, string>();
+  if (handlerIds.length > 0) {
     const { data: profiles } = await supabase
       .from('profiles')
       .select('user_id, name')
       .in('user_id', handlerIds);
 
-    const profileMap = new Map(profiles?.map((p) => [p.user_id, p.name]) || []);
-
-    // Build stats
-    perHandlerStats = Array.from(handlerMap.entries()).map(([handlerId, handlerCases]) => ({
-      handler_user_id: handlerId,
-      handler_name: handlerId ? profileMap.get(handlerId) || 'Unknown' : 'Ej tilldelad',
-      total: handlerCases.length,
-      ongoing: handlerCases.filter((c) => !c.archived_at).length,
-      completed: handlerCases.filter((c) => c.archived_at && c.klar).length,
-    }));
+    profileMap = new Map(profiles?.map((p) => [p.user_id, p.name]) || []);
   }
+
+  // Build stats
+  perHandlerStats = Array.from(handlerMap.entries()).map(([handlerId, handlerCases]) => ({
+    handler_user_id: handlerId,
+    handler_name: handlerId ? profileMap.get(handlerId) || 'Unknown' : 'Ej tilldelad',
+    total: handlerCases.length,
+    ongoing: handlerCases.filter((c) => !c.archived_at).length,
+    completed: handlerCases.filter((c) => c.archived_at && c.klar).length,
+  }));
 
   // Cases created per day (last 30 weekdays)
   const now = new Date();
