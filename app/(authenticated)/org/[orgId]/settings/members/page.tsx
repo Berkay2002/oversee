@@ -9,6 +9,7 @@ import { getUser } from "@/lib/supabase/server";
 import { getOrgMembers } from "./actions";
 import { InviteMemberButton } from "./_components/invite-member-button";
 import { MembersTable } from "./_components/members-table";
+import { PendingInvitations } from "./_components/pending-invitations";
 
 interface MembersPageProps {
   params: Promise<{
@@ -79,6 +80,8 @@ export default async function MembersPage({ params }: MembersPageProps) {
           </CardFooter>
         )}
       </Card>
+
+      {canManage && <PendingInvitations orgId={orgId} />}
 
       <Card>
         <CardHeader>

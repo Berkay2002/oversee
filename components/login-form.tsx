@@ -1,6 +1,7 @@
 "use client"
 
 import { useActionState } from "react"
+import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -25,6 +26,8 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const [state, formAction, isPending] = useActionState(signIn, undefined)
+  const searchParams = useSearchParams()
+  const returnTo = searchParams.get("returnTo")
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -37,6 +40,7 @@ export function LoginForm({
         </CardHeader>
         <CardContent>
           <form action={formAction}>
+            {returnTo && <input type="hidden" name="returnTo" value={returnTo} />}
             <FieldGroup>
               {state?.error && (
                 <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive">

@@ -6,57 +6,47 @@ import { getUser } from "@/lib/supabase/server";
 
 export async function acceptInvitation(token: string) {
   const user = await getUser();
+
   if (!user) {
+    // Redirect to login with return URL to come back after auth
     return redirect(`/login?returnTo=/invite/${token}`);
   }
 
   const supabase = await createClient();
 
-  // 1. Fetch invitation
-  const { data: invitation, error: inviteError } = await supabase
-    .from("org_invitations")
-    .select("*")
-    .eq("token", token)
-    .single();
+  // Call our database function to accept the invitation
+  // This handles: adding to org, setting default_org_id if first org, and marking as accepted
+  const { data, error } = await supabase.rpc("accept_org_invitation", {
+    p_token: token,
+    p_user_id: user.id,
+  });
 
-  if (inviteError || !invitation) {
-    // Handle error in UI
-    return redirect("/?error=invalid_invitation");
+  // Handle errors
+  if (error) {
+    console.error("Error accepting invitation:", error);
+    return redirect("/?error=invitation_failed");
   }
 
-  // 2. Check if expired or already accepted
-  if (new Date(invitation.expires_at) < new Date() || invitation.accepted_at) {
-    return redirect("/?error=invitation_expired");
+  // Check if function returned an error
+  if (data && typeof data === "object" && "error" in data) {
+    console.error("Invitation error:", data.error);
+
+    // Specific error handling
+    if (data.error === "Invalid or expired invitation") {
+      return redirect("/?error=invitation_expired");
+    }
+
+    return redirect("/?error=invitation_failed");
   }
 
-  // 3. Add user to organization
-  const { error: addMemberError } = await supabase
-    .from("organization_members")
-    .insert({
-      org_id: invitation.org_id,
-      user_id: user.id,
-      role: invitation.role,
-    });
+  // Success! Extract result
+  const result = data as { success: boolean; org_id: string; is_default_org: boolean };
 
-  if (addMemberError) {
-    console.error("Error adding member:", addMemberError);
-    return redirect("/?error=failed_to_join");
-  }
+  // Create success message
+  const message = result.is_default_org
+    ? "Invitation accepted! This is now your default organization."
+    : "Invitation accepted!";
 
-  // 4. Mark invitation as accepted
-  const { error: updateInviteError } = await supabase
-    .from("org_invitations")
-    .update({
-      accepted_at: new Date().toISOString(),
-      accepted_by: user.id,
-    })
-    .eq("id", invitation.id);
-
-  if (updateInviteError) {
-    console.error("Error updating invitation:", updateInviteError);
-    // Non-critical, proceed with redirect
-  }
-
-  // 5. Redirect to the organization's dashboard
-  redirect(`/org/${invitation.org_id}/oversikt`);
+  // Redirect to organization dashboard with success message
+  redirect(`/org/${result.org_id}/oversikt?success=${encodeURIComponent(message)}`);
 }

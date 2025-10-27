@@ -1,6 +1,7 @@
 "use client"
 
 import { useActionState } from "react"
+import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import {
@@ -21,6 +22,9 @@ import { signUp } from "@/app/(auth)/actions"
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const [state, formAction, isPending] = useActionState(signUp, undefined)
+  const searchParams = useSearchParams()
+  const prefilledEmail = searchParams.get("email")
+  const returnTo = searchParams.get("returnTo")
 
   return (
     <Card {...props}>
@@ -32,6 +36,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
       </CardHeader>
       <CardContent>
         <form action={formAction}>
+          {returnTo && <input type="hidden" name="returnTo" value={returnTo} />}
           <FieldGroup>
             {state?.error && !state.success && (
               <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive">
@@ -66,8 +71,9 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 name="email"
                 type="email"
                 placeholder="m@example.com"
+                defaultValue={prefilledEmail || ""}
                 required
-                disabled={isPending}
+                disabled={isPending || !!prefilledEmail}
               />
               {state?.fields?.email ? (
                 <FieldDescription className="text-destructive">

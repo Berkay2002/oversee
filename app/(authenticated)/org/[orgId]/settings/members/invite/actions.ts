@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { requireOrgRole } from "@/lib/org/server";
 import { getUser } from "@/lib/supabase/server";
 
@@ -15,7 +15,15 @@ export async function createInvitation(orgId: string, email: string, role: "admi
   const token = crypto.randomUUID();
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
 
-  const { error } = await supabase.from("org_invitations").insert({
+  // Get organization name for email
+  const { data: org } = await supabase
+    .from("organizations")
+    .select("name")
+    .eq("id", orgId)
+    .single();
+
+  // Store invitation in custom table
+  const { error: dbError } = await supabase.from("org_invitations").insert({
     org_id: orgId,
     email,
     role,
@@ -24,17 +32,68 @@ export async function createInvitation(orgId: string, email: string, role: "admi
     created_by: user.id,
   });
 
-  if (error) {
-    console.error("Error creating invitation:", error);
+  if (dbError) {
+    console.error("Error creating invitation:", dbError);
     throw new Error("Could not create invitation.");
+  }
+
+  // Send invitation email using Supabase Admin API
+  try {
+    const supabaseAdmin = createAdminClient();
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+    await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
+      redirectTo: `${siteUrl}/invite/${token}`,
+    });
+  } catch (emailError) {
+    console.error("Failed to send invitation email:", emailError);
+    // Don't throw - invitation is saved and can be resent
   }
 
   revalidatePath(`/org/${orgId}/settings/members`);
 
-  // In a real app, you'd send an email here.
-  // For now, we'll just return the link for testing.
   const invitationLink = `/invite/${token}`;
-  return { invitationLink };
+  return { success: true, invitationLink };
+}
+
+export async function resendInvitation(invitationId: string, orgId: string) {
+  const user = await getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  await requireOrgRole(orgId, user.id, "admin");
+
+  const supabase = await createClient();
+
+  // Get invitation details
+  const { data: invitation, error: fetchError } = await supabase
+    .from("org_invitations")
+    .select("*, organizations(name)")
+    .eq("id", invitationId)
+    .single();
+
+  if (fetchError || !invitation) {
+    throw new Error("Invitation not found");
+  }
+
+  // Check if still valid
+  if (new Date(invitation.expires_at) < new Date() || invitation.accepted_at) {
+    throw new Error("Invitation is expired or already accepted");
+  }
+
+  // Resend using Supabase Admin API
+  try {
+    const supabaseAdmin = createAdminClient();
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+    await supabaseAdmin.auth.admin.inviteUserByEmail(invitation.email, {
+      redirectTo: `${siteUrl}/invite/${invitation.token}`,
+    });
+  } catch (emailError) {
+    console.error("Failed to resend invitation email:", emailError);
+    throw new Error("Failed to resend invitation email");
+  }
+
+  revalidatePath(`/org/${orgId}/settings/members`);
 }
 
 export async function listPendingInvitations(orgId: string) {

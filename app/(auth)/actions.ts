@@ -31,7 +31,13 @@ export type SignUpState = {
   }
 }
 
-async function redirectToPostAuthDestination(userId?: string | null) {
+async function redirectToPostAuthDestination(userId?: string | null, returnTo?: string | null) {
+  // If returnTo is provided, redirect there
+  if (returnTo) {
+    revalidatePath(returnTo)
+    redirect(returnTo)
+  }
+
   if (!userId) {
     revalidatePath(ONBOARDING_REDIRECT, 'layout')
     redirect(ONBOARDING_REDIRECT)
@@ -109,8 +115,9 @@ export async function signIn(
   } = await supabase.auth.getUser()
 
   const userId = signInData.user?.id ?? authenticatedUser?.id
+  const returnTo = formData.get('returnTo') as string | null
 
-  await redirectToPostAuthDestination(userId)
+  await redirectToPostAuthDestination(userId, returnTo)
 }
 
 /**
@@ -184,11 +191,13 @@ export async function signUp(
     }
   }
 
+  const returnTo = formData.get('returnTo') as string | null
+
   if (data.user && data.session) {
-    await redirectToPostAuthDestination(data.user.id)
+    await redirectToPostAuthDestination(data.user.id, returnTo)
   }
 
-  await redirectToPostAuthDestination(null)
+  await redirectToPostAuthDestination(null, returnTo)
 }
 
 export async function requestPasswordReset(
