@@ -50,7 +50,7 @@ export function TeknikerPrestation({ data }: TeknikerPrestationProps) {
 
 
   return (
-    <Card className="flex flex-col">
+    <Card className="flex flex-col w-full">
       <CardHeader>
         <CardTitle>Teknikerprestation</CardTitle>
         <CardDescription>
@@ -60,7 +60,7 @@ export function TeknikerPrestation({ data }: TeknikerPrestationProps) {
       <CardContent className="flex-1">
         <ChartContainer
           config={chartConfig}
-          className="h-[300px] w-full sm:h-[400px]"
+          className="h-full w-full"
         >
           <BarChart
             data={topTechnicians}

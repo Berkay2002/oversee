@@ -115,7 +115,7 @@ export default async function OversiktSida({ params }: OversiktSidaProps) {
           <div className="h-px flex-1 bg-linear-to-l from-border to-transparent" />
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:flex">
           <Suspense fallback={<DiagramSkelett />}>
             <KategoriFordelning data={categories} />
           </Suspense>

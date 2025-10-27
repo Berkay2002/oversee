@@ -67,9 +67,9 @@ export function PieChartCustom({
   const innerRadius = Math.max(0, radius * 0.5); // 50% of available radius
 
   return (
-    <div className="flex flex-col 3xl:flex-row 3xl:items-stretch 3xl:gap-6">
+    <div className="flex flex-col 3xl:flex-row 3xl:items-center 3xl:gap-6">
       {/* Chart column */}
-      <CardContent className="pb-0 3xl:flex-1 3xl:flex 3xl:items-center 3xl:justify-center">
+      <CardContent className="pb-0 3xl:flex-1 3xl:flex 3xl:justify-center">
         <div
           ref={chartContainerRef}
           className={`
@@ -135,10 +135,10 @@ export function PieChartCustom({
       </CardContent>
 
       {/* Legend column */}
-      <CardContent className="pt-4 3xl:pt-0 3xl:flex-1 3xl:flex 3xl:items-center">
+      <CardContent className="pt-4 flex justify-center 3xl:pt-0 3xl:flex-1 3xl:items-center">
         <div
           className={`
-            grid w-full gap-3
+            grid gap-3
             grid-cols-1 sm:grid-cols-2
             3xl:grid-cols-1
           `}

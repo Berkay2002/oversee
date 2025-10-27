@@ -18,10 +18,10 @@ export interface KategoriFordelningProps {
 export function KategoriFordelning({ data }: KategoriFordelningProps) {
   // Handle no data
   if (!data || data.length === 0) {
-    return (
-      <Card className="flex flex-col">
-        <CardHeader>
-          <CardTitle>Rapporter per kategori</CardTitle>
+  return (
+    <Card className="flex flex-col flex-1">
+      <CardHeader>
+        <CardTitle>Rapporter per kategori</CardTitle>
           <CardDescription>Ingen data tillgänglig</CardDescription>
         </CardHeader>
         <CardContent className="flex h-[300px] items-center justify-center text-muted-foreground">
@@ -63,7 +63,7 @@ export function KategoriFordelning({ data }: KategoriFordelningProps) {
   );
 
   return (
-    <Card className="flex flex-col">
+    <Card className="flex flex-col w-full">
       <CardHeader>
         <CardTitle>Rapporter per kategori</CardTitle>
         <CardDescription>
@@ -80,4 +80,3 @@ export function KategoriFordelning({ data }: KategoriFordelningProps) {
     </Card>
   );
 }
-  
