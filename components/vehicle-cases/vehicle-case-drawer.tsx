@@ -14,7 +14,7 @@ import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
 import { sv } from 'date-fns/locale';
-import { CheckCircle2, Circle, Clock, FileText } from 'lucide-react';
+import { CheckCircle2, Circle, Clock, FileText, XCircle } from 'lucide-react';
 import type { VehicleCaseView } from '@/lib/actions/vehicle';
 
 type VehicleCaseDrawerProps = {
@@ -214,16 +214,28 @@ export function VehicleCaseDrawer({
                 ) : (
                   <>
                     <div className="flex items-start gap-3">
-                      {analytics.insurance_approved_at ? (
+                      {vehicleCase.insurance_status === 'approved' &&
+                      analytics.insurance_approved_at ? (
                         <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
+                      ) : vehicleCase.insurance_status === 'rejected' ? (
+                        <XCircle className="h-5 w-5 text-destructive mt-0.5" />
                       ) : (
                         <Circle className="h-5 w-5 text-muted-foreground mt-0.5" />
                       )}
                       <div className="flex-1">
-                        <p className="font-medium text-sm">Försäkring godkänd</p>
-                        {analytics.insurance_approved_at ? (
+                        <p className="font-medium text-sm">
+                          {vehicleCase.insurance_status === 'rejected'
+                            ? 'Försäkring avslagen'
+                            : 'Försäkring godkänd'}
+                        </p>
+                        {vehicleCase.insurance_status === 'approved' &&
+                        analytics.insurance_approved_at ? (
                           <p className="text-xs text-muted-foreground">
                             {formatDate(analytics.insurance_approved_at)}
+                          </p>
+                        ) : vehicleCase.insurance_status === 'rejected' ? (
+                          <p className="text-xs text-muted-foreground">
+                            Beslut: Avslagen
                           </p>
                         ) : (
                           <p className="text-xs text-muted-foreground">
@@ -244,6 +256,12 @@ export function VehicleCaseDrawer({
                         {analytics.photo_done_at ? (
                           <p className="text-xs text-muted-foreground">
                             {formatDate(analytics.photo_done_at)}
+                          </p>
+                        ) : !vehicleCase.photo_inspection_done &&
+                          vehicleCase.archived_at &&
+                          vehicleCase.insurance_status === 'approved' ? (
+                          <p className="text-xs text-muted-foreground">
+                            Ej genomförd (ej obligatorisk)
                           </p>
                         ) : (
                           <p className="text-xs text-muted-foreground">
