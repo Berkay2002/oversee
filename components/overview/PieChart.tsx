@@ -27,14 +27,14 @@ export interface PieChartCustomProps {
   totalValue: number;
 }
 
-// Tailwind 2xl breakpoint watcher
-function useIs2xl() {
-  const [is2xl, setIs2xl] = useState(false);
+// Tailwind 3xl breakpoint watcher
+function useIs3xl() {
+  const [is3xl, setIs3xl] = useState(false);
 
   useEffect(() => {
-    const mq = window.matchMedia('(min-width: 1536px)');
+    const mq = window.matchMedia('(min-width: 1920px)');
     const handler = (e: MediaQueryListEvent | MediaQueryList) => {
-      setIs2xl(e.matches);
+      setIs3xl(e.matches);
     };
 
     handler(mq);
@@ -48,7 +48,7 @@ function useIs2xl() {
     };
   }, []);
 
-  return is2xl;
+  return is3xl;
 }
 
 export function PieChartCustom({
@@ -56,21 +56,21 @@ export function PieChartCustom({
   chartData,
   totalValue,
 }: PieChartCustomProps) {
-  const is2xl = useIs2xl();
+  const is3xl = useIs3xl();
 
   // Bigger chart for ultrawide
-  const outerRadius = is2xl ? 160 : 90;
-  const innerRadius = is2xl ? 90 : 50;
+  const outerRadius = is3xl ? 160 : 80;
+  const innerRadius = is3xl ? 90 : 40;
 
   return (
-    <div className="flex flex-col 2xl:flex-row 2xl:items-stretch 2xl:gap-6">
+    <div className="flex flex-col 3xl:flex-row 3xl:items-stretch 3xl:gap-6">
       {/* Chart column */}
-      <CardContent className="pb-0 2xl:flex-1 2xl:flex 2xl:items-center 2xl:justify-center">
+      <CardContent className="pb-0 3xl:flex-1 3xl:flex 3xl:items-center 3xl:justify-center">
         <ChartContainer
           config={chartConfig}
           className={`
-            mx-auto aspect-square max-h-[300px]
-            2xl:max-h-[500px] 2xl:w-full
+            mx-auto aspect-square max-h-[250px]
+            3xl:max-h-[500px] 3xl:w-full
           `}
         >
           {/* Hover group wrapper controls motion */}
@@ -126,12 +126,12 @@ export function PieChartCustom({
       </CardContent>
 
       {/* Legend column */}
-      <CardContent className="pt-4 2xl:pt-0 2xl:flex-1 2xl:flex 2xl:items-center">
+      <CardContent className="pt-4 3xl:pt-0 3xl:flex-1 3xl:flex 3xl:items-center">
         <div
           className={`
             grid w-full gap-3
             grid-cols-1 sm:grid-cols-2
-            2xl:grid-cols-1
+            3xl:grid-cols-1
           `}
         >
           {chartData.map((item, index) => (
@@ -144,10 +144,10 @@ export function PieChartCustom({
                 style={{ backgroundColor: item.fill }}
               />
               <div className="flex flex-col min-w-0">
-                <span className="text-xs font-medium truncate 2xl:text-sm">
+                <span className="text-xs font-medium truncate 3xl:text-sm">
                   {item.name}
                 </span>
-                <span className="text-xs text-muted-foreground 2xl:text-sm">
+                <span className="text-xs text-muted-foreground 3xl:text-sm">
                   {item.value} (
                   {((item.value / totalValue) * 100).toFixed(1)}
                   %)
