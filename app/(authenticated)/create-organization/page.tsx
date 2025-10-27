@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+
+import { signOut } from "@/app/(auth)/actions";
 import { createOrganization } from "@/lib/org/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,7 +17,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Building2, Loader2 } from "lucide-react";
+import { Building2, Loader2, LogOut } from "lucide-react";
 
 export default function CreateOrganizationPage() {
   const router = useRouter();
@@ -50,63 +52,81 @@ export default function CreateOrganizationPage() {
     }
   };
 
+  const handleLogout = async () => {
+    await signOut();
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-            <Building2 className="h-6 w-6 text-primary" />
-          </div>
-          <CardTitle className="text-2xl">Create Organization</CardTitle>
-          <CardDescription>
-            Set up your workspace to start managing reports
-          </CardDescription>
-        </CardHeader>
-
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
-            {error && (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-
-            <div className="space-y-2">
-              <Label htmlFor="orgName">Organization Name</Label>
-              <Input
-                id="orgName"
-                type="text"
-                placeholder="My Company"
-                value={orgName}
-                onChange={(e) => setOrgName(e.target.value)}
-                disabled={isLoading}
-                autoFocus
-                required
-              />
-              <p className="text-sm text-muted-foreground">
-                Choose a name for your workspace. You can change this later.
-              </p>
+    <div className="flex min-h-screen flex-col p-4">
+      <div className="flex justify-end">
+        <Button
+          type="button"
+          variant="ghost"
+          onClick={handleLogout}
+          className="gap-2"
+          disabled={isLoading}
+        >
+          <LogOut className="h-4 w-4" />
+          Log out
+        </Button>
+      </div>
+      <div className="flex flex-1 items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+              <Building2 className="h-6 w-6 text-primary" />
             </div>
-          </CardContent>
+            <CardTitle className="text-2xl">Create Organization</CardTitle>
+            <CardDescription>
+              Set up your workspace to start managing reports
+            </CardDescription>
+          </CardHeader>
 
-          <CardFooter>
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading || !orgName.trim()}
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Creating...
-                </>
-              ) : (
-                "Create Organization"
+          <form onSubmit={handleSubmit}>
+            <CardContent className="space-y-4">
+              {error && (
+                <Alert variant="destructive">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
               )}
-            </Button>
-          </CardFooter>
-        </form>
-      </Card>
+
+              <div className="space-y-2">
+                <Label htmlFor="orgName">Organization Name</Label>
+                <Input
+                  id="orgName"
+                  type="text"
+                  placeholder="My Company"
+                  value={orgName}
+                  onChange={(e) => setOrgName(e.target.value)}
+                  disabled={isLoading}
+                  autoFocus
+                  required
+                />
+                <p className="text-sm text-muted-foreground">
+                  Choose a name for your workspace. You can change this later.
+                </p>
+              </div>
+            </CardContent>
+
+            <CardFooter>
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={isLoading || !orgName.trim()}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Creating...
+                  </>
+                ) : (
+                  "Create Organization"
+                )}
+              </Button>
+            </CardFooter>
+          </form>
+        </Card>
+      </div>
     </div>
   );
 }
