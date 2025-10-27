@@ -45,6 +45,7 @@
     "@supabase/supabase-js": "^2.76.1",
     "@tabler/icons-react": "^3.35.0",
     "@tanstack/react-form": "^1.19.5",
+    "@tanstack/react-query": "^5.90.5",
     "@tanstack/react-table": "^8.21.3",
     "@tanstack/zod-form-adapter": "^0.42.1",
     "class-variance-authority": "^0.7.1",

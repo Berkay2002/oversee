@@ -63,3 +63,28 @@ export const SLA_STATUS_COLORS: Record<string, string> = {
 export const getColorByIndex = (index: number): string => {
   return COLOR_PALETTE[index % COLOR_PALETTE.length];
 };
+
+/**
+ * A map of Sankey node labels to specific colors.
+ */
+export const SANKEY_NODE_COLORS: Record<string, string> = {
+  // Locations
+  'Södertälje': '#14b8a6', // teal-500
+  'Nacka': '#3b82f6',      // blue-500
+
+  // Funding
+  'Försäkring': '#3b82f6',   // violet-500
+  'Kund betalar': '#f97316', // orange-500
+  'Intern kostnad': '#ec4899', // pink-500
+
+  // Insurance
+  'Ej försäkring': '#10b981',      // green-500
+  'Försäkring godkänd': '#22c55e', // emerald-500
+  'Försäkring väntar': '#eab308',  // yellow-500
+  'Försäkring avslag': '#ef4444',  // red-500
+
+  // Resolution
+  'Pågående': '#d946ef',           // fuchsia-500
+  'Klar, ej avslutad': '#06b6d4', // cyan-500
+  'Avslutad': '#64748b',           // slate-500
+};

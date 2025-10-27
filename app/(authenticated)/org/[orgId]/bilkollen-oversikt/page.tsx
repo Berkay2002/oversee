@@ -24,6 +24,7 @@ import { BilkollenInsuranceStatus } from '@/components/bilkollen/BilkollenInsura
 import { BilkollenHandlerStats } from '@/components/bilkollen/BilkollenHandlerStats';
 import { BilkollenSLASection } from '@/components/bilkollen/BilkollenSLASection';
 import { BilkollenWIPSection } from '@/components/bilkollen/BilkollenWIPSection';
+import { BilkollenFlowSection } from '@/components/bilkollen/BilkollenFlowSection';
 
 export default function BilkollenOversiktPage() {
   const { activeOrg } = useOrg();
@@ -125,6 +126,18 @@ export default function BilkollenOversiktPage() {
           archivedCases={statistics.archivedCases}
           avgProcessingDays={statistics.avgProcessingDays}
         />
+      </section>
+
+      {/* Flow Section */}
+      <section className="space-y-6">
+        <div className="flex items-center gap-3">
+          <div className="h-px flex-1 bg-linear-to-r from-border to-transparent" />
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Flöde genom processen
+          </h2>
+          <div className="h-px flex-1 bg-linear-to-l from-border to-transparent" />
+        </div>
+        <BilkollenFlowSection orgId={orgId} />
       </section>
 
       {/* Trends Section */}

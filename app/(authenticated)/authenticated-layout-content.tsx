@@ -5,6 +5,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import type { ActiveOrg } from "@/lib/org/server";
 import { getUserProfile } from "@/lib/supabase/server";
+import QueryProvider from "@/lib/wrappers/QueryProvider";
 
 interface AuthenticatedLayoutContentProps {
   children: ReactNode;
@@ -33,9 +34,11 @@ export default async function AuthenticatedLayoutContent({
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
           <SidebarTrigger />
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          {children}
-        </div>
+        <QueryProvider>
+          <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+            {children}
+          </div>
+        </QueryProvider>
       </SidebarInset>
     </SidebarProvider>
   );
