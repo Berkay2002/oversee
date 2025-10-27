@@ -113,9 +113,30 @@ export async function sendJoinRequest(
       return { success: false, error: "Not authenticated" };
     }
 
+    const {
+      data: existingRequest,
+      error: existingRequestError,
+    } = await supabase
+      .from("organization_join_requests")
+      .select("id")
+      .eq("org_id", orgId)
+      .eq("user_id", user.id)
+      .eq("status", "pending")
+      .maybeSingle();
+
+    if (existingRequestError) {
+      console.error("Error checking existing join request:", existingRequestError);
+      return { success: false, error: existingRequestError.message };
+    }
+
+    if (existingRequest) {
+      return { success: true };
+    }
+
     const { error } = await supabase.from("organization_join_requests").insert({
-      organization_id: orgId,
+      org_id: orgId,
       user_id: user.id,
+      status: "pending",
     });
 
     if (error) {
@@ -156,36 +177,73 @@ export async function manageJoinRequest(
     // Get the request
     const { data: request, error: requestError } = await supabase
       .from("organization_join_requests")
-      .select("org_id, user_id")
+      .select("id, org_id, user_id, status")
       .eq("id", requestId)
-      .single();
+      .maybeSingle();
 
     if (requestError || !request) {
       return { success: false, error: "Request not found" };
     }
 
+    if (request.status !== "pending") {
+      return { success: false, error: "Request already processed" };
+    }
+
+    if (!request.org_id || !request.user_id) {
+      return { success: false, error: "Request is missing required data" };
+    }
+
     // RLS will enforce that the user is an admin of the organization
 
     if (action === "accept") {
-      // Add user to organization
-      await supabase.from("organization_members").insert({
-        org_id: request.org_id,
-        user_id: request.user_id,
-        role: "member",
-      });
+      const { error: memberError } = await supabase
+        .from("organization_members")
+        .upsert(
+          {
+            org_id: request.org_id,
+            user_id: request.user_id,
+            role: "member",
+          },
+          { onConflict: "org_id,user_id" }
+        );
 
-      // Update request status
-      await supabase
+      if (memberError) {
+        console.error("Error adding member to organization:", memberError);
+        return { success: false, error: memberError.message };
+      }
+
+      const { error: statusError } = await supabase
         .from("organization_join_requests")
         .update({ status: "accepted" })
         .eq("id", requestId);
+
+      if (statusError) {
+        console.error("Error updating join request status:", statusError);
+        return { success: false, error: statusError.message };
+      }
+
+      const { error: profileError } = await supabase
+        .from("profiles")
+        .update({ default_org_id: request.org_id })
+        .eq("user_id", request.user_id)
+        .is("default_org_id", null);
+
+      if (profileError) {
+        console.error("Error updating user profile default org:", profileError);
+      }
     } else {
-      // Update request status
-      await supabase
+      const { error: statusError } = await supabase
         .from("organization_join_requests")
         .update({ status: "rejected" })
         .eq("id", requestId);
+
+      if (statusError) {
+        console.error("Error rejecting join request:", statusError);
+        return { success: false, error: statusError.message };
+      }
     }
+
+    revalidatePath(`/org/${request.org_id}/join-requests`);
 
     return { success: true };
   } catch (error) {
