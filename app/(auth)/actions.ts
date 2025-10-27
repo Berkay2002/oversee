@@ -5,10 +5,12 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { loginSchema } from '@/lib/schemas/auth'
+import { getDefaultOrgRedirectPath } from '@/lib/org/server'
 
 // Default redirect paths
 const DEFAULT_LOGIN_REDIRECT = '/' // Will be handled by root page redirect logic
 const DEFAULT_LOGOUT_REDIRECT = '/login'
+const ONBOARDING_REDIRECT = '/onboarding'
 
 export type SignInState = {
   error?: string
@@ -27,6 +29,23 @@ export type SignUpState = {
     password?: string[]
     confirmPassword?: string[]
   }
+}
+
+async function redirectToPostAuthDestination(userId?: string | null) {
+  if (!userId) {
+    revalidatePath(ONBOARDING_REDIRECT, 'layout')
+    redirect(ONBOARDING_REDIRECT)
+  }
+
+  const defaultOrgPath = await getDefaultOrgRedirectPath(userId)
+
+  if (defaultOrgPath) {
+    revalidatePath(defaultOrgPath)
+    redirect(defaultOrgPath)
+  }
+
+  revalidatePath(ONBOARDING_REDIRECT, 'layout')
+  redirect(ONBOARDING_REDIRECT)
 }
 
 /**
@@ -68,7 +87,7 @@ export async function signIn(
   const { email, password } = validatedFields.data
 
   // Attempt to sign in
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data: signInData, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   })
@@ -85,9 +104,13 @@ export async function signIn(
     }
   }
 
-  // Revalidate and redirect to onboarding
-  revalidatePath('/onboarding', 'layout')
-  redirect('/onboarding')
+  const {
+    data: { user: authenticatedUser },
+  } = await supabase.auth.getUser()
+
+  const userId = signInData.user?.id ?? authenticatedUser?.id
+
+  await redirectToPostAuthDestination(userId)
 }
 
 /**
@@ -161,9 +184,11 @@ export async function signUp(
     }
   }
 
-  // Revalidate and redirect to onboarding
-  revalidatePath('/onboarding', 'layout')
-  redirect('/onboarding')
+  if (data.user && data.session) {
+    await redirectToPostAuthDestination(data.user.id)
+  }
+
+  await redirectToPostAuthDestination(null)
 }
 
 export async function requestPasswordReset(

@@ -83,6 +83,41 @@ export async function getUserDefaultOrg(
 }
 
 /**
+ * Resolve the default organization landing path for a user
+ * Validates that the user is still a member of their default organization
+ */
+export async function getDefaultOrgRedirectPath(
+  userId: string
+): Promise<string | null> {
+  const supabase = await createClient();
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("default_org_id")
+    .eq("user_id", userId)
+    .single();
+
+  const defaultOrgId = profile?.default_org_id ?? null;
+
+  if (!defaultOrgId) {
+    return null;
+  }
+
+  const { data: membership } = await supabase
+    .from("organization_members")
+    .select("org_id")
+    .eq("org_id", defaultOrgId)
+    .eq("user_id", userId)
+    .single();
+
+  if (!membership) {
+    return null;
+  }
+
+  return `/org/${defaultOrgId}/oversikt`;
+}
+
+/**
  * Get all organizations a user belongs to
  */
 export async function getUserOrganizations(
