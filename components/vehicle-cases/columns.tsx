@@ -175,7 +175,7 @@ export const createColumns = (
               meta.onUpdate(
                 row.original.id,
                 'photo_inspection_done',
-                checked,
+                checked === true,
                 done
               )
             }
@@ -204,7 +204,7 @@ export const createColumns = (
               meta.onUpdate(
                 row.original.id,
                 'raknad_pa',
-                checked,
+                checked === true,
                 raknadPa
               )
             }
