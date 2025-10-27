@@ -8,12 +8,25 @@ import { useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
+import type { Database } from '@/types/database'
+
+type JoinRequestRow = Database['public']['Tables']['organization_join_requests']['Row']
+type JoinRequestRecord = Pick<JoinRequestRow, 'id' | 'user_id'>
+type RequestStatus = Database['public']['Enums']['request_status']
 
 type JoinRequest = {
-  id: string
+  id: JoinRequestRow['id']
+  user_id: NonNullable<JoinRequestRow['user_id']>
   user_name: string
-  user_id: string
 }
+
+const hasUserId = (
+  request: JoinRequestRecord
+): request is JoinRequestRecord & {
+  user_id: NonNullable<JoinRequestRow['user_id']>
+} => typeof request.user_id === 'string'
+
+const PENDING_STATUS: RequestStatus = 'pending'
 
 export default function JoinRequestsPage() {
   const params = useParams()
@@ -31,7 +44,7 @@ export default function JoinRequestsPage() {
         .from('organization_join_requests')
         .select('id, user_id')
         .eq('org_id', orgId)
-        .eq('status', 'pending')
+        .eq('status', PENDING_STATUS)
 
       if (requestsError) {
         console.error('Error fetching join requests:', requestsError)
@@ -40,14 +53,16 @@ export default function JoinRequestsPage() {
         return
       }
 
-      if (!requestsData || requestsData.length === 0) {
+      const filteredRequests = (requestsData ?? []).filter(hasUserId)
+
+      if (filteredRequests.length === 0) {
         setRequests([])
         setIsLoading(false)
         return
       }
 
       // Get user IDs
-      const userIds = requestsData.map(r => r.user_id)
+      const userIds = filteredRequests.map(r => r.user_id)
 
       // Fetch user names from profiles
       const { data: profiles, error: profilesError } = await supabase
@@ -65,7 +80,7 @@ export default function JoinRequestsPage() {
       )
 
       // Combine the data
-      const combinedData = requestsData.map(r => ({
+      const combinedData: JoinRequest[] = filteredRequests.map(r => ({
         id: r.id,
         user_id: r.user_id,
         user_name: userNameMap.get(r.user_id) || 'Unknown User',
