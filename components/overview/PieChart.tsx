@@ -27,28 +27,32 @@ export interface PieChartCustomProps {
   totalValue: number;
 }
 
-// Tailwind 3xl breakpoint watcher
-function useIs3xl() {
-  const [is3xl, setIs3xl] = useState(false);
+import { useLayoutEffect, useRef } from 'react';
 
-  useEffect(() => {
-    const mq = window.matchMedia('(min-width: 1920px)');
-    const handler = (e: MediaQueryListEvent | MediaQueryList) => {
-      setIs3xl(e.matches);
-    };
+// Custom hook to measure element size
+function useElementSize<T extends HTMLElement>() {
+  const ref = useRef<T>(null);
+  const [size, setSize] = useState({ width: 0, height: 0 });
 
-    handler(mq);
+  useLayoutEffect(() => {
+    const element = ref.current;
+    if (!element) return;
 
-    mq.addEventListener('change', handler as (e: MediaQueryListEvent) => void);
-    return () => {
-      mq.removeEventListener(
-        'change',
-        handler as (e: MediaQueryListEvent) => void
-      );
-    };
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (entry) {
+        setSize({
+          width: entry.contentRect.width,
+          height: entry.contentRect.height,
+        });
+      }
+    });
+
+    observer.observe(element);
+    return () => observer.disconnect();
   }, []);
 
-  return is3xl;
+  return [ref, size] as const;
 }
 
 export function PieChartCustom({
@@ -56,21 +60,26 @@ export function PieChartCustom({
   chartData,
   totalValue,
 }: PieChartCustomProps) {
-  const is3xl = useIs3xl();
+  const [chartContainerRef, chartSize] =
+    useElementSize<HTMLDivElement>();
 
-  // Bigger chart for ultrawide
-  const outerRadius = is3xl ? 160 : 80;
-  const innerRadius = is3xl ? 90 : 40;
+  // Make radius dynamic based on container size
+  const radius = Math.min(chartSize.width, chartSize.height) / 2;
+  const outerRadius = Math.max(0, radius * 0.8); // 80% of available radius
+  const innerRadius = Math.max(0, radius * 0.5); // 50% of available radius
 
   return (
     <div className="flex flex-col 3xl:flex-row 3xl:items-stretch 3xl:gap-6">
       {/* Chart column */}
-      <CardContent className="pb-0 3xl:flex-1 3xl:flex 3xl:items-center 3xl:justify-center">
+      <CardContent
+        ref={chartContainerRef}
+        className="pb-0 3xl:flex-1 3xl:flex 3xl:items-center 3xl:justify-center"
+      >
         <ChartContainer
           config={chartConfig}
           className={`
             mx-auto aspect-square max-h-[250px]
-            3xl:max-h-[500px] 3xl:w-full
+            3xl:max-h-[500px] w-full
           `}
         >
           {/* Hover group wrapper controls motion */}
