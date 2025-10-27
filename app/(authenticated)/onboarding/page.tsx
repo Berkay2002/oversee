@@ -14,8 +14,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Building2, UserPlus, Loader2 } from 'lucide-react'
+import { Building2, UserPlus, Loader2, LogOut } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { signOut } from '@/app/(auth)/actions'
 
 export default function OnboardingPage() {
   const router = useRouter()
@@ -24,6 +25,7 @@ export default function OnboardingPage() {
   const [organizations, setOrganizations] = useState<Array<{ id: string; name: string }>>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -90,9 +92,26 @@ export default function OnboardingPage() {
     setIsSubmitting(false)
   }
 
+  const handleLogout = async () => {
+    setIsLoggingOut(true)
+    await signOut()
+    setIsLoggingOut(false)
+  }
+
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-background">
       <div className="w-full max-w-2xl space-y-8 p-4">
+        <div className="flex justify-end">
+          <Button
+            variant="ghost"
+            className="gap-2 text-muted-foreground hover:text-foreground"
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+          >
+            <LogOut className="h-4 w-4" />
+            {isLoggingOut ? 'Signing out...' : 'Log out'}
+          </Button>
+        </div>
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold text-foreground">Welcome!</h1>
           <p className="text-muted-foreground">
