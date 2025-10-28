@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { HelpCircle } from "lucide-react";
-import { HelpSearch } from "@/components/help/help-search";
 import { TableOfContents } from "@/components/help/table-of-contents";
 import { MobileToc } from "@/components/help/mobile-toc";
 import { MDXProvider } from "@mdx-js/react";
