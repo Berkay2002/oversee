@@ -23,6 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DataTablePagination } from '@/components/shared/data-table';
 import { DataTableViewOptions } from '@/components/shared/data-table';
 import { Input } from '@/components/ui/input';
@@ -118,10 +119,15 @@ export function ReportsTableDemo() {
   });
 
   return (
-    <div className="space-y-4 rounded-lg border bg-card p-4 shadow-sm">
-      <div className="flex items-center justify-between gap-4">
-        <Input
-          placeholder="Sök i problembeskrivning..."
+    <div className="space-y-4">
+      <Card>
+        <CardHeader>
+          <CardTitle>Interaktiv Demo</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between gap-4">
+            <Input
+              placeholder="Sök i problembeskrivning..."
           value={
             (table.getColumn('problem_description')?.getFilterValue() as string) ?? ''
           }
@@ -172,26 +178,33 @@ export function ReportsTableDemo() {
         </Table>
       </div>
       <DataTablePagination table={table} />
-      <div className="space-y-3 px-2 pt-4 text-sm text-muted-foreground">
-        <div className="flex items-start gap-2">
-          <HelpCircle className="h-4 w-4 shrink-0 translate-y-0.5" />
-          <span>
-            <strong>Sök och filtrera:</strong> Använd sökfältet för att filtrera rapporterna baserat på problembeskrivningen.
-          </span>
-        </div>
-        <div className="flex items-start gap-2">
-          <HelpCircle className="h-4 w-4 shrink-0 translate-y-0.5" />
-          <span>
-            <strong>Sortera kolumner:</strong> Klicka på kolumnrubrikerna för att sortera tabellen i stigande eller fallande ordning.
-          </span>
-        </div>
-        <div className="flex items-start gap-2">
-          <HelpCircle className="h-4 w-4 shrink-0 translate-y-0.5" />
-          <span>
-            <strong>Dölj kolumner:</strong> Använd knappen &apos;View&apos; för att välja vilka kolumner som ska visas eller döljas.
-          </span>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Funktioner</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm text-muted-foreground">
+          <div className="flex items-start gap-2">
+            <HelpCircle className="h-4 w-4 shrink-0 translate-y-0.5" />
+            <span>
+              <strong>Sök och filtrera:</strong> Använd sökfältet för att filtrera rapporterna baserat på problembeskrivningen.
+            </span>
+          </div>
+          <div className="flex items-start gap-2">
+            <HelpCircle className="h-4 w-4 shrink-0 translate-y-0.5" />
+            <span>
+              <strong>Sortera kolumner:</strong> Klicka på kolumnrubrikerna för att sortera tabellen i stigande eller fallande ordning.
+            </span>
+          </div>
+          <div className="flex items-start gap-2">
+            <HelpCircle className="h-4 w-4 shrink-0 translate-y-0.5" />
+            <span>
+              <strong>Dölj kolumner:</strong> Använd knappen &apos;View&apos; för att välja vilka kolumner som ska visas eller döljas.
+            </span>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
