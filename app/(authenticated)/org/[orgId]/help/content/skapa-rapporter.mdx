@@ -1,0 +1,46 @@
+export const metadata = {
+  id: "skapa-rapporter",
+  title: "Skapa rapporter",
+  keywords: "skapa rapport ny formulär tekniker registreringsnummer problem kategori"
+}
+
+### Så här skapar du en rapport
+
+Gå till sidan **Ny rapport** via menyn för att skapa en ny rapport. Formuläret är uppdelat i fyra sektioner:
+
+#### 1. Arbetsinfo
+
+- **Tekniker (obligatorisk)** - Välj vilken tekniker som utförde arbetet. Börja skriva för att söka bland tillgängliga tekniker.
+- **Rapportör** - Välj vem som rapporterar arbetet. Du kan välja "Övrigt/Custom" för att ange ett eget namn.
+- **Arbetsperiod (obligatorisk)** - Välj start- och slutdatum för arbetet. Systemet beräknar automatiskt antal arbetsdagar.
+
+<HelpTip variant="info">
+När du väljer arbetsperiod beräknas antal dagar automatiskt och visas under datumväljaren.
+</HelpTip>
+
+#### 2. Fordonsuppgifter
+
+- **Registreringsnummer** - Lägg till ett eller flera registreringsnummer för de fordon som arbetet gäller. Klicka på "+" för att lägga till fler.
+
+<HelpImagePlaceholder caption="Formulär för att lägga till flera registreringsnummer" />
+
+#### 3. Problem & Åtgärd
+
+- **Problemkategori (obligatorisk)** - Välj vilken kategori problemet tillhör. Kategorierna är färgkodade för enkel identifiering.
+- **Problembeskrivning (obligatorisk)** - Beskriv problemet i detalj. Detta fält är obligatoriskt.
+
+#### 4. Problem & Lösning
+
+- **Utfört arbete/Förbättring** - Beskriv vilka åtgärder som vidtogs och eventuella förbättringar. Detta fält är valfritt.
+
+<HelpTip variant="tip">
+**Tips:** Formuläret valideras automatiskt när du lämnar ett fält (onBlur). Obligatoriska fält markeras med en asterisk (*).
+</HelpTip>
+
+#### Skicka in rapporten
+
+När alla obligatoriska fält är ifyllda kan du klicka på **"Skapa rapport"**. Du får en bekräftelse när rapporten har skapats, och formuläret rensas automatiskt så att du kan skapa en ny rapport direkt.
+
+<HelpTip variant="warning">
+Om du får ett felmeddelande, kontrollera att alla obligatoriska fält är korrekt ifyllda.
+</HelpTip>

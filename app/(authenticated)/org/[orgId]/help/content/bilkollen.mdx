@@ -1,0 +1,84 @@
+export const metadata = {
+  id: "bilkollen",
+  title: "Bilkollen - Ärendehantering",
+  keywords: "bilkollen fordon ärende hantera försäkring internt kund klar arkiv"
+}
+
+### Hantera fordonsärenden i Bilkollen
+
+Bilkollen är systemet för att hantera fordonsärenden. Här kan du se pågående ärenden, markera dem som klara, och hantera arkiverade ärenden.
+
+#### Pågående och Arkiv
+
+Bilkollen har två flikar:
+
+- **Pågående** - Aktiva ärenden som fortfarande hanteras
+- **Arkiv** - Avslutade ärenden som har markerats som klara
+
+#### Lägga till nytt fordon
+
+Klicka på **"Lägg till fordon"** för att skapa ett nytt ärende. Ange registreringsnumret och fyll i nödvändig information.
+
+<HelpImagePlaceholder caption="Dialog för att lägga till nytt fordon" />
+
+#### Filtrera ärenden
+
+Du kan filtrera ärenden på flera sätt:
+
+- **Registreringsnummer** - Sök efter ett specifikt registreringsnummer. Sökningen sker i realtid.
+- **Finansieringskälla** - Filtrera på:
+  - Försäkring - Ärenden som bekostas av försäkring
+  - Internt - Ärenden som bekostas internt
+  - Kund - Ärenden som kunden betalar för
+  - Alla - Visa alla ärenden oavsett finansiering
+- **Försäkringsstatus** - Filtrera på godkännandestatus:
+  - Väntar - Väntar på godkännande från försäkring
+  - Godkänd - Försäkring har godkänt ärendet
+  - Nekad - Försäkring har nekat ärendet
+  - Alla - Visa alla statusar
+- **Plats** - Filtrera på vilken plats fordonet befinner sig
+- **Handläggare** - Filtrera på vem som är tilldelad ärendet
+
+<HelpTip variant="info">
+Som standard filtreras ärendena till att visa endast dina egna ärenden när sidan laddas.
+</HelpTip>
+
+#### Redigera ärenden
+
+Du kan redigera vissa fält direkt i tabellen (inline editing):
+
+- Plats
+- Finansieringskälla
+- Försäkringsstatus
+- Handläggare
+
+Klicka på ett fält för att redigera det. Ändringen sparas automatiskt när du lämnar fältet.
+
+<HelpImagePlaceholder caption="Inline-redigering av ärende" />
+
+#### Visa ändringslogg
+
+Klicka på ett ärende för att öppna detaljvyn. Här ser du:
+
+- **Ändringslogg** - En komplett historik över alla ändringar som gjorts på ärendet, inklusive vem som gjorde ändringen och när
+- **Analysdata** - Information om när försäkring godkändes, foton laddades upp, etc.
+
+#### Markera som klar
+
+När ett ärende är färdigbehandlat kan du markera det som **"Klar"**. Ärendet flyttas då till Arkiv-fliken.
+
+#### Återställa arkiverade ärenden
+
+I Arkiv-fliken kan du återställa ärenden som felaktigt markerats som klara. Ärendet flyttas då tillbaka till Pågående.
+
+#### Ta bort ärenden
+
+Du kan ta bort ärenden genom att klicka på åtgärdsmenyn (tre prickar) och välja "Radera". En bekräftelsedialog visas innan ärendet tas bort permanent.
+
+<HelpTip variant="warning">
+**Varning:** Borttagna ärenden kan inte återställas. Var försiktig när du tar bort ärenden.
+</HelpTip>
+
+#### Mobilanpassning
+
+På mobila enheter anpassas filterverktygen för att passa mindre skärmar. Du har tillgång till samma funktioner men i en mer kompakt layout.

@@ -1,0 +1,91 @@
+export const metadata = {
+  id: "tabeller",
+  title: "Arbeta med tabeller",
+  keywords: "tabell sortera filtrera söka paginering sida markera kolumn"
+}
+
+### Allmänna tabellfunktioner
+
+Många sidor i Oversee använder tabeller för att visa data. Här är en guide till de vanligaste funktionerna som finns i de flesta tabeller.
+
+#### Sortering
+
+Klicka på en kolumnrubrik för att sortera tabellen efter den kolumnen:
+
+- Första klicket sorterar i stigande ordning (A-Ö, 0-9, äldst först)
+- Andra klicket sorterar i fallande ordning (Ö-A, 9-0, nyast först)
+- Tredje klicket tar bort sorteringen
+
+<HelpImagePlaceholder caption="Kolumnrubriker med sorteringspilar" />
+
+#### Sökning
+
+De flesta tabeller har ett sökfält där du kan söka efter specifik text:
+
+- Skriv din sökterm i sökfältet
+- Sökningen sker automatiskt efter en kort fördröjning (300ms)
+- Sökningen filtrerar tabellen i realtid
+- Klicka på X-knappen för att rensa sökningen
+
+<HelpTip variant="tip">
+**Tips:** Sökningen är vanligtvis inte skiftlägeskänslig, så du kan skriva med små eller stora bokstäver.
+</HelpTip>
+
+#### Filtermenyer
+
+Många tabeller har rullgardinsmenyer för att filtrera på specifika värden:
+
+- Klicka på en filtermeny för att öppna den
+- Välj ett värde för att filtrera tabellen
+- Du kan ofta kombinera flera filter samtidigt
+- Klicka på "Rensa filter" för att ta bort alla filter
+
+#### Markera rader
+
+Många tabeller har kryssrutor för att markera rader:
+
+- Klicka på kryssrutan längst upp för att markera alla synliga rader
+- Klicka på en enskild kryssruta för att markera den raden
+- Håll Shift och klicka för att markera ett intervall (om stöds)
+- Markerade rader kan användas för bulkoperationer
+
+<HelpImagePlaceholder caption="Tabell med markerade rader" />
+
+#### Paginering
+
+Längst ner i tabellerna hittar du pagineringskontroller:
+
+- **Rader per sida** - Välj hur många rader som visas (10, 20, 30, 40, 50)
+- **Sidnavigering** - Använd pilknapparna för att navigera mellan sidor
+- **Sidinformation** - Visar vilken sida du är på och totalt antal sidor
+
+#### Kolumnsynlighet
+
+Vissa tabeller låter dig dölja/visa kolumner:
+
+- Leta efter en knapp med kolumnikon (vanligtvis bredvid filter)
+- Klicka för att öppna en meny med kolumnalternativ
+- Markera/avmarkera kolumner för att visa/dölja dem
+
+#### Åtgärdsmeny
+
+Många rader har en åtgärdsmeny (tre prickar) längst till höger:
+
+- Klicka på de tre prickarna för att öppna menyn
+- Välj en åtgärd från listan
+- Vanliga åtgärder inkluderar: Redigera, Visa detaljer, Radera
+
+<HelpImagePlaceholder caption="Åtgärdsmeny på en tabellrad" />
+
+#### Mobilanpassning
+
+På mobila enheter anpassas tabellerna för mindre skärmar:
+
+- Vissa kolumner kan vara dolda som standard
+- Filter och verktyg visas i en mer kompakt layout
+- Tabellen kan scrollas horisontellt
+- Åtgärdsmenyer kan vara lättare att nå
+
+<HelpTip variant="tip">
+**Tips:** På små skärmar, svepa tabellen åt sidorna för att se alla kolumner.
+</HelpTip>

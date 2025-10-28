@@ -1,8 +1,10 @@
 {
   "mcpServers": {
     "next-devtools": {
-      "command": "npx",
+      "command": "cmd",
       "args": [
+        "/c",
+        "npx",
         "-y",
         "next-devtools-mcp@latest"
       ]
@@ -12,8 +14,10 @@
       "url": "https://mcp.supabase.com/mcp?project_ref=hzowvejjmnamhnrbqpou"
     },
     "shadcn": {
-      "command": "npx",
+      "command": "cmd",
       "args": [
+        "/c",
+        "npx",
         "shadcn@latest",
         "mcp"
       ]

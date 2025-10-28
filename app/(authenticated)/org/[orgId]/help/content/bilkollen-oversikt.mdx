@@ -1,0 +1,83 @@
+export const metadata = {
+  id: "bilkollen-oversikt",
+  title: "Bilkollen Översikt",
+  keywords: "bilkollen översikt statistik försäkring sla wip handläggare sankey"
+}
+
+### Analysera fordonsärenden
+
+Bilkollen Översikt ger dig detaljerad statistik och visualiseringar av alla fordonsärenden i organisationen.
+
+#### Ärendestatistik
+
+Överst visas nyckeltal för fordonsärenden:
+
+- **Totalt antal ärenden** - Alla ärenden som skapats
+- **Pågående ärenden** - Antal aktiva ärenden
+- **Arkiverade ärenden** - Antal avslutade ärenden
+- **Genomsnittlig handläggningstid** - Genomsnittligt antal dagar från start till avslut
+
+<HelpImagePlaceholder caption="Nyckeltal för fordonsärenden" />
+
+#### Ärendeflöde (Sankey-diagram)
+
+Sankey-diagrammet visar hur ärenden flödar genom systemet, från skapelse till avslut. Du kan se:
+
+- Hur många ärenden som är pågående vs arkiverade
+- Flöden mellan olika statusar
+- Volym på olika steg i processen
+
+#### Trender över tid
+
+Linjediagram visar hur ärendemängden utvecklas över tid:
+
+- **Veckovisa trender** - Antal ärenden per vecka
+- **Månadsvisa trender** - Antal ärenden per månad
+
+#### Finansieringsfördelning
+
+Ett cirkeldiagram visar hur ärenden fördelar sig mellan olika finansieringskällor:
+
+- Försäkring - Ärenden som bekostas av försäkring
+- Internt - Internt finansierade ärenden
+- Kund - Ärenden som kunden betalar för
+
+<HelpImagePlaceholder caption="Fördelning av finansieringskällor" />
+
+#### Försäkringsgodkännande
+
+Ett cirkeldiagram visar statusen på försäkringsgodkännanden:
+
+- Väntar - Ärenden som väntar på godkännande
+- Godkänd - Godkända ärenden
+- Nekad - Nekade ärenden
+
+#### SLA-efterlevnad
+
+Visar hur väl organisationen följer uppsatta servicenivåer (Service Level Agreements). Detta hjälper dig att identifiera ärenden som riskerar att överskrida tidsgränser.
+
+<HelpTip variant="info">
+SLA-efterlevnad mäts vanligtvis mot uppsatta tidsgränser för olika typer av ärenden.
+</HelpTip>
+
+#### WIP-belastning (Work in Progress)
+
+Visar hur mycket arbete som pågår samtidigt. Detta hjälper dig att identifiera flaskhalsar och överbelastning.
+
+#### Handläggarstatistik
+
+Visar statistik per handläggare:
+
+- Antal tilldelade ärenden
+- Genomsnittlig handläggningstid
+- Fördelning av ärendetyper
+
+<HelpImagePlaceholder caption="Statistik per handläggare" />
+
+#### Filtrera efter handläggare
+
+Du kan filtrera statistiken för att se data för en specifik handläggare. Detta är användbart för att analysera individuell prestation och arbetsbelastning.
+
+<HelpTip variant="tip">
+**Tips:** Använd handläggarfiltret för att jämföra prestation mellan olika teammedlemmar.
+</HelpTip>
