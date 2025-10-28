@@ -77,7 +77,7 @@ export default function HelpClientPage({ faqItems }: HelpClientPageProps) {
 
       {/* Search */}
       <div className="mb-8">
-        <HelpSearch onSearch={setSearchQuery} />
+        
       </div>
 
       {/* Mobile TOC */}
@@ -131,7 +131,7 @@ export default function HelpClientPage({ faqItems }: HelpClientPageProps) {
 
         {/* Sidebar TOC */}
         <aside className="hidden lg:block">
-          <TableOfContents items={tocItems} />
+          <TableOfContents items={tocItems} onSearch={setSearchQuery} />
         </aside>
       </div>
     </div>

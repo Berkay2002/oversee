@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { Search, X } from "lucide-react";
+import { Search } from "lucide-react";
 import {
   InputGroup,
   InputGroupInput,
   InputGroupAddon,
-  InputGroupButton,
 } from "@/components/ui/input-group";
+import { Kbd } from "@/components/ui/kbd";
 
 interface HelpSearchProps {
   onSearch: (query: string) => void;
@@ -27,11 +27,6 @@ export function HelpSearch({
     []
   );
 
-  const handleClear = () => {
-    setQuery("");
-    onSearch("");
-  };
-
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       onSearch(query);
@@ -41,24 +36,20 @@ export function HelpSearch({
   }, [query, onSearch]);
 
   return (
-    <InputGroup className="mb-6">
-      <InputGroupAddon>
-        <Search className="h-4 w-4 text-muted-foreground" />
-      </InputGroupAddon>
+    <InputGroup>
       <InputGroupInput
         type="text"
         value={query}
         onChange={(e) => handleSearch(e.target.value)}
         placeholder={placeholder}
       />
-      {query && (
-        <InputGroupAddon>
-          <InputGroupButton variant="ghost" size="icon-xs" onClick={handleClear}>
-            <X className="h-4 w-4" />
-            <span className="sr-only">Rensa sökning</span>
-          </InputGroupButton>
-        </InputGroupAddon>
-      )}
+      <InputGroupAddon>
+        <Search className="h-4 w-4 text-muted-foreground" />
+      </InputGroupAddon>
+      <InputGroupAddon align="inline-end">
+        <Kbd>⌘</Kbd>
+        <Kbd>K</Kbd>
+      </InputGroupAddon>
     </InputGroup>
   );
 }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
+import { HelpSearch } from "@/components/help/help-search";
 
 interface TocItem {
   id: string;
@@ -12,9 +13,10 @@ interface TocItem {
 
 interface TableOfContentsProps {
   items: TocItem[];
+  onSearch: (query: string) => void;
 }
 
-export function TableOfContents({ items }: TableOfContentsProps) {
+export function TableOfContents({ items, onSearch }: TableOfContentsProps) {
   const [activeId, setActiveId] = useState<string>("");
 
   useEffect(() => {
@@ -64,8 +66,11 @@ export function TableOfContents({ items }: TableOfContentsProps) {
 
   return (
     <nav className="sticky top-20 hidden lg:block">
+      <div className="mb-4">
+        <HelpSearch onSearch={onSearch} />
+      </div>
       <h3 className="mb-4 text-sm font-semibold">Innehåll</h3>
-      <ScrollArea className="h-[calc(100vh-160px)]">
+      <ScrollArea className="h-[calc(100vh-240px)]">
         <ul className="space-y-1 text-sm">
           {items.map((item) => (
             <li key={item.id}>
