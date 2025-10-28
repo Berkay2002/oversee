@@ -119,7 +119,7 @@ export function ReportsTableDemo() {
   });
 
   return (
-    <div className="space-y-4">
+    <div className="my-6 space-y-4">
       <Card>
         <CardHeader>
           <CardTitle>Interaktiv Demo</CardTitle>

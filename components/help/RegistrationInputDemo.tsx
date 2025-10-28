@@ -70,7 +70,7 @@ export function RegistrationInputDemo({
   };
 
   return (
-    <div className="space-y-4 rounded-lg border bg-card p-4 shadow-sm">
+    <div className="my-6 space-y-4 rounded-lg border bg-card p-4 shadow-sm">
       <div
         className={cn(
           'flex min-h-12 w-full flex-wrap items-center gap-2 rounded-md border border-input bg-background/50 px-3 py-2 text-base ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',

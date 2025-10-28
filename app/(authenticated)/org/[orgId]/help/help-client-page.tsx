@@ -8,6 +8,7 @@ import { MDXProvider } from "@mdx-js/react";
 import { HelpTip } from "@/components/help/help-tip";
 import { HelpImagePlaceholder } from "@/components/help/help-image-placeholder";
 import { FaqAccordion } from "@/components/help/FaqAccordion";
+import { HelpSection } from "@/components/help/help-section";
 
 // Import MDX content
 import KomIgang, { metadata as komIgangMeta } from "./content/kom-igang.mdx";
@@ -105,9 +106,9 @@ export default function HelpClientPage({ faqItems }: HelpClientPageProps) {
                   </div>
 
                   {/* Section Content */}
-                  <div className="prose prose-gray dark:prose-invert max-w-none prose-headings:scroll-mt-24 prose-headings:font-semibold prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-4 prose-h4:text-lg prose-h4:mt-6 prose-h4:mb-3 prose-p:text-base prose-p:leading-7 prose-p:mb-4 prose-ul:my-4 prose-ul:space-y-2 prose-li:text-base prose-li:leading-7 prose-strong:font-semibold prose-strong:text-foreground">
+                  <HelpSection>
                     <Component />
-                  </div>
+                  </HelpSection>
                 </section>
               );
             })}
