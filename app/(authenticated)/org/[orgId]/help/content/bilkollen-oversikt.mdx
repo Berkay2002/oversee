@@ -17,7 +17,10 @@ Bilkollen Översikt ger dig detaljerad statistik och visualiseringar av alla for
 - **Arkiverade ärenden** - Antal avslutade ärenden
 - **Genomsnittlig handläggningstid** - Genomsnittligt antal dagar från start till avslut
 
-<HelpImagePlaceholder caption="Nyckeltal för fordonsärenden" />
+import { BilkollenMetricsDemo } from '@/components/help/BilkollenMetricsDemo';
+import { BilkollenFundingSourceDemo } from '@/components/help/BilkollenFundingSourceDemo';
+
+<BilkollenMetricsDemo />
 
 #### Ärendeflöde (Sankey-diagram)
 
@@ -42,7 +45,7 @@ Ett cirkeldiagram visar hur ärenden fördelar sig mellan olika finansieringskä
 - Internt - Internt finansierade ärenden
 - Kund - Ärenden som kunden betalar för
 
-<HelpImagePlaceholder caption="Fördelning av finansieringskällor" />
+<BilkollenFundingSourceDemo />
 
 #### Försäkringsgodkännande
 
