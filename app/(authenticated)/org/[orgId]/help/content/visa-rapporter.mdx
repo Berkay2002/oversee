@@ -6,52 +6,40 @@ export const metadata = {
   keywords: "visa rapporter alla filtrera söka sortera tekniker kategori"
 }
 
-### Visa och hantera rapporter
+På sidan **Alla rapporter** får du en komplett översikt över alla rapporter som har skapats i organisationen. Använd de kraftfulla verktygen för att filtrera, söka och sortera för att snabbt hitta det du letar efter.
 
-På sidan **Alla rapporter** kan du se alla rapporter som har skapats i organisationen. Här kan du filtrera, söka och sortera för att hitta specifika rapporter.
+### Tabellöversikt
+Tabellen ger dig en sammanfattning av varje rapport med följande kolumner:
 
-#### Tabellkolumner
-
-Tabellen visar följande information:
-
-- **Tekniker** - Namn på teknikern som utförde arbetet
-- **Registreringsnummer** - Fordon som arbetet gäller
-- **Dagar taget** - Antal dagar arbetet tog
-- **Problem** - Beskrivning av problemet
-- **Skapad** - Datum och tid när rapporten skapades
-- **Åtgärder** - Meny med ytterligare alternativ (tre prickar)
+- **Tekniker**: Namnet på den tekniker som utförde arbetet.
+- **Registreringsnummer**: De fordon som rapporten gäller.
+- **Dagar taget**: Antalet dagar arbetet tog att slutföra.
+- **Problem**: En kort beskrivning av det rapporterade problemet.
+- **Skapad**: Datum och tid då rapporten skapades.
+- **Åtgärder**: En meny (tre prickar) med ytterligare alternativ.
 
 <ReportsTableDemo />
 
-#### Filtrera rapporter
+### Filtrera och Sök
+Hitta specifika rapporter snabbt med hjälp av dessa verktyg.
 
-Du har flera sätt att filtrera rapporterna:
-
-- **Sök** - Sök i problembeskrivningen genom att skriva i sökfältet. Sökningen sker automatiskt efter en kort fördröjning.
-- **Tekniker** - Filtrera på en specifik tekniker genom att välja från rullgardinsmenyn.
-- **Kategori** - Filtrera på en specifik problemkategori.
-- **Rensa filter** - Klicka på "Rensa filter" för att ta bort alla aktiva filter.
+- **Sök**: Skriv i sökfältet för att söka i problembeskrivningen. Sökningen sker automatiskt.
+- **Tekniker**: Filtrera rapporterna baserat på en specifik tekniker.
+- **Kategori**: Filtrera för att endast visa rapporter som tillhör en viss problemkategori.
+- **Rensa filter**: Klicka på "Rensa filter" för att återställa vyn och visa alla rapporter.
 
 <HelpTip variant="tip">
-**Tips:** Du kan kombinera flera filter samtidigt för att snabbt hitta specifika rapporter.
+**Tips:** Du kan kombinera flera filter samtidigt för att göra en mer specifik sökning.
 </HelpTip>
 
-#### Sortera kolumner
+### Sortering och Navigering
+Organisera och navigera i tabellen för att anpassa vyn efter dina behov.
 
-Klicka på en kolumnrubrik för att sortera efter den kolumnen. Klicka igen för att ändra sorteringsordning (stigande/fallande).
+- **Sortera kolumner**: Klicka på en kolumnrubrik för att sortera i stigande eller fallande ordning.
+- **Markera rader**: Använd kryssrutorna för att markera en eller flera rader för bulkoperationer (om tillgängligt).
+- **Sidnavigering**: Längst ner i tabellen kan du:
+  - Ändra antalet rader som visas per sida (10, 20, 30, 40, 50).
+  - Bläddra mellan sidor med pil-knapparna.
 
-#### Markera rader
-
-Använd kryssrutorna till vänster för att markera en eller flera rader. Detta kan användas för bulkoperationer (om tillgängligt).
-
-#### Sidnavigering
-
-Längst ner i tabellen hittar du sidnavigering. Du kan:
-
-- Ändra antal rader per sida (10, 20, 30, 40, 50)
-- Navigera mellan sidor med pil-knapparna
-- Se vilken sida du är på och totalt antal sidor
-
-#### Mobil vy
-
-På mobila enheter anpassas tabellen och filter-verktygen för att passa mindre skärmar. Filter visas då i en mer kompakt layout.
+### Mobilanpassning
+Sidan är fullt anpassad för mobila enheter, med en kompakt layout för filter och horisontell scrollning för tabellen på mindre skärmar.

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState } from "react";
@@ -40,7 +41,7 @@ export default function HelpClientPage({ faqItems }: HelpClientPageProps) {
     { Component: Oversikt, metadata: oversiktMeta },
     { Component: BilkollenOversikt, metadata: bilkollenOversiktMeta },
     { Component: Tabeller, metadata: tabellerMeta },
-    { Component: () => <FaqAccordion items={faqItems} />, metadata: faqMeta },
+    // { Component: () => <FaqAccordion items={faqItems} />, metadata: faqMeta },
   ];
 
   const tocItems = sections.map((section) => ({

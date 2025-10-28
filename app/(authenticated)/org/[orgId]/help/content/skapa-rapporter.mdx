@@ -6,43 +6,43 @@ export const metadata = {
   keywords: "skapa rapport ny formulär tekniker registreringsnummer problem kategori"
 }
 
-### Så här skapar du en rapport
+Följ stegen nedan för att skapa en ny rapport. Gå till sidan **Ny rapport** via menyn för att komma igång.
 
-Gå till sidan **Ny rapport** via menyn för att skapa en ny rapport. Formuläret är uppdelat i fyra sektioner:
+### Steg 1: Fyll i Arbetsinfo
+Börja med att fylla i information om arbetet.
 
-#### 1. Arbetsinfo
-
-- **Tekniker (obligatorisk)** - Välj vilken tekniker som utförde arbetet. Börja skriva för att söka bland tillgängliga tekniker.
-- **Rapportör** - Välj vem som rapporterar arbetet. Du kan välja "Övrigt/Custom" för att ange ett eget namn.
-- **Arbetsperiod (obligatorisk)** - Välj start- och slutdatum för arbetet. Systemet beräknar automatiskt antal arbetsdagar.
+- **Tekniker (obligatorisk)**: Välj den tekniker som utförde arbetet. Du kan söka i listan genom att börja skriva namnet.
+- **Rapportör**: Välj vem som rapporterar. Välj "Övrigt/Custom" för att ange ett eget namn.
+- **Arbetsperiod (obligatorisk)**: Välj start- och slutdatum. Antalet arbetsdagar beräknas automatiskt.
 
 <HelpTip variant="info">
-När du väljer arbetsperiod beräknas antal dagar automatiskt och visas under datumväljaren.
+Antalet dagar för arbetsperioden beräknas automatiskt och visas direkt under datumväljaren.
 </HelpTip>
 
-#### 2. Fordonsuppgifter
+### Steg 2: Ange Fordonsuppgifter
+Lägg till de fordon som rapporten gäller.
 
-- **Registreringsnummer** - Lägg till ett eller flera registreringsnummer för de fordon som arbetet gäller. Klicka på "+" för att lägga till fler.
+- **Registreringsnummer**: Ange ett eller flera registreringsnummer. Klicka på **+** för att lägga till fler fält.
 
 <RegistrationInputDemo />
 
-#### 3. Problem & Åtgärd
+### Steg 3: Beskriv Problem & Åtgärd
+Beskriv problemet och de åtgärder som vidtagits.
 
-- **Problemkategori (obligatorisk)** - Välj vilken kategori problemet tillhör. Kategorierna är färgkodade för enkel identifiering.
-- **Problembeskrivning (obligatorisk)** - Beskriv problemet i detalj. Detta fält är obligatoriskt.
-
-#### 4. Problem & Lösning
-
-- **Utfört arbete/Förbättring** - Beskriv vilka åtgärder som vidtogs och eventuella förbättringar. Detta fält är valfritt.
+- **Problemkategori (obligatorisk)**: Välj den kategori som bäst beskriver problemet.
+- **Problembeskrivning (obligatorisk)**: Ge en detaljerad beskrivning av problemet.
+- **Utfört arbete/Förbättring**: Beskriv vilka åtgärder som utfördes. Detta fält är valfritt.
 
 <HelpTip variant="tip">
-**Tips:** Formuläret valideras automatiskt när du lämnar ett fält (onBlur). Obligatoriska fält markeras med en asterisk (*).
+**Tips:** Obligatoriska fält är markerade med en asterisk (*). Formuläret valideras automatiskt när du lämnar ett fält.
 </HelpTip>
 
-#### Skicka in rapporten
+### Steg 4: Skicka in Rapporten
+När alla obligatoriska fält är ifyllda, klicka på **"Skapa rapport"** för att slutföra.
 
-När alla obligatoriska fält är ifyllda kan du klicka på **"Skapa rapport"**. Du får en bekräftelse när rapporten har skapats, och formuläret rensas automatiskt så att du kan skapa en ny rapport direkt.
+- **Bekräftelse**: Du får en bekräftelse när rapporten har skapats.
+- **Rensning**: Formuläret rensas automatiskt så att du smidigt kan skapa en ny rapport.
 
 <HelpTip variant="warning">
-Om du får ett felmeddelande, kontrollera att alla obligatoriska fält är korrekt ifyllda.
+Om du stöter på ett fel, dubbelkolla att alla obligatoriska fält är korrekt ifyllda.
 </HelpTip>

@@ -6,86 +6,41 @@ export const metadata = {
   keywords: "tabell sortera filtrera söka paginering sida markera kolumn"
 }
 
-### Allmänna tabellfunktioner
+Många sidor i Oversee använder tabeller för att visa data. Här är en guide till de vanligaste funktionerna som hjälper dig att arbeta effektivt.
 
-Många sidor i Oversee använder tabeller för att visa data. Här är en guide till de vanligaste funktionerna som finns i de flesta tabeller.
+### Grundläggande Funktioner
+Här är de mest använda funktionerna för att interagera med tabeller.
 
-#### Sortering
-
-Klicka på en kolumnrubrik för att sortera tabellen efter den kolumnen:
-
-- Första klicket sorterar i stigande ordning (A-Ö, 0-9, äldst först)
-- Andra klicket sorterar i fallande ordning (Ö-A, 9-0, nyast först)
-- Tredje klicket tar bort sorteringen
+- **Sortering**: Klicka på en kolumnrubrik för att sortera. Första klicket sorterar stigande (A-Ö), andra fallande (Ö-A), och tredje tar bort sorteringen.
+- **Sökning**: Använd sökfältet för att filtrera tabellen i realtid. Sökningen är inte skiftlägeskänslig.
+- **Filtermenyer**: Använd rullgardinsmenyer för att filtrera på specifika värden. Du kan kombinera flera filter.
 
 <TableFeaturesDemo />
 
-#### Sökning
-
-De flesta tabeller har ett sökfält där du kan söka efter specifik text:
-
-- Skriv din sökterm i sökfältet
-- Sökningen sker automatiskt efter en kort fördröjning (300ms)
-- Sökningen filtrerar tabellen i realtid
-- Klicka på X-knappen för att rensa sökningen
-
 <HelpTip variant="tip">
-**Tips:** Sökningen är vanligtvis inte skiftlägeskänslig, så du kan skriva med små eller stora bokstäver.
+**Tips:** Sökningen sker automatiskt efter en kort fördröjning (300ms) för en smidig upplevelse.
 </HelpTip>
 
-#### Filtermenyer
+### Radhantering
+Här är funktionerna för att hantera rader i tabellen.
 
-Många tabeller har rullgardinsmenyer för att filtrera på specifika värden:
+- **Markera rader**: Använd kryssrutorna för att markera en eller flera rader. Klicka på den översta kryssrutan för att markera alla synliga rader.
+- **Åtgärdsmeny**: Klicka på åtgärdsmenyn (tre prickar) längst till höger på en rad för att se tillgängliga åtgärder som **Redigera**, **Visa detaljer** eller **Radera**.
 
-- Klicka på en filtermeny för att öppna den
-- Välj ett värde för att filtrera tabellen
-- Du kan ofta kombinera flera filter samtidigt
-- Klicka på "Rensa filter" för att ta bort alla filter
+### Tabellinställningar
+Anpassa tabellvyn efter dina behov med dessa inställningar.
 
-#### Markera rader
+- **Paginering**: Längst ner i tabellen kan du:
+  - **Välja rader per sida**: Bestäm hur många rader som visas (10, 20, 30, 40, 50).
+  - **Navigera mellan sidor**: Använd pilknapparna för att bläddra.
+- **Kolumnsynlighet**: Klicka på kolumnikonen för att dölja eller visa specifika kolumner.
 
-Många tabeller har kryssrutor för att markera rader:
+### Mobilanpassning
+Tabellerna är fullt anpassade för mobila enheter.
 
-- Klicka på kryssrutan längst upp för att markera alla synliga rader
-- Klicka på en enskild kryssruta för att markera den raden
-- Håll Shift och klicka för att markera ett intervall (om stöds)
-- Markerade rader kan användas för bulkoperationer
-
-
-#### Paginering
-
-Längst ner i tabellerna hittar du pagineringskontroller:
-
-- **Rader per sida** - Välj hur många rader som visas (10, 20, 30, 40, 50)
-- **Sidnavigering** - Använd pilknapparna för att navigera mellan sidor
-- **Sidinformation** - Visar vilken sida du är på och totalt antal sidor
-
-#### Kolumnsynlighet
-
-Vissa tabeller låter dig dölja/visa kolumner:
-
-- Leta efter en knapp med kolumnikon (vanligtvis bredvid filter)
-- Klicka för att öppna en meny med kolumnalternativ
-- Markera/avmarkera kolumner för att visa/dölja dem
-
-#### Åtgärdsmeny
-
-Många rader har en åtgärdsmeny (tre prickar) längst till höger:
-
-- Klicka på de tre prickarna för att öppna menyn
-- Välj en åtgärd från listan
-- Vanliga åtgärder inkluderar: Redigera, Visa detaljer, Radera
-
-
-#### Mobilanpassning
-
-På mobila enheter anpassas tabellerna för mindre skärmar:
-
-- Vissa kolumner kan vara dolda som standard
-- Filter och verktyg visas i en mer kompakt layout
-- Tabellen kan scrollas horisontellt
-- Åtgärdsmenyer kan vara lättare att nå
+- **Horisontell scrollning**: På små skärmar kan du scrolla tabellen horisontellt för att se alla kolumner.
+- **Kompakt layout**: Filter och verktyg visas i en mer kompakt layout för att spara utrymme.
 
 <HelpTip variant="tip">
-**Tips:** På små skärmar, svepa tabellen åt sidorna för att se alla kolumner.
+**Tips:** På små skärmar, svep tabellen åt sidorna för att enkelt komma åt all information.
 </HelpTip>
