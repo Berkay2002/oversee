@@ -16,6 +16,7 @@ export type OrgParticipationResponse = {
     userId: string;
     name: string;
     skillCount: number;
+    skills: string[];
   }>;
 
   // Block D

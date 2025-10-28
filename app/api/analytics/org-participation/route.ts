@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
 
   // C. Skill coverage
   const { data: skillCoverageData, error: skillCoverageError } =
-    await supabase.rpc('get_skill_coverage_per_member', {
+    await supabase.rpc('get_skill_coverage_per_member_with_skills', {
       org_id_param: orgId,
     });
 
@@ -65,6 +65,7 @@ export async function GET(request: NextRequest) {
     userId: item.user_id,
     name: item.name,
     skillCount: item.skill_count,
+    skills: item.skills || [],
   }));
 
   // D. Recent intake per handler

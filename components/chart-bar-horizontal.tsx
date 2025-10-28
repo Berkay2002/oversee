@@ -12,12 +12,14 @@ interface ChartBarHorizontalProps<T> {
   data: T[];
   dataKey: keyof T;
   categoryKey: keyof T;
+  customTooltip?: React.ReactElement;
 }
 
 export function ChartBarHorizontal<T extends { fill?: string }>({
   data,
   dataKey,
   categoryKey,
+  customTooltip,
 }: ChartBarHorizontalProps<T>) {
   const chartConfig = {
     [dataKey as string]: {
@@ -46,7 +48,7 @@ export function ChartBarHorizontal<T extends { fill?: string }>({
         />
         <ChartTooltip
           cursor={false}
-          content={<ChartTooltipContent indicator="line" />}
+          content={customTooltip || <ChartTooltipContent indicator="line" />}
         />
         <Bar dataKey={dataKey as string} radius={4}>
           {data.map((entry, index) => (

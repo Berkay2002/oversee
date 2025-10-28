@@ -26,6 +26,41 @@ const OrgActiveMembersStat = ({ data }: { data: OrgParticipationResponse }) => (
   </Card>
 );
 
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: {
+    payload: {
+      skillCount: number;
+      skills: string[];
+    };
+  }[];
+  label?: string;
+}
+
+const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    return (
+      <div className="bg-background border p-2 rounded-md shadow-lg">
+        <p className="font-bold">{label}</p>
+        <p>Antal kompetenser: {data.skillCount}</p>
+        {data.skills && data.skills.length > 0 && (
+          <div>
+            <p className="font-semibold mt-2">Kompetenser:</p>
+            <ul className="list-disc pl-4">
+              {data.skills.map((skill: string, index: number) => (
+                <li key={index}>{skill}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return null;
+};
+
 const OrgSkillCoverageChart = ({
   data,
   allHandlerIds,
@@ -41,13 +76,14 @@ const OrgSkillCoverageChart = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Kompetensbevakning</CardTitle>
+        <CardTitle>Antal kompetenser per medarbetare</CardTitle>
       </CardHeader>
       <CardContent>
         <ChartBarHorizontal
           data={chartData}
           dataKey="skillCount"
           categoryKey="name"
+          customTooltip={<CustomTooltip />}
         />
       </CardContent>
     </Card>
