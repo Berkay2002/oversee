@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 
 interface TocItem {
   id: string;
@@ -65,20 +66,22 @@ export function TableOfContents({ items }: TableOfContentsProps) {
     <nav className="sticky top-20 hidden lg:block">
       <h3 className="mb-4 text-sm font-semibold">Innehåll</h3>
       <ScrollArea className="h-[calc(100vh-160px)]">
-        <ul className="space-y-2 text-sm">
+        <ul className="space-y-1 text-sm">
           {items.map((item) => (
             <li key={item.id}>
-              <button
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => handleClick(item.id)}
                 className={cn(
-                  "block w-full rounded-md px-3 py-2 text-left transition-colors hover:bg-muted",
+                  "w-full justify-start",
                   activeId === item.id
                     ? "bg-muted font-medium text-foreground"
                     : "text-muted-foreground"
                 )}
               >
                 {item.title}
-              </button>
+              </Button>
             </li>
           ))}
         </ul>

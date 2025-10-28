@@ -2,8 +2,12 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { Search, X } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import {
+  InputGroup,
+  InputGroupInput,
+  InputGroupAddon,
+  InputGroupButton,
+} from "@/components/ui/input-group";
 
 interface HelpSearchProps {
   onSearch: (query: string) => void;
@@ -19,9 +23,8 @@ export function HelpSearch({
   const handleSearch = useCallback(
     (value: string) => {
       setQuery(value);
-      onSearch(value);
     },
-    [onSearch]
+    []
   );
 
   const handleClear = () => {
@@ -38,26 +41,24 @@ export function HelpSearch({
   }, [query, onSearch]);
 
   return (
-    <div className="relative mb-6">
-      <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-      <Input
+    <InputGroup className="mb-6">
+      <InputGroupAddon>
+        <Search className="h-4 w-4 text-muted-foreground" />
+      </InputGroupAddon>
+      <InputGroupInput
         type="text"
         value={query}
         onChange={(e) => handleSearch(e.target.value)}
         placeholder={placeholder}
-        className="pl-9 pr-9"
       />
       {query && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleClear}
-          className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 p-0"
-        >
-          <X className="h-4 w-4" />
-          <span className="sr-only">Rensa sökning</span>
-        </Button>
+        <InputGroupAddon>
+          <InputGroupButton variant="ghost" size="icon-xs" onClick={handleClear}>
+            <X className="h-4 w-4" />
+            <span className="sr-only">Rensa sökning</span>
+          </InputGroupButton>
+        </InputGroupAddon>
       )}
-    </div>
+    </InputGroup>
   );
 }
