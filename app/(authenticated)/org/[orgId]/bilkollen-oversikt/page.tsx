@@ -25,10 +25,13 @@ import { BilkollenHandlerStats } from '@/components/bilkollen/BilkollenHandlerSt
 import { BilkollenSLASection } from '@/components/bilkollen/BilkollenSLASection';
 import { BilkollenWIPSection } from '@/components/bilkollen/BilkollenWIPSection';
 import { BilkollenFlowSection } from '@/components/bilkollen/BilkollenFlowSection';
+import { BilkollenOrgParticipationSection } from '@/components/bilkollen/BilkollenOrgParticipationSection';
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function BilkollenOversiktPage() {
   const { activeOrg } = useOrg();
   const orgId = activeOrg.id;
+  const isAdminOrOwner = activeOrg.role === 'admin' || activeOrg.role === 'owner';
 
   const [statistics, setStatistics] = React.useState<VehicleCaseStatistics | null>(null);
   const [members, setMembers] = React.useState<Array<{ user_id: string; name: string }>>([]);
@@ -203,6 +206,19 @@ export default function BilkollenOversiktPage() {
           allHandlerIds={members.map((m) => m.user_id)}
         />
       </section>
+
+      {isAdminOrOwner && (
+        <section className="space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="h-px flex-1 bg-linear-to-r from-border to-transparent" />
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+              Personal
+            </h2>
+            <div className="h-px flex-1 bg-linear-to-l from-border to-transparent" />
+          </div>
+          <BilkollenOrgParticipationSection orgId={orgId} />
+        </section>
+      )}
     </div>
   );
 }
