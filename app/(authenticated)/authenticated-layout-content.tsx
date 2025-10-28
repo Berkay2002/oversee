@@ -6,6 +6,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import type { ActiveOrg } from "@/lib/org/server";
 import { getUserProfile } from "@/lib/supabase/server";
 import QueryProvider from "@/lib/wrappers/QueryProvider";
+import { ResizableLayoutWrapper } from "./resizable-layout-wrapper";
 
 interface AuthenticatedLayoutContentProps {
   children: ReactNode;
@@ -29,17 +30,19 @@ export default async function AuthenticatedLayoutContent({
 
   return (
     <SidebarProvider>
-      <AppSidebar orgId={activeOrg.id} orgName={activeOrg.name} user={userData} />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-          <SidebarTrigger />
-        </header>
-        <QueryProvider>
-          <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-            {children}
-          </div>
-        </QueryProvider>
-      </SidebarInset>
+      <ResizableLayoutWrapper>
+        <AppSidebar orgId={activeOrg.id} orgName={activeOrg.name} user={userData} />
+        <SidebarInset>
+          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+            <SidebarTrigger />
+          </header>
+          <QueryProvider>
+            <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+              {children}
+            </div>
+          </QueryProvider>
+        </SidebarInset>
+      </ResizableLayoutWrapper>
     </SidebarProvider>
   );
 }

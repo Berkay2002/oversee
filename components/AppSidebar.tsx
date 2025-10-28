@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import {
-  LayoutDashboard,
   FilePlus,
   FileText,
   Users,
@@ -132,6 +131,30 @@ export function AppSidebar({
   const pathname = usePathname()
   const { isMobile, setOpenMobile, state } = useSidebar()
   const { setTheme, theme } = useTheme()
+  const [sidebarWidth, setSidebarWidth] = React.useState(256)
+
+  // Track sidebar width changes
+  React.useEffect(() => {
+    const updateWidth = () => {
+      const sidebarWrapper = document.querySelector('[data-slot="sidebar-wrapper"]') as HTMLElement
+      if (sidebarWrapper) {
+        const width = getComputedStyle(sidebarWrapper).getPropertyValue('--sidebar-width')
+        const numericWidth = parseInt(width)
+        if (!isNaN(numericWidth)) {
+          setSidebarWidth(numericWidth)
+        }
+      }
+    }
+
+    updateWidth()
+    const observer = new MutationObserver(updateWidth)
+    const sidebarWrapper = document.querySelector('[data-slot="sidebar-wrapper"]')
+    if (sidebarWrapper) {
+      observer.observe(sidebarWrapper, { attributes: true, attributeFilter: ['style'] })
+    }
+
+    return () => observer.disconnect()
+  }, [state])
 
   // Extract orgId from pathname (e.g., /org/[orgId]/page -> [orgId])
   const orgIdMatch = pathname.match(/^\/org\/([^\/]+)/)
@@ -181,6 +204,16 @@ export function AppSidebar({
   const homeUrl = orgId ? `/org/${orgId}/oversikt` : "/oversikt"
 
   const isAdmin = user?.role === "admin"
+
+  // Calculate dynamic sizes based on sidebar width (200-400px range)
+  // Normalize to 0-1 scale where 0 = min width (200px), 1 = max width (400px)
+  const widthScale = Math.max(0, Math.min(1, (sidebarWidth - 200) / 200))
+
+  // Dynamic icon size: 16px to 20px for secondary navigation
+  const iconSize = state === "collapsed" ? 16 : Math.round(16 + widthScale * 4)
+
+  // Dynamic text size class for secondary navigation
+  const headerTextSize = state === "collapsed" ? "text-sm" : widthScale > 0.5 ? "text-base" : "text-sm"
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -235,17 +268,26 @@ export function AppSidebar({
                       setTheme(theme === "light" ? "dark" : "light")
                     }
                   >
-                    <Sun className="size-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                    <Moon className="absolute size-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                    <span>Theme</span>
+                    <Sun
+                      className="rotate-0 scale-100 transition-all duration-200 dark:-rotate-90 dark:scale-0"
+                      style={{ width: `${iconSize}px`, height: `${iconSize}px` }}
+                    />
+                    <Moon
+                      className="absolute rotate-90 scale-0 transition-all duration-200 dark:rotate-0 dark:scale-100"
+                      style={{ width: `${iconSize}px`, height: `${iconSize}px` }}
+                    />
+                    <span className={cn("transition-all duration-200", headerTextSize)}>Theme</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 {navSecondaryWithOrgId.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild size="sm">
                       <Link href={item.url} onClick={handleHeaderClick}>
-                        <item.icon className="size-4" />
-                        <span>{item.title}</span>
+                        <item.icon
+                          className="transition-all duration-200"
+                          style={{ width: `${iconSize}px`, height: `${iconSize}px` }}
+                        />
+                        <span className={cn("transition-all duration-200", headerTextSize)}>{item.title}</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
