@@ -21,6 +21,10 @@
         "shadcn@latest",
         "mcp"
       ]
+    },
+    "playwright": {
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@executeautomation/playwright-mcp-server"]
     }
   }
 }
