@@ -1,0 +1,45 @@
+import { ReportsTableDemo } from '@/components/help/ReportsTableDemo'
+
+export const metadata = {
+  id: "visa-rapporter",
+  title: "Visa alla rapporter",
+  keywords: "visa rapporter alla filtrera söka sortera tekniker kategori"
+}
+
+På sidan **Alla rapporter** får du en komplett översikt över alla rapporter som har skapats i organisationen. Använd de kraftfulla verktygen för att filtrera, söka och sortera för att snabbt hitta det du letar efter.
+
+### Tabellöversikt
+Tabellen ger dig en sammanfattning av varje rapport med följande kolumner:
+
+- **Tekniker**: Namnet på den tekniker som utförde arbetet.
+- **Registreringsnummer**: De fordon som rapporten gäller.
+- **Dagar taget**: Antalet dagar arbetet tog att slutföra.
+- **Problem**: En kort beskrivning av det rapporterade problemet.
+- **Skapad**: Datum och tid då rapporten skapades.
+- **Åtgärder**: En meny (tre prickar) med ytterligare alternativ.
+
+<ReportsTableDemo />
+
+### Filtrera och Sök
+Hitta specifika rapporter snabbt med hjälp av dessa verktyg.
+
+- **Sök**: Skriv i sökfältet för att söka i problembeskrivningen. Sökningen sker automatiskt.
+- **Tekniker**: Filtrera rapporterna baserat på en specifik tekniker.
+- **Kategori**: Filtrera för att endast visa rapporter som tillhör en viss problemkategori.
+- **Rensa filter**: Klicka på "Rensa filter" för att återställa vyn och visa alla rapporter.
+
+<HelpTip variant="tip">
+**Tips:** Du kan kombinera flera filter samtidigt för att göra en mer specifik sökning.
+</HelpTip>
+
+### Sortering och Navigering
+Organisera och navigera i tabellen för att anpassa vyn efter dina behov.
+
+- **Sortera kolumner**: Klicka på en kolumnrubrik för att sortera i stigande eller fallande ordning.
+- **Markera rader**: Använd kryssrutorna för att markera en eller flera rader för bulkoperationer (om tillgängligt).
+- **Sidnavigering**: Längst ner i tabellen kan du:
+  - Ändra antalet rader som visas per sida (10, 20, 30, 40, 50).
+  - Bläddra mellan sidor med pil-knapparna.
+
+### Mobilanpassning
+Sidan är fullt anpassad för mobila enheter, med en kompakt layout för filter och horisontell scrollning för tabellen på mindre skärmar.

@@ -1,0 +1,67 @@
+import { AddVehicleDialogDemo } from '@/components/help/AddVehicleDialogDemo';
+import { InlineEditingDemo } from '@/components/help/InlineEditingDemo';
+
+export const metadata = {
+  id: "bilkollen",
+  title: "Bilkollen - Ärendehantering",
+  keywords: "bilkollen fordon ärende hantera försäkring internt kund klar arkiv"
+}
+
+Bilkollen är ert centrala system för att hantera alla fordonsärenden. Här kan ni följa pågående ärenden, slutföra dem och hantera arkivet.
+
+### Kom igång med Bilkollen
+Bilkollen är uppdelad i två huvudvyer för att ge en tydlig överblick över era ärenden.
+
+- **Pågående**: Här visas alla aktiva ärenden som för närvarande hanteras.
+- **Arkiv**: Här hittar du alla avslutade ärenden som har markerats som klara.
+
+### Skapa och Hantera Ärenden
+Här är de vanligaste åtgärderna för att hantera ärenden i Bilkollen.
+
+1.  **Lägg till nytt fordon**
+    - Klicka på knappen **"Lägg till fordon"** för att skapa ett nytt ärende.
+    - Ange registreringsnumret och fyll i all nödvändig information.
+    <AddVehicleDialogDemo />
+
+2.  **Redigera ärenden direkt i tabellen**
+    - Du kan snabbt redigera följande fält direkt i tabellen (inline editing):
+      - Plats
+      - Finansieringskälla
+      - Försäkringsstatus
+      - Handläggare
+    - Klicka på ett fält för att börja redigera. Ändringen sparas automatiskt.
+    <InlineEditingDemo />
+
+3.  **Visa ändringslogg**
+    - Klicka på ett ärende för att öppna detaljvyn.
+    - Här kan du se en komplett **ändringslogg** med historik över alla ändringar, inklusive vem som gjorde dem och när.
+
+4.  **Markera som klar**
+    - När ett ärende är färdigbehandlat, markera det som **"Klar"**.
+    - Ärendet flyttas då automatiskt till **Arkiv**-fliken.
+
+### Filtrering och Sökning
+Använd de kraftfulla filtreringsverktygen för att snabbt hitta de ärenden du letar efter.
+
+- **Registreringsnummer**: Sök efter ett specifikt fordon i realtid.
+- **Finansieringskälla**: Filtrera på **Försäkring**, **Internt**, **Kund**, eller visa **Alla**.
+- **Försäkringsstatus**: Filtrera på **Väntar**, **Godkänd**, **Nekad**, eller visa **Alla**.
+- **Plats**: Filtrera på den plats där fordonet befinner sig.
+- **Handläggare**: Filtrera för att se ärenden som är tilldelade en specifik handläggare.
+
+<HelpTip variant="info">
+Som standard visar Bilkollen endast dina egna ärenden när sidan laddas.
+</HelpTip>
+
+### Avancerade Åtgärder
+Här är några av de mer avancerade åtgärderna du kan utföra.
+
+- **Återställa arkiverade ärenden**: I Arkiv-fliken kan du återställa ett ärende som felaktigt markerats som klart. Ärendet flyttas då tillbaka till Pågående.
+- **Ta bort ärenden**: Du kan permanent ta bort ett ärende via åtgärdsmenyn (tre prickar). En bekräftelsedialog visas innan raderingen.
+
+<HelpTip variant="warning">
+**Varning:** Borttagna ärenden kan inte återställas. Var försiktig när du använder denna funktion.
+</HelpTip>
+
+### Mobilanpassning
+Bilkollen är fullt anpassad för mobila enheter. Filter och verktyg anpassas automatiskt för mindre skärmar för en smidig användarupplevelse.

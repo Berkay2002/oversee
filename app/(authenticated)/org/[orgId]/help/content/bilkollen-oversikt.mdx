@@ -1,0 +1,76 @@
+export const metadata = {
+  id: "bilkollen-oversikt",
+  title: "Bilkollen Översikt",
+  keywords: "bilkollen översikt statistik försäkring sla wip handläggare sankey"
+}
+
+import { BilkollenMetricsDemo } from '@/components/help/BilkollenMetricsDemo';
+import { BilkollenFundingSourceDemo } from '@/components/help/BilkollenFundingSourceDemo';
+import { BilkollenHandlerStatsDemo } from '@/components/help/BilkollenHandlerStatsDemo';
+
+Bilkollen Översikt ger dig detaljerad statistik och visualiseringar av alla fordonsärenden i organisationen. Använd denna sida för att analysera trender, identifiera flaskhalsar och följa upp prestanda.
+
+### Ärendestatistik
+Högst upp på sidan visas nyckeltal som ger en snabb överblick av den aktuella ärendestatusen.
+
+- **Totalt antal ärenden**: Det totala antalet ärenden som har skapats.
+- **Pågående ärenden**: Antalet ärenden som är aktiva och under hantering.
+- **Arkiverade ärenden**: Antalet ärenden som har avslutats.
+- **Genomsnittlig handläggningstid**: Den genomsnittliga tiden det tar att slutföra ett ärende från start till mål.
+
+<BilkollenMetricsDemo />
+
+### Ärendeflöde (Sankey-diagram)
+Sankey-diagrammet visualiserar hur ärenden flödar genom systemet. Detta hjälper dig att förstå:
+
+- **Flödesvägar**: Hur ärenden rör sig mellan olika statusar.
+- **Volymer**: Antalet ärenden i varje steg av processen.
+- **Statusfördelning**: Fördelningen mellan pågående och arkiverade ärenden.
+
+### Trender över tid
+Linjediagrammen visar hur ärendemängden utvecklas, vilket gör det möjligt att identifiera mönster och förutse framtida arbetsbelastning.
+
+- **Veckovisa trender**: Visar antalet ärenden per vecka.
+- **Månadsvisa trender**: Visar antalet ärenden per månad för en långsiktig vy.
+
+### Finansieringsfördelning
+Detta cirkeldiagram visar hur ärendena fördelar sig mellan olika finansieringskällor.
+
+- **Försäkring**: Ärenden som bekostas av försäkringsbolag.
+- **Internt**: Ärenden som finansieras internt.
+- **Kund**: Ärenden som kunden själv betalar för.
+
+<BilkollenFundingSourceDemo />
+
+### Försäkringsgodkännande
+Ett cirkeldiagram som ger en snabb överblick av statusen på försäkringsgodkännanden.
+
+- **Väntar**: Ärenden som inväntar godkännande.
+- **Godkänd**: Ärenden som har blivit godkända.
+- **Nekad**: Ärenden som har nekats.
+
+### SLA-efterlevnad
+Denna sektion visar hur väl organisationen följer uppsatta servicenivåer (Service Level Agreements), vilket hjälper er att proaktivt hantera ärenden som riskerar att överskrida tidsgränser.
+
+<HelpTip variant="info">
+SLA-efterlevnad mäts mot de tidsgränser som är definierade för olika typer av ärenden.
+</HelpTip>
+
+### WIP-belastning (Work in Progress)
+Här visas hur mycket arbete som pågår samtidigt (Work in Progress). Använd denna information för att identifiera flaskhalsar och optimera resursfördelningen.
+
+### Handläggarstatistik
+Denna sektion visar detaljerad statistik för varje handläggare, inklusive:
+
+- **Antal tilldelade ärenden**: Hur många ärenden varje handläggare ansvarar för.
+- **Genomsnittlig handläggningstid**: Den genomsnittliga tiden det tar för en handläggare att slutföra ett ärende.
+- **Fördelning av ärendetyper**: Vilka typer av ärenden varje handläggare hanterar.
+
+<BilkollenHandlerStatsDemo />
+
+### Filtrera efter handläggare
+Du kan filtrera all statistik på sidan för att se data för en specifik handläggare. Detta är ett kraftfullt verktyg för att analysera individuell prestation och arbetsbelastning.
+
+<HelpTip variant="tip">
+**Tips:** Använd handläggarfiltret för att jämföra prestationer och identifiera coachningsmöjligheter.
+</HelpTip>

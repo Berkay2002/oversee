@@ -1,0 +1,46 @@
+import { TableFeaturesDemo } from '@/components/help/TableFeaturesDemo';
+
+export const metadata = {
+  id: "tabeller",
+  title: "Arbeta med tabeller",
+  keywords: "tabell sortera filtrera söka paginering sida markera kolumn"
+}
+
+Många sidor i Oversee använder tabeller för att visa data. Här är en guide till de vanligaste funktionerna som hjälper dig att arbeta effektivt.
+
+### Grundläggande Funktioner
+Här är de mest använda funktionerna för att interagera med tabeller.
+
+- **Sortering**: Klicka på en kolumnrubrik för att sortera. Första klicket sorterar stigande (A-Ö), andra fallande (Ö-A), och tredje tar bort sorteringen.
+- **Sökning**: Använd sökfältet för att filtrera tabellen i realtid. Sökningen är inte skiftlägeskänslig.
+- **Filtermenyer**: Använd rullgardinsmenyer för att filtrera på specifika värden. Du kan kombinera flera filter.
+
+<TableFeaturesDemo />
+
+<HelpTip variant="tip">
+**Tips:** Sökningen sker automatiskt efter en kort fördröjning (300ms) för en smidig upplevelse.
+</HelpTip>
+
+### Radhantering
+Här är funktionerna för att hantera rader i tabellen.
+
+- **Markera rader**: Använd kryssrutorna för att markera en eller flera rader. Klicka på den översta kryssrutan för att markera alla synliga rader.
+- **Åtgärdsmeny**: Klicka på åtgärdsmenyn (tre prickar) längst till höger på en rad för att se tillgängliga åtgärder som **Redigera**, **Visa detaljer** eller **Radera**.
+
+### Tabellinställningar
+Anpassa tabellvyn efter dina behov med dessa inställningar.
+
+- **Paginering**: Längst ner i tabellen kan du:
+  - **Välja rader per sida**: Bestäm hur många rader som visas (10, 20, 30, 40, 50).
+  - **Navigera mellan sidor**: Använd pilknapparna för att bläddra.
+- **Kolumnsynlighet**: Klicka på kolumnikonen för att dölja eller visa specifika kolumner.
+
+### Mobilanpassning
+Tabellerna är fullt anpassade för mobila enheter.
+
+- **Horisontell scrollning**: På små skärmar kan du scrolla tabellen horisontellt för att se alla kolumner.
+- **Kompakt layout**: Filter och verktyg visas i en mer kompakt layout för att spara utrymme.
+
+<HelpTip variant="tip">
+**Tips:** På små skärmar, svep tabellen åt sidorna för att enkelt komma åt all information.
+</HelpTip>

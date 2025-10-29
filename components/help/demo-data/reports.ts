@@ -1,0 +1,40 @@
+import { Tables } from '@/types/database';
+
+export const demoReports: Tables<'reports'>[] = [
+  {
+    id: 'report-1',
+    created_at: '2023-10-27T10:00:00Z',
+    technician_name: 'Anna Andersson',
+    registration_numbers: ['ABC 123', 'DEF 456'],
+    days_taken: 3,
+    problem_description: 'Motorn startar inte, misstänkt problem med tändstiften. Utförde felsökning och bekräftade slitna tändstift.',
+    improvement_description: 'Bytte ut alla tändstift och testade motorn. Startar nu utan problem.',
+    category_id: 'cat-1',
+    reporter_name: 'Sven Svensson',
+    org_id: 'org-1',
+  },
+  {
+    id: 'report-2',
+    created_at: '2023-10-26T14:30:00Z',
+    technician_name: 'Bengt Bengtsson',
+    registration_numbers: ['GHI 789'],
+    days_taken: 1,
+    problem_description: 'Bromsarna gnisslar vid inbromsning. Visuell inspektion visade på slitna bromsbelägg fram.',
+    improvement_description: 'Bytte bromsbelägg och skivor fram. Gnisslet är borta och bromsverkan är återställd.',
+    category_id: 'cat-2',
+    reporter_name: 'Karin Karlsson',
+    org_id: 'org-1',
+  },
+  {
+    id: 'report-3',
+    created_at: '2023-10-25T11:00:00Z',
+    technician_name: 'Cecilia Ceder',
+    registration_numbers: ['JKL 012', 'MNO 345', 'PQR 678'],
+    days_taken: 5,
+    problem_description: 'Oljeläckage från motorn. Lokaliserade läckaget till en packning vid oljetråget.',
+    improvement_description: 'Tömde motorn på olja, monterade ner oljetråget, bytte packning och återmonterade. Fyllde på ny olja och kontrollerade efter läckage.',
+    category_id: 'cat-1',
+    reporter_name: 'David Davidsson',
+    org_id: 'org-1',
+  },
+];

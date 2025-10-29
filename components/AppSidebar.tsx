@@ -102,7 +102,7 @@ const data = {
       icon: Settings,
     },
     {
-      title: "Help",
+      title: "Hjälp",
       url: "/help",
       icon: HelpCircle,
     },
@@ -198,7 +198,7 @@ export function AppSidebar({
 
   const navSecondaryWithOrgId = data.navSecondary.map(item => ({
     ...item,
-    url: item.url === "/settings" ? transformUrl(item.url) : item.url
+    url: transformUrl(item.url)
   }))
 
   const homeUrl = orgId ? `/org/${orgId}/oversikt` : "/oversikt"

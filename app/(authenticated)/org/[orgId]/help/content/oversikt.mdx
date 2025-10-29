@@ -1,0 +1,49 @@
+export const metadata = {
+  id: "oversikt",
+  title: "Översikt Dashboard",
+  keywords: "översikt dashboard nyckeltal diagram trender kategori tekniker"
+}
+
+import { NyckeltalKortDemo } from '@/components/help/NyckeltalKortDemo';
+import { KategoriFordelningDemo } from '@/components/help/KategoriFordelningDemo';
+
+Översiktssidan ger dig en snabb visuell sammanfattning av alla rapporter i organisationen. Här hittar du nyckeltal, trender och interaktiva diagram som hjälper dig att förstå er data.
+
+### Nyckeltal
+Överst på sidan visas fyra viktiga nyckeltal som ger en omedelbar överblick av er prestation.
+
+- **Totalt antal rapporter**: Det totala antalet rapporter som har skapats.
+- **Genomsnittliga dagar**: Det genomsnittliga antalet dagar det tar att slutföra en rapport.
+- **Maxdagar**: Den längsta tiden en enskild rapport har tagit att slutföra.
+- **Aktiva kategorier**: Antalet unika problemkategorier som för närvarande används.
+
+<NyckeltalKortDemo />
+
+### Dagstrender
+Trenddiagrammen visualiserar hur antalet rapporter och problem utvecklas över tid, vilket hjälper er att identifiera mönster.
+
+- **Dagliga trender**: Visar data per dag för detaljerad analys.
+- **Veckovisa trender**: Aggregerar data per vecka för en bredare översikt.
+- **Månadsvisa trender**: Aggregerar data per månad för att se långsiktiga trender.
+
+<HelpTip variant="tip">
+**Tips:** Hovra över diagrampunkterna för att se exakta värden och få djupare insikter.
+</HelpTip>
+
+### Kategorifördelning
+Detta cirkeldiagram visar hur rapporterna fördelar sig mellan olika problemkategorier, vilket gör det enkelt att se vilka problem som är vanligast.
+
+<KategoriFordelningDemo />
+
+### Teknikerprestation
+Ett stapeldiagram som visar antalet rapporter varje tekniker har hanterat. Detta ger en tydlig bild av arbetsfördelningen i teamet.
+
+### Toppproblem
+En lista över de mest frekvent rapporterade problemen. Använd denna information för att identifiera och åtgärda återkommande problem.
+
+### Interaktiva Diagram
+Många av diagrammen på översiktssidan är interaktiva för att du ska kunna utforska datan på djupet.
+
+- **Hovra**: För muspekaren över datapunkter för att se detaljerad information.
+- **Klicka**: Klicka på legendförklaringar för att dölja eller visa specifika dataserier.
+- **Zooma**: Vissa diagram kan zoomas för att granska en specifik tidsperiod eller ett visst datautsnitt.
