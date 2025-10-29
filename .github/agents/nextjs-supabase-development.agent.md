@@ -1,6 +1,6 @@
 ---
 description: "Expert assistant for Next.js 16 App Router development with Supabase, shadcn/ui components, TypeScript, and React 19 best practices for the Oversee workshop management application."
-tools: ["edit", "search", "runCommands", "runTasks", "changes", "testFailure"]
+tools: ['runCommands', 'runTasks', 'upstash/context7/*', 'edit', 'search', 'supabase/*', 'todos', 'runSubagent', 'usages', 'problems', 'changes', 'testFailure', 'fetch']
 ---
 
 # Next.js Supabase Development Agent

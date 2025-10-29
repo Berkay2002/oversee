@@ -10,7 +10,7 @@ type VehicleCaseUpdate = Database['public']['Tables']['vehicle_cases']['Update']
 type OrgLocationRow = Database['public']['Tables']['org_locations']['Row'];
 type VehicleCaseAuditInsert = Database['public']['Tables']['vehicle_case_audits']['Insert'];
 
-// View type (denormalized)
+// View type (denormalized) - matches vehicle_cases_view columns
 export type VehicleCaseView = {
   id: string;
   org_id: string;
@@ -35,10 +35,6 @@ export type VehicleCaseView = {
   archived_by: string | null;
 };
 
-type VehicleCaseViewRow = Omit<VehicleCaseView, 'raknad_pa'> & {
-  raknad_pa?: boolean | null;
-};
-
 export type VehicleCaseFilters = {
   search?: string;
   funding_source?: 'insurance' | 'internal' | 'customer';
@@ -58,6 +54,8 @@ export type OrgMember = {
 /**
  * Fetch vehicle cases from the denormalized view
  * Filters by archived status (ongoing vs archive)
+ * Note: Cannot use unstable_cache with authenticated Supabase client (uses cookies())
+ * Caching happens at the React Server Component level via Next.js request memoization
  */
 export async function getVehicleCases(
   orgId: string,
@@ -68,7 +66,13 @@ export async function getVehicleCases(
 
   let query = supabase
     .from('vehicle_cases_view')
-    .select('*', { count: 'exact' })
+    .select(
+      `id, org_id, registration_number, klar, archived_at, created_at, updated_at,
+       days_to_klar, dropoff_location_id, dropoff_location_name, dropoff_location_is_default,
+       photo_inspection_done, raknad_pa, insurance_status, funding_source,
+       handler_user_id, handler_user_name, handler_note, created_by, updated_by, archived_by`,
+      { count: 'exact' }
+    )
     .eq('org_id', orgId);
 
   // Filter by archived status
@@ -115,33 +119,11 @@ export async function getVehicleCases(
     throw new Error('Failed to fetch vehicle cases');
   }
 
-  const rawData = (data || []) as VehicleCaseViewRow[];
-
-  let cases: VehicleCaseView[] = rawData.map((vehicleCase) => ({
+  // raknad_pa is now included in the view, no N+1 query needed
+  const cases: VehicleCaseView[] = (data || []).map((vehicleCase) => ({
     ...vehicleCase,
     raknad_pa: Boolean(vehicleCase.raknad_pa),
-  }));
-
-  const caseIds = Array.from(new Set(cases.map((vehicleCase) => vehicleCase.id))).filter(
-    (id): id is string => Boolean(id)
-  );
-
-  if (caseIds.length > 0) {
-    const { data: raknadPaRows, error: raknadPaError } = await supabase
-      .from('vehicle_cases')
-      .select('id, raknad_pa')
-      .in('id', caseIds);
-
-    if (raknadPaError) {
-      console.error('Error fetching raknad_pa values:', JSON.stringify(raknadPaError, null, 2));
-    } else if (raknadPaRows) {
-      const raknadPaMap = new Map(raknadPaRows.map((row) => [row.id, row.raknad_pa]));
-      cases = cases.map((vehicleCase) => ({
-        ...vehicleCase,
-        raknad_pa: raknadPaMap.get(vehicleCase.id) ?? vehicleCase.raknad_pa ?? false,
-      }));
-    }
-  }
+  })) as VehicleCaseView[];
 
   return { data: cases, count: count ?? 0 };
 }

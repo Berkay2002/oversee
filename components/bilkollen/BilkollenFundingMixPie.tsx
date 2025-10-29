@@ -1,5 +1,6 @@
 'use client';
 
+import * as React from 'react';
 import { PieChartCustom, PieSlice } from '@/components/overview/PieChart';
 import { ChartConfig } from '@/components/ui/chart';
 import { FUNDING_SOURCE_COLORS } from '@/lib/colors';
@@ -24,7 +25,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function BilkollenFundingMixPie({ data }: { data: ChartData[] }) {
+export const BilkollenFundingMixPie = React.memo(function BilkollenFundingMixPie({ data }: { data: ChartData[] }) {
   const chartData: PieSlice[] = data.map((item) => ({
     name: chartConfig[item.fundingSource].label,
     value: item.count,
@@ -40,4 +41,4 @@ export function BilkollenFundingMixPie({ data }: { data: ChartData[] }) {
       totalValue={totalValue}
     />
   );
-}
+});

@@ -1,5 +1,6 @@
 'use client';
 
+import * as React from 'react';
 import { PieChartCustom, PieSlice } from '@/components/overview/PieChart';
 import { ChartConfig } from '@/components/ui/chart';
 import { SLA_STATUS_COLORS } from '@/lib/colors';
@@ -19,7 +20,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function BilkollenSLAComplianceChart({ data }: { data: ChartData }) {
+export const BilkollenSLAComplianceChart = React.memo(function BilkollenSLAComplianceChart({ data }: { data: ChartData }) {
   const chartData: PieSlice[] = [
     {
       name: 'Inom SLA',
@@ -42,4 +43,4 @@ export function BilkollenSLAComplianceChart({ data }: { data: ChartData }) {
       totalValue={totalValue}
     />
   );
-}
+});

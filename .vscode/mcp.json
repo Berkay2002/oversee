@@ -1,11 +1,17 @@
 {
-  "servers": {
-    "shadcn": {
-      "command": "npx",
-      "args": [
-        "shadcn@latest",
-        "mcp"
-      ]
-    }
-  }
+	"servers": {
+		"shadcn": {
+			"command": "npx",
+			"args": [
+				"shadcn@latest",
+				"mcp"
+			],
+			"type": "stdio"
+		},
+		"supabase": {
+			"url": "https://mcp.supabase.com/mcp",
+			"type": "http"
+		}
+	},
+	"inputs": []
 }

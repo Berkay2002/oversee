@@ -18,7 +18,7 @@ export async function getLocations(orgId: string): Promise<Location[]> {
 
   const { data, error } = await supabase
     .from('org_locations')
-    .select('*')
+    .select('id, org_id, name, is_default, created_at')
     .eq('org_id', orgId)
     .order('is_default', { ascending: false })
     .order('name');

@@ -11,7 +11,7 @@ export interface BilkollenMetricsProps {
   avgProcessingDays: number | null;
 }
 
-export function BilkollenMetrics({
+export const BilkollenMetrics = React.memo(function BilkollenMetrics({
   totalCases,
   ongoingCases,
   archivedCases,
@@ -64,4 +64,4 @@ export function BilkollenMetrics({
       </Card>
     </div>
   );
-}
+});

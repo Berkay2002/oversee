@@ -1,5 +1,6 @@
 'use client';
 
+import * as React from 'react';
 import { ChartBarHorizontal } from '@/components/chart-bar-horizontal';
 import { INSURANCE_STATUS_COLORS } from '@/lib/colors';
 
@@ -8,7 +9,7 @@ interface ChartData {
   count: number;
 }
 
-export function BilkollenInsuranceStatusFunnel({ data }: { data: ChartData[] }) {
+export const BilkollenInsuranceStatusFunnel = React.memo(function BilkollenInsuranceStatusFunnel({ data }: { data: ChartData[] }) {
   const chartData = data.map((item) => ({
     ...item,
     fill: INSURANCE_STATUS_COLORS[item.status],
@@ -21,4 +22,4 @@ export function BilkollenInsuranceStatusFunnel({ data }: { data: ChartData[] }) 
       categoryKey="status"
     />
   );
-}
+});

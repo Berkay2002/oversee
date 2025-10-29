@@ -19,7 +19,7 @@ export const getTechnicians = async (
 
   let query = supabase
     .from("technicians")
-    .select("*")
+    .select("id, name, description, is_active, created_at, updated_at, color, org_id, created_by_user_id")
     .eq("org_id", orgId)
     .order("created_at", { ascending: false });
 
