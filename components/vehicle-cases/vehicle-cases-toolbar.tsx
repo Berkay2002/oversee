@@ -22,6 +22,8 @@ type VehicleCasesToolbarProps = {
   onLocationChange: (value: string) => void;
   handlerFilter: string;
   onHandlerChange: (value: string) => void;
+  inbokadFilter: string;
+  onInbokadChange: (value: string) => void;
   locations: Array<{ id: string; name: string }>;
   members: Array<{ user_id: string; name: string }>;
   onAddVehicle: () => void;
@@ -40,6 +42,8 @@ export function VehicleCasesToolbar({
   onLocationChange,
   handlerFilter,
   onHandlerChange,
+  inbokadFilter,
+  onInbokadChange,
   locations,
   members,
   onAddVehicle,
@@ -123,6 +127,18 @@ export function VehicleCasesToolbar({
                 {member.name}
               </SelectItem>
             ))}
+          </SelectContent>
+        </Select>
+
+        {/* Inbokad Filter */}
+        <Select value={inbokadFilter} onValueChange={onInbokadChange}>
+          <SelectTrigger className="h-11 w-full md:h-10 md:w-[160px]">
+            <SelectValue placeholder="Inbokad" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Visa alla</SelectItem>
+            <SelectItem value="true">Endast inbokade</SelectItem>
+            <SelectItem value="false">Endast ej inbokade</SelectItem>
           </SelectContent>
         </Select>
 

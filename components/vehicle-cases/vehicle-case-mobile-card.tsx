@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Check, MapPin, Wallet, Camera, FileText, User, Eye } from 'lucide-react';
+import { Check, MapPin, Wallet, Camera, FileText, User, Eye, Calendar } from 'lucide-react';
 import type { VehicleCaseView } from '@/lib/actions/vehicle';
 
 type VehicleCaseMobileCardProps = {
@@ -212,6 +212,34 @@ export function VehicleCaseMobileCard({
               </Select>
             </div>
           )}
+
+          {/* Inbokad */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Calendar className="h-4 w-4" />
+              <span className="font-medium">Inbokad</span>
+            </div>
+            {isArchive ? (
+              vehicleCase.inbokad ? (
+                <Check className="h-5 w-5 text-green-600" />
+              ) : (
+                <span className="text-sm text-muted-foreground">-</span>
+              )
+            ) : (
+              <Checkbox
+                checked={vehicleCase.inbokad}
+                onCheckedChange={(checked) =>
+                  onUpdate(
+                    vehicleCase.id,
+                    'inbokad',
+                    checked === true,
+                    vehicleCase.inbokad
+                  )
+                }
+                className="h-5 w-5"
+              />
+            )}
+          </div>
 
           {/* Handler */}
           <div className="space-y-2">

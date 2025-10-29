@@ -25,6 +25,7 @@ export type VehicleCaseView = {
   dropoff_location_is_default: boolean | null;
   photo_inspection_done: boolean;
   raknad_pa: boolean;
+  inbokad: boolean;
   insurance_status: 'pending' | 'approved' | 'rejected';
   funding_source: 'insurance' | 'internal' | 'customer';
   handler_user_id: string | null;
@@ -35,8 +36,9 @@ export type VehicleCaseView = {
   archived_by: string | null;
 };
 
-type VehicleCaseViewRow = Omit<VehicleCaseView, 'raknad_pa'> & {
+type VehicleCaseViewRow = Omit<VehicleCaseView, 'raknad_pa' | 'inbokad'> & {
   raknad_pa?: boolean | null;
+  inbokad?: boolean | null;
 };
 
 export type VehicleCaseFilters = {
@@ -45,6 +47,7 @@ export type VehicleCaseFilters = {
   insurance_status?: 'pending' | 'approved' | 'rejected';
   location?: string;
   handler_user_id?: string;
+  inbokad?: boolean;
   page?: number;
   pageSize?: number;
 };
@@ -103,6 +106,11 @@ export async function getVehicleCases(
     query = query.eq('handler_user_id', filters.handler_user_id);
   }
 
+  // Apply inbokad filter
+  if (filters.inbokad !== undefined) {
+    query = query.eq('inbokad', filters.inbokad);
+  }
+
   // Pagination
   const pageSize = filters.pageSize || 10;
   const page = filters.page || 1;
@@ -120,6 +128,7 @@ export async function getVehicleCases(
   let cases: VehicleCaseView[] = rawData.map((vehicleCase) => ({
     ...vehicleCase,
     raknad_pa: Boolean(vehicleCase.raknad_pa),
+    inbokad: Boolean(vehicleCase.inbokad),
   }));
 
   const caseIds = Array.from(new Set(cases.map((vehicleCase) => vehicleCase.id))).filter(
@@ -127,19 +136,23 @@ export async function getVehicleCases(
   );
 
   if (caseIds.length > 0) {
-    const { data: raknadPaRows, error: raknadPaError } = await supabase
+    const { data: booleanRows, error: booleanError } = await supabase
       .from('vehicle_cases')
-      .select('id, raknad_pa')
+      .select('id, raknad_pa, inbokad')
       .in('id', caseIds);
 
-    if (raknadPaError) {
-      console.error('Error fetching raknad_pa values:', JSON.stringify(raknadPaError, null, 2));
-    } else if (raknadPaRows) {
-      const raknadPaMap = new Map(raknadPaRows.map((row) => [row.id, row.raknad_pa]));
-      cases = cases.map((vehicleCase) => ({
-        ...vehicleCase,
-        raknad_pa: raknadPaMap.get(vehicleCase.id) ?? vehicleCase.raknad_pa ?? false,
-      }));
+    if (booleanError) {
+      console.error('Error fetching boolean values:', JSON.stringify(booleanError, null, 2));
+    } else if (booleanRows) {
+      const booleanMap = new Map(booleanRows.map((row) => [row.id, { raknad_pa: row.raknad_pa, inbokad: row.inbokad }]));
+      cases = cases.map((vehicleCase) => {
+        const booleans = booleanMap.get(vehicleCase.id);
+        return {
+          ...vehicleCase,
+          raknad_pa: booleans?.raknad_pa ?? vehicleCase.raknad_pa ?? false,
+          inbokad: booleans?.inbokad ?? vehicleCase.inbokad ?? false,
+        };
+      });
     }
   }
 
