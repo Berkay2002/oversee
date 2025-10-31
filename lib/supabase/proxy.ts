@@ -77,7 +77,12 @@ export async function updateSession(request: NextRequest) {
         console.log('Proxy: User not a member, redirecting to /onboarding', { memberError });
         const url = request.nextUrl.clone();
         url.pathname = '/onboarding';
-        return NextResponse.redirect(url);
+        const response = NextResponse.redirect(url);
+        response.cookies.delete('activeOrgId');
+        supabaseResponse.cookies.getAll().forEach(({ name, value }) => {
+          response.cookies.set(name, value);
+        });
+        return response;
       }
 
       // Set the active org cookie
