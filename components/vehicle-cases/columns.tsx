@@ -252,6 +252,35 @@ export const createColumns = (
       },
     },
     {
+      accessorKey: 'inbokad',
+      header: 'Inbokad',
+      cell: ({ row }) => {
+        const inbokad = row.getValue('inbokad') as boolean;
+
+        if (meta.isArchive) {
+          return inbokad ? (
+            <Check className="h-4 w-4 text-green-600" />
+          ) : (
+            <span className="text-muted-foreground">-</span>
+          );
+        }
+
+        return (
+          <Checkbox
+            checked={inbokad}
+            onCheckedChange={(checked) =>
+              meta.onUpdate(
+                row.original.id,
+                'inbokad',
+                checked === true,
+                inbokad
+              )
+            }
+          />
+        );
+      },
+    },
+    {
       accessorKey: 'handler_note',
       header: 'Anteckningar',
       cell: ({ row }) => {

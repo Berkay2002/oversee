@@ -43,6 +43,7 @@ export default function BilkollenPage() {
   const [insuranceStatusFilter, setInsuranceStatusFilter] = React.useState('all');
   const [locationFilter, setLocationFilter] = React.useState('all');
   const [handlerFilter, setHandlerFilter] = React.useState<string>('all');
+  const [inbokadFilter, setInbokadFilter] = React.useState('all');
   const [currentUserId, setCurrentUserId] = React.useState<string | null>(null);
 
   // State for pagination
@@ -95,8 +96,9 @@ export default function BilkollenPage() {
       ...(insuranceStatusFilter !== 'all' && { insurance_status: insuranceStatusFilter as 'pending' | 'approved' | 'rejected' }),
       ...(locationFilter !== 'all' && { location: locationFilter }),
       ...(handlerFilter !== 'all' && { handler_user_id: handlerFilter }),
+      ...(inbokadFilter !== 'all' && { inbokad: inbokadFilter === 'true' }),
     };
-  }, [searchValue, fundingSourceFilter, insuranceStatusFilter, locationFilter, handlerFilter, currentPage, pageSize]);
+  }, [searchValue, fundingSourceFilter, insuranceStatusFilter, locationFilter, handlerFilter, inbokadFilter, currentPage, pageSize]);
 
   // Fetch initial data and set up user in one go
   React.useEffect(() => {
@@ -328,6 +330,7 @@ export default function BilkollenPage() {
     setInsuranceStatusFilter('all');
     setLocationFilter('all');
     setHandlerFilter(currentUserId || 'all'); // Reset to current user
+    setInbokadFilter('all');
     setCurrentPage(1);
   };
 
@@ -336,6 +339,7 @@ export default function BilkollenPage() {
     fundingSourceFilter !== 'all' ||
     insuranceStatusFilter !== 'all' ||
     locationFilter !== 'all' ||
+    inbokadFilter !== 'all' ||
     (handlerFilter !== currentUserId && handlerFilter !== 'all')
   );
 
@@ -431,6 +435,8 @@ export default function BilkollenPage() {
                   onLocationChange={setLocationFilter}
                   handlerFilter={handlerFilter}
                   onHandlerChange={setHandlerFilter}
+                  inbokadFilter={inbokadFilter}
+                  onInbokadChange={setInbokadFilter}
                   locations={locations}
                   members={members}
                   onAddVehicle={() => setAddDialogOpen(true)}
@@ -479,6 +485,8 @@ export default function BilkollenPage() {
                   onLocationChange={setLocationFilter}
                   handlerFilter={handlerFilter}
                   onHandlerChange={setHandlerFilter}
+                  inbokadFilter={inbokadFilter}
+                  onInbokadChange={setInbokadFilter}
                   locations={locations}
                   members={members}
                   onAddVehicle={() => setAddDialogOpen(true)}

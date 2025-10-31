@@ -56,6 +56,7 @@ export function VehicleCaseDrawer({
       dropoff_location_id: 'Plats',
       funding_source: 'Kostnadstyp',
       photo_inspection_done: 'Foto besiktning',
+      inbokad: 'Inbokad',
       insurance_status: 'Försäkring',
       handler_user_id: 'Handläggare',
       handler_note: 'Handläggare anteckning',
@@ -67,6 +68,7 @@ export function VehicleCaseDrawer({
   const formatValue = (field: string, value: string | null) => {
     if (value === null) return 'Inte angiven';
     if (field === 'photo_inspection_done') return value === 'true' ? 'Ja' : 'Nej';
+    if (field === 'inbokad') return value === 'true' ? 'Ja' : 'Nej';
     if (field === 'insurance_status') {
       const statuses: Record<string, string> = {
         pending: 'Väntar',
